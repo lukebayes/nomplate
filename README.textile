@@ -1,0 +1,11 @@
+
+h1. Nomplate
+
+Nomplate is a Node-template DSL, (Pronounced like 'Gnome Plate') that is heavily inspired by "Erector":http://erector.rubyforge.org
+
+This project is still in the experimental stage. 
+
+If you find it interesting, please feel free to let me know by watching it or checking in with me on Twitter (@lukebayes)
+
+!/lukebayes/nomplate/raw/master/Gnomplate.jpg!
+
