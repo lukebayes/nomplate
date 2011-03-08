@@ -9,12 +9,25 @@ class Nomplate
     
     this.writeOpener name, attributes
 
+    collapsed = this.collapsible? name
+
+    if !collapsed
+      this.write '>'
+
     if value
       this.write value
+
     if handler
       this.processHandler handler
 
+    if collapsed
+      this.write ' />'
+      return
+
     this.writeCloser name
+
+  collapsible: (name) ->
+    @collapsibleNodes && @collapsibleNodes.indexOf(name) > -1
 
   processArgs: (args) ->
     attributes = null
@@ -38,7 +51,6 @@ class Nomplate
   writeOpener: (name, attributes) ->
     this.write '<' + name
     this.writeAttributes attributes
-    this.write '>'
 
   writeCloser: (name) ->
     this.write '</' + name + '>'
@@ -86,6 +98,12 @@ class Nomtml extends Nomplate
     'ranger', 'color',
   ]
 
+  # Enumerate all nodes that should be collapsed
+  # when they have no node value...
+  this.prototype.collapsibleNodes = [
+    'br', 'hr', 'img'
+  ]
+
   # Apply Each available node to the Html proto:
   htmlFourNodes.concat(htmlFiveNodes).forEach (node) =>
     this.prototype[node] = (args...) ->
@@ -94,11 +112,19 @@ class Nomtml extends Nomplate
 
   # Create Special helpers:
 
+  # Write a JavaScript script tag:
   javascript: (src) ->
     this.node 'script', src: src, type: 'text/javascript'
 
-  stylesheet: (src) ->
-    this.node 'link', rel: src
+  # Write a Standard Stylesheet tag:
+  stylesheet: (href, type = 'text/css') ->
+    this.node 'link', rel: 'stylesheet', type: type, href: href
+
+  # Write a Standard Image tag:
+  image: (src, title, alt) ->
+    title ||= src
+    alt ||= title
+    this.node 'img', src: src, title: title, alt: alt
 
 exports.Nomplate = Nomplate
 exports.Nomtml = Nomtml

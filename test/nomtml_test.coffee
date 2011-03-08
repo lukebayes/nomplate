@@ -40,8 +40,21 @@ passed = ->
 (specialCaseStyleSheetTag = ->
   instance = new Nomtml()
   instance.stylesheet '/bar.css'
-  assert.equal '<link rel="/bar.css"></link>', instance.output
+  assert.equal '<link rel="stylesheet" type="text/css" href="/bar.css"></link>', instance.output
   passed()
+)()
+
+(collapsibleNode = ->
+  instance = new Nomtml()
+  instance.br()
+  assert.equal '<br />', instance.output
+  passed()
+)()
+
+(collapsImageTag = ->
+  instance = new Nomtml()
+  instance.image '/foo.png', 'Foo'
+  assert.equal '<img src="/foo.png" title="Foo" alt="Foo" />', instance.output
 )()
 
 util.log 'html-test: ' + passedMessage
