@@ -126,6 +126,10 @@ class Nomtml extends Nomplate
     alt ||= title
     this.node 'img', src: src, title: title, alt: alt
 
+  anchor: (href, text, title = null) ->
+    title ||= text
+    this.node 'a', { href: href, title: title }, text
+
 exports.Nomplate = Nomplate
 exports.Nomtml = Nomtml
 

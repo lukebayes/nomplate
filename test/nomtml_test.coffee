@@ -51,10 +51,25 @@ passed = ->
   passed()
 )()
 
-(collapsImageTag = ->
+(collapseImageTag = ->
   instance = new Nomtml()
   instance.image '/foo.png', 'Foo'
   assert.equal '<img src="/foo.png" title="Foo" alt="Foo" />', instance.output
+  passed()
+)()
+
+(anchorTagExplicit = ->
+  instance = new Nomtml()
+  instance.anchor '/bar.html', 'Bar', 'Bar Title'
+  assert.equal '<a href="/bar.html" title="Bar Title">Bar</a>', instance.output
+  passed()
+)()
+
+(anchorTag = ->
+  instance = new Nomtml()
+  instance.anchor '/bar.html', 'Bar'
+  assert.equal '<a href="/bar.html" title="Bar">Bar</a>', instance.output
+  passed()
 )()
 
 util.log 'html-test: ' + passedMessage
