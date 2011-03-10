@@ -2,6 +2,7 @@
 require.paths.unshift 'src'
 require.paths.unshift 'test'
 
+require 'pretty_test'
 require 'nomplate_test'
 require 'nomtml_test'
 

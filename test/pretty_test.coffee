@@ -7,29 +7,28 @@ passedMessage = ''
 passed = ->
   passedMessage += '.'
 
-(instantiable = ->
-  instance = new Nomtml()
-  assert.ok instance
-  passed()
-)()
-
 (emitsHtmlTag = ->
   instance = new Nomtml()
+  instance.pretty = true
   instance.html()
-  assert.equal '<html></html>', instance.output
+  assert.equal '<html></html>\n', instance.output
   passed()
 )()
 
 (emitsScriptTag = ->
   instance = new Nomtml()
+  instance.pretty = true
   instance.html ->
     instance.head ->
       instance.title 'Foo'
       instance.script src: '/foo.js'
-  assert.equal '<html><head><title>Foo</title><script src="/foo.js"></script></head></html>', instance.output
+
+  expected = '<html>\n  <head>\n    <title>Foo</title>\n    <script src="/foo.js"></script>\n  </head>\n</html>\n'
+  assert.equal expected, instance.output
   passed()
 )()
 
+'''
 (specialCaseJavaScriptTag = ->
   instance = new Nomtml()
   instance.javascript '/foo.js'
@@ -71,6 +70,7 @@ passed = ->
   assert.equal '<a href="/bar.html" title="Bar">Bar</a>', instance.output
   passed()
 )()
+'''
 
-util.log 'html-test: ' + passedMessage
+util.log 'pretty-test: ' + passedMessage
 
