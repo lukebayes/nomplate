@@ -21,6 +21,7 @@ class Main extends Nomtml
           this.navAnchor 'home'
           this.navAnchor 'about'
           this.navAnchor 'contact'
+
         this.div class: 'middle'
         this.div class: 'footer'
 
