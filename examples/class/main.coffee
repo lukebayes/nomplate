@@ -25,3 +25,4 @@ class Main extends Nomtml
         this.div class: 'middle'
         this.div class: 'footer'
 
+exports.Main = Main
