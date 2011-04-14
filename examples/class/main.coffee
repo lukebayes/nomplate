@@ -13,8 +13,10 @@ class Main extends Nomtml
     this.html =>
       this.head =>
         this.title 'Main Title'
-        this.javascript '/javascripts/main.js'
         this.stylesheet '/stylesheets/main.css'
+        this.javascript '/javascripts/main.js'
+        this.javascript ->
+          alert 'Hello World'
 
       this.body =>
         this.div class: 'header', =>
