@@ -41,8 +41,16 @@ class Nomtml extends Nomplate
   # Create Special helpers:
 
   # Write a JavaScript script tag:
-  javascript: (src) ->
-    this.node 'script', src: src, type: 'text/javascript'
+  javascript: (srcOrBlock) ->
+    if srcOrBlock instanceof Function
+      this.write '<script type="text/javascript">'
+      this.write '('
+      this.write srcOrBlock
+      this.write ')()'
+      this.writeCloser 'script'
+    else
+      this.node 'script', src: srcOrBlock, type: 'text/javascript'
+
 
   # Write a Standard Stylesheet tag:
   stylesheet: (href, type = 'text/css') ->

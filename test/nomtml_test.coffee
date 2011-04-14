@@ -30,13 +30,6 @@ passed = ->
   passed()
 )()
 
-(specialCaseJavaScriptTag = ->
-  instance = new Nomtml()
-  instance.javascript '/foo.js'
-  assert.equal '<script src="/foo.js" type="text/javascript"></script>', instance.output
-  passed()
-)()
-
 (specialCaseStyleSheetTag = ->
   instance = new Nomtml()
   instance.stylesheet '/bar.css'
@@ -71,6 +64,22 @@ passed = ->
   assert.equal '<a href="/bar.html" title="Bar">Bar</a>', instance.output
   passed()
 )()
+
+(specialJavaScriptTagWithSrc = ->
+  instance = new Nomtml()
+  instance.javascript '/foo.js'
+  assert.equal '<script src="/foo.js" type="text/javascript"></script>', instance.output
+  passed()
+)()
+
+(specialJavaScriptTagWithCoffeeBody = ->
+  instance = new Nomtml()
+  instance.javascript ->
+    window.open "http://google.com"
+  assert.equal '<script type=\"text/javascript\">(function () {\n      return window.open(\"http://google.com\");\n    })()</script>', instance.output
+)()
+
+
 
 util.log 'html-test: ' + passedMessage
 
