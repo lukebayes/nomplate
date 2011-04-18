@@ -1,5 +1,5 @@
 
-require.paths.unshift 'src'
+require.paths.unshift 'lib'
 require.paths.unshift 'test'
 
 require 'pretty_test'

@@ -3,7 +3,7 @@ Nomplate = require('nomplate/base').Nomplate
 
 class Nomtml extends Nomplate
 
-  htmlFourNodes = [
+  this.htmlFourNodes = [
     'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'b', 'base', 'basefont',
     'bdo', 'big', 'blockquote', 'body','br', 'button', 'caption', 'center', 
     'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 
@@ -17,25 +17,27 @@ class Nomtml extends Nomplate
     'title', 'tr', 'tt', 'u', 'ul', 'var', 'xmp',
   ]
 
-  htmlFiveNodes = [
+  this.htmlFiveNodes = this.htmlFourNodes.concat([
     'article', 'aside', 'command', 'details', 'summary', 'figure', 'figcaption',
     'footer', 'header', 'hgroup', 'mark', 'meter', 'nav', 'progress', 'ruby',
     'rt', 'rp', 'section', 'time', 'wbr', 'audio', 'video', 'source', 'embed',
     'canvas', 'datalist', 'keygen', 'output', 'tel', 'search', 'url', 'email',
     'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'number',
     'ranger', 'color',
-  ]
+  ])
 
   # Enumerate all nodes that should be collapsed
   # when they have no node value...
   this.prototype.collapsibleNodes = [
-    'br', 'hr', 'img'
+    'br', 'hr', 'img',
   ]
 
   # Apply Each available node to the Html proto:
-  htmlFourNodes.concat(htmlFiveNodes).forEach (node) =>
+  this.htmlFiveNodes.forEach (node) =>
     this.prototype[node] = (args...) ->
       args.unshift(node)
+      if this.node == undefined
+        throw "Nomtml unable to find node: " + node
       this.node.apply(this, args)
 
   # Create Special helpers:
@@ -50,7 +52,6 @@ class Nomtml extends Nomplate
       this.writeCloser 'script'
     else
       this.node 'script', src: srcOrBlock, type: 'text/javascript'
-
 
   # Write a Standard Stylesheet tag:
   stylesheet: (href, type = 'text/css') ->

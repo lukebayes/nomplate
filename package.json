@@ -1,8 +1,6 @@
 {
   "name" : "nomplate",
   "version" : "0.1.0",
-  "main" : "src/nomplate",
-  "lib" : "src",
   "repository" : 
   {
     "type" : "git",

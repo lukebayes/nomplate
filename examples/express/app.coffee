@@ -1,9 +1,13 @@
 
+require.paths.unshift '../../lib'
+require 'nomplate'
+
 app = require('express').createServer()
-app.set 'view engine', 'nomplate'
+app.register('.coffee', require('nomplate/express'))
+#app.set 'view engine', 'nomplate/express'
 
 app.get '/', (req, res) ->
-  res.render 'index', content: 'Custom Content'
+  res.render 'index.coffee', content: 'OUTER CONTENT'
 
 console.log '>> Listening on 3000'
 app.listen 3000
