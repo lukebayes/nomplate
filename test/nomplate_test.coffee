@@ -15,42 +15,47 @@ class FakeStream
   write: (message) ->
     @output += message
 
-(instantiable = ->
+createInstance = ->
   instance = new Nomplate()
+  instance.pretty = false
+  instance
+
+(instantiable = ->
+  instance = createInstance()
   assert.ok instance
   passed()
 )()
 
 (acceptsNode = ->
-  instance = new Nomplate()
+  instance = createInstance()
   instance.node 'html'
   assert.equal '<html></html>', instance.output
   passed()
 )()
 
 (acceptsAttribute = ->
-  instance = new Nomplate()
+  instance = createInstance()
   instance.node 'div', class: 'foo'
   assert.equal '<div class="foo"></div>', instance.output
   passed()
 )()
 
 (acceptsAttributes = ->
-  instance = new Nomplate()
+  instance = createInstance()
   instance.node 'div', class: 'foo', other: 'else'
   assert.equal '<div class="foo" other="else"></div>', instance.output
   passed()
 )()
 
 (acceptsStringValue = ->
-  instance = new Nomplate()
+  instance = createInstance()
   instance.node 'title', 'Hello World'
   assert.equal '<title>Hello World</title>', instance.output
   passed()
 )()
 
 (acceptsHandler = ->
-  instance = new Nomplate()
+  instance = createInstance()
   instance.node 'div', ->
     this.node 'b', 'Some Words'
 
@@ -59,7 +64,7 @@ class FakeStream
 )()
 
 (acceptsNestedHandlers = ->
-  instance = new Nomplate()
+  instance = createInstance()
   instance.node 'div', class: 'main', ->
     instance.node 'div', ->
       instance.node 'b', 'Other Words'
