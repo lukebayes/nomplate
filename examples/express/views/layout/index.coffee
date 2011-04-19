@@ -4,6 +4,6 @@ head ->
 
 body ->
   div class: 'head'
-  div class: 'content'
+  div { class: 'content' }, rendered_view
   div class: 'foot'
 

@@ -5,16 +5,21 @@ Nomtml = require('nomplate/nomtml').Nomtml
 exports.compile = (source, options) ->
   context = new Nomtml()
   context.console = console
-  #context.content = options.content
-
   compiled_js = CoffeeScript.compile source, context
-
   sandbox = {}
+
   Nomtml.htmlFiveNodes.forEach (node) ->
     sandbox[node] = (args...) ->
       context[node].apply(context, args)
     
-  console.log compiled_js
+  # Rename Poorly-named Express View:
+  options.rendered_view = options.body
+  delete options.body
+
+  sandbox[key] = value for key,value of options
+
+  sandbox.options = options
+
   vm.runInNewContext compiled_js, sandbox
   
   return ->

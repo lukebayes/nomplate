@@ -1,3 +1,4 @@
 
-div "MIDDLE CONTENT"
+div "TEMPLATE CONTENT", ->
+  div content
 
