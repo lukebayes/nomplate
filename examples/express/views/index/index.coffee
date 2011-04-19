@@ -1,4 +1,3 @@
 
-div "TEMPLATE CONTENT", ->
-  div content
+div { class: 'view' }, content
 

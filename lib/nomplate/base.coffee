@@ -3,7 +3,7 @@ class Nomplate
 
   constructor: ->
     @output = ''
-    @pretty = false
+    @pretty = true
     @indents = 0
     @indentation = '  '
     @carriageReturn = '\n'
