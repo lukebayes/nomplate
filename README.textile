@@ -7,5 +7,9 @@ Feel free to check out the straight up "Class-based example":https://github.com/
 
 This project is still experimental, but if you find it interesting, please feel free to let me know by watching it or checking in with me on Twitter (@lukebayes)
 
+h2. Installation
+
+  npm install nomplate
+
 !/lukebayes/nomplate/raw/master/Gnomplate.jpg!
 
