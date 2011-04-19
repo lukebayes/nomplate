@@ -1,6 +1,5 @@
 
-require.paths.unshift '../../lib'
-require 'nomplate'
+require('nomplate')
 
 app = require('express').createServer()
 app.register('.coffee', require('nomplate/express'))

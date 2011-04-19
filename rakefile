@@ -1,0 +1,51 @@
+
+require "rake/clean"
+
+file "./pkg/lib" do
+  FileUtils.mkdir_p "pkg/lib"
+  puts ">> Created pkg folder"
+end
+
+CLEAN.add "./pkg/lib"
+CLEAN.add "./pkg"
+
+file "tmp" do
+  FileUtils.mkdir "tmp"
+end
+
+file "pkg/package.json" => "./pkg/lib" do
+  FileUtils.cp "package.json", "pkg/package.json"
+end
+
+coffee_files = FileList["*.coffee", "**/*.coffee"]
+
+js_files = coffee_files.collect do |file|
+  ["./pkg/lib", file.gsub('.coffee', '.js')].join("/")
+end
+
+task :copy_to_tmp => "./pkg/lib" do
+  coffee_files.each do |file|
+    FileUtils.mkdir_p File.dirname("tmp/#{file}")
+    FileUtils.cp file, "tmp/#{file}"
+  end
+end
+
+task :compile => ["pkg/package.json", :copy_to_tmp] do
+  system "coffee --output ./pkg/ --compile ./tmp/"
+  FileUtils.rm_rf "tmp"
+  puts ">> Compiled Nomplate"
+end
+
+desc "Create the NPM package"
+task :package => [:clean, :compile]
+
+desc "Uninstall the npm package"
+task :uninstall do
+  system "npm uninstall nomplate"
+end
+
+
+desc "Package and Install"
+task :install => [:package, :uninstall] do
+  system "cd pkg; npm install ./; cd ../"
+end
