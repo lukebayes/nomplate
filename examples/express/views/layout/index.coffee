@@ -23,5 +23,5 @@ html ->
       ul ->
         navElement 'contact'
         navElement 'privacy'
-        navElement 'terms of service'
+        navElement 'terms'
 
