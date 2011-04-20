@@ -1,3 +1,3 @@
 
-div { class: 'view' }, content
+div { class: 'view' }, content_from_render
 
