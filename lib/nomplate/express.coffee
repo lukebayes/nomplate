@@ -2,31 +2,36 @@ vm = require 'vm'
 CoffeeScript = require 'coffee-script'
 Nomtml = require('nomplate/nomtml').Nomtml
 
+addFunction = (key, recipient, source) ->
+  return if key == 'constructor' || key == 'pretty'
+
+  if recipient[key] == undefined
+    recipient[key] = (args...) ->
+      source[key].apply(source, args)
+  else
+    console.log "view option '" + key + "' is blocking application of Nomtml attribute of same name"
+
 exports.compile = (source, options) ->
+  console.log "-----------------"
   options ||= {}
-  context = new Nomtml()
-  context.console = console
   sandbox = {}
 
-  Nomtml.htmlFiveNodes.forEach (node) ->
-    if sandbox[node] == undefined
-      sandbox[node] = (args...) ->
-        context[node].apply(context, args)
-    else
-      console.warn "view option '" + node + "' is blocking application of Nomtml attribute of same name"
+  # Callers can send in a custom nomplate instance:
+  context = options.nomplate || new Nomtml()
+
+  # Rename Poorly-named Express View:
+  sandbox.rendered_view = options.body
+  delete options.body
+
+  sandbox[key] = value for key,value of options
+  addFunction(key, sandbox, context) for key of context
     
   if options.pretty != undefined
     context.pretty = options.pretty
 
-  # Rename Poorly-named Express View:
-  options.rendered_view = options.body
-  delete options.body
-
-  sandbox[key] = value for key,value of options
-
-  sandbox.options = options
-
+  console.log source
   compiled_js = CoffeeScript.compile source, sandbox
+  console.log compiled_js
   vm.runInNewContext compiled_js, sandbox
   
   return ->

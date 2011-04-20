@@ -2,6 +2,7 @@
 util = require 'util'
 assert = require 'assert'
 Compiler = require('nomplate/express')
+Nomtml = require('nomplate/nomtml').Nomtml
 
 passedMessage = ''
 passed = ->
@@ -18,8 +19,26 @@ compile = (source, options) ->
 )()
 
 (testCompilePretty = ->
-  result = compile "html()"
-  assert.equal '<html></html>\n', result
+  result = compile "div()"
+  assert.equal '<div></div>\n', result
+  passed()
+)()
+
+(testCompileWithOptions = ->
+  result = compile "span(foo)", { foo: 'hello' }
+  assert.equal '<span>hello</span>\n', result
+  passed()
+)()
+
+(testCompileWithCustomNomplateEntity = ->
+
+  class Custom extends Nomtml
+    # Custom Node type:
+    foo: (str) ->
+      this.node 'foo', str
+
+  result = compile "foo(bar)", { bar: 'world', nomplate: new Custom() }
+  assert.equal '<foo>world</foo>\n', result
   passed()
 )()
 
