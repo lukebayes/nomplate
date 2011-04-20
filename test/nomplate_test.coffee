@@ -7,14 +7,6 @@ passedMessage = ''
 passed = ->
   passedMessage += '.'
 
-class FakeStream
-
-  constructor: ->
-    @output = ''
-
-  write: (message) ->
-    @output += message
-
 createInstance = ->
   instance = new Nomplate()
   instance.pretty = false

@@ -2,6 +2,7 @@
 require.paths.unshift 'lib'
 require.paths.unshift 'test'
 
+require 'express_test'
 require 'pretty_test'
 require 'nomplate_test'
 require 'nomtml_test'

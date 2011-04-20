@@ -51,6 +51,8 @@ class Nomtml extends Nomplate
       this.write ')()'
       this.writeCloser 'script'
     else
+      # TODO: Ensure the coffee gets compiled by something else.
+      srcOrBlock = srcOrBlock.replace /\.coffee$/, '.js'
       this.node 'script', src: srcOrBlock, type: 'text/javascript'
 
   # Write a Standard Stylesheet tag:

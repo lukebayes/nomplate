@@ -77,6 +77,13 @@ createInstance = ->
   passed()
 )()
 
+(specialJavaScriptTagWithCoffeeSrc = ->
+  instance = createInstance()
+  instance.javascript '/foo.coffee'
+  assert.equal '<script src="/foo.js" type="text/javascript"></script>', instance.output
+  passed()
+)()
+
 (specialJavaScriptTagWithCoffeeBody = ->
   instance = createInstance()
   instance.javascript ->
