@@ -12,7 +12,6 @@ addFunction = (key, recipient, source) ->
     console.log "view option '" + key + "' is blocking application of Nomtml attribute of same name"
 
 exports.compile = (source, options) ->
-  console.log "-----------------"
   options ||= {}
   sandbox = {}
 
@@ -29,12 +28,9 @@ exports.compile = (source, options) ->
   if options.pretty != undefined
     context.pretty = options.pretty
 
-  console.log source
-  compiled_js = CoffeeScript.compile source, sandbox
-  console.log compiled_js
+  compiled_js = CoffeeScript.compile source, context
   vm.runInNewContext compiled_js, sandbox
   
   return ->
     context.output
-
 

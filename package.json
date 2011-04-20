@@ -1,7 +1,7 @@
 {
   "name" : "nomplate",
   "description" : "Nomplate is a NodeJs Template DSL that uses CoffeeScript to generate markup. It is pronounced like 'Gnome-plate', and was heavily inspired by Erector.",
-  "version" : "0.1.11",
+  "version" : "0.1.13",
   "repository" : 
   {
     "type" : "git",

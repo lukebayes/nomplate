@@ -42,17 +42,25 @@ class Nomtml extends Nomplate
 
   # Create Special helpers:
 
+  inLineScript: (srcOrBlock) ->
+    srcOrBlock instanceof Function ||
+    srcOrBlock.toString().indexOf('function () {') > -1
+
+  renderInlineJavaScript: (code) ->
+    this.write '<script type="text/javascript">'
+    this.write '('
+    this.write code
+    this.write ')()'
+    this.writeCloser 'script'
+    
   # Write a JavaScript script tag:
   javascript: (srcOrBlock) ->
-    if srcOrBlock instanceof Function
-      this.write '<script type="text/javascript">'
-      this.write '('
-      this.write srcOrBlock
-      this.write ')()'
-      this.writeCloser 'script'
+    if this.inLineScript(srcOrBlock)
+      this.renderInlineJavaScript srcOrBlock
     else
       # TODO: Ensure the coffee gets compiled by something else.
-      srcOrBlock = srcOrBlock.replace /\.coffee$/, '.js'
+      if srcOrBlock.replace instanceof Function
+        srcOrBlock = srcOrBlock.replace /\.coffee$/, '.js'
       this.node 'script', src: srcOrBlock, type: 'text/javascript'
 
   # Write a Standard Stylesheet tag:
