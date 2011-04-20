@@ -12,6 +12,8 @@ exports.compile = (source, options) ->
     if sandbox[node] == undefined
       sandbox[node] = (args...) ->
         context[node].apply(context, args)
+    else
+      console.warn "view option '" + node + "' is blocking application of Nomtml attribute of same name"
     
   if options.pretty != undefined
     context.pretty = options.pretty

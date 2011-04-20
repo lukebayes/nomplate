@@ -13,8 +13,8 @@ class Nomtml extends Nomplate
     'meta', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p',
     'param', 'pre', 'q', 's', 'samp', 'script', 'select', 'small', 'span',
     'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td',
-    'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'tu', 'thead',
-    'title', 'tr', 'tt', 'u', 'ul', 'var', 'xmp',
+    'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'tu', 
+    'u', 'ul', 'var', 'xmp',
   ]
 
   this.htmlFiveNodes = this.htmlFourNodes.concat([
@@ -22,7 +22,7 @@ class Nomtml extends Nomplate
     'footer', 'header', 'hgroup', 'mark', 'meter', 'nav', 'progress', 'ruby',
     'rt', 'rp', 'section', 'time', 'wbr', 'audio', 'video', 'source', 'embed',
     'canvas', 'datalist', 'keygen', 'output', 'tel', 'search', 'url', 'email',
-    'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'number',
+    'datetime', 'date', 'month', 'week', 'datetime-local', 'number',
     'ranger', 'color',
   ])
 
