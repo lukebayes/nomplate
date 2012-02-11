@@ -8,4 +8,7 @@
     "url" : "https://github.com/lukebayes/nomplate.git"
   },
   "main" : "lib/nomplate",
+  "dependencies": {
+    "coffee-script": "1.1.3"
+  }
 }

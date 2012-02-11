@@ -33,4 +33,3 @@ exports.compile = (source, options) ->
   
   return ->
     context.output
-

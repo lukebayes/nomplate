@@ -1,14 +1,8 @@
 
-require.paths.unshift 'lib'
-require.paths.unshift 'test'
-
-require 'express_test'
-require 'pretty_test'
-require 'nomplate_test'
-require 'nomtml_test'
+require './test/express_test'
+require './test/pretty_test'
+require './test/nomplate_test'
+require './test/nomtml_test'
 
 process.on 'exit', ->
   console.log '>> Exiting after all tests'
-
-
-

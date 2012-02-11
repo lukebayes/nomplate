@@ -2,8 +2,8 @@
 util = require 'util'
 assert = require 'assert'
 Compiler = require('nomplate/express')
-Nomtml = require('nomplate/nomtml').Nomtml
 
+Nomtml = require('nomplate/nomtml').Nomtml
 passedMessage = ''
 passed = ->
   passedMessage += '.'
