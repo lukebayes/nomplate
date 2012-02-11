@@ -66,4 +66,3 @@ createInstance = ->
 )()
   
 util.log 'nomplate-test: ' + passedMessage
-

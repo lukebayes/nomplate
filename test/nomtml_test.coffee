@@ -91,7 +91,4 @@ createInstance = ->
   assert.equal '<script type=\"text/javascript\">(function () {\n      return window.open(\"http://google.com\");\n    })()</script>', instance.output
 )()
 
-
-
 util.log 'html-test: ' + passedMessage
-

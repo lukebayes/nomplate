@@ -52,4 +52,3 @@ passed = ->
 )()
 
 util.log 'pretty-test: ' + passedMessage
-
