@@ -11,5 +11,5 @@ h2. Installation
 
   npm install nomplate
 
-!/lukebayes/nomplate/raw/master/Gnomplate.jpg!
+!https://raw.githubusercontent.com/lukebayes/nomplate/master/Gnomplate.jpg!
 
