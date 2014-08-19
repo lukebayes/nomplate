@@ -7,7 +7,7 @@
     "type" : "git",
     "url" : "https://github.com/lukebayes/nomplate.git"
   },
-  "main" : "src/nomplate",
+  "main" : "src/index",
   "dependencies": {
     "coffee-script": "1.7.1"
   },
