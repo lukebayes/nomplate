@@ -1,5 +1,5 @@
 
-Nomplate = require('nomplate/base').Nomplate
+Nomplate = require './nomplate'
 
 class Nomtml extends Nomplate
 
@@ -77,5 +77,5 @@ class Nomtml extends Nomplate
     title ||= text
     this.node 'a', { href: href, title: title }, text
 
-exports.Nomtml = Nomtml
+module.exports = Nomtml
 

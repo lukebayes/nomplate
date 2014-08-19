@@ -35,7 +35,7 @@ class Nomplate
       return
 
     if handler
-      this.writeIndentation() 
+      this.writeIndentation()
 
     this.writeCloser name
     this.afterCloser()
@@ -48,7 +48,7 @@ class Nomplate
     value = null
     handler = null
 
-    len = args.length;
+    len = args.length
     for item in args
       if typeof(item) == 'string'
         value = item
@@ -103,5 +103,5 @@ class Nomplate
     if (@stream)
       @stream.write message
 
-exports.Nomplate = Nomplate
+module.exports = Nomplate
 

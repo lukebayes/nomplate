@@ -1,7 +1,7 @@
 
 vm = require 'vm'
 CoffeeScript = require 'coffee-script'
-Nomtml = require('nomplate/nomtml').Nomtml
+Nomtml = require './nomtml'
 
 addFunction = (key, recipient, source) ->
   return if key == 'constructor' || key == 'pretty'
