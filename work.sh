@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # Run and listen for changes
-jasmine-node --captureExceptions --color --autotest dist/spec --watch dist/src dist/spec
+jasmine-node --captureExceptions --color --autotest lib/spec --watch lib/src lib/spec
 

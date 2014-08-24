@@ -1,36 +1,29 @@
-
+loam = require 'loam'
 vm = require 'vm'
 CoffeeScript = require 'coffee-script'
 Nomtml = require './nomtml'
 
-addFunction = (key, recipient, source) ->
-  return if key == 'constructor' || key == 'pretty'
-
-  if recipient[key] == undefined
-    recipient[key] = (args...) ->
-      source[key].apply(source, args)
-  else
-    console.log "view option '" + key + "' is blocking application of Nomtml attribute of same name"
-
 exports.compile = (source, options) ->
   options ||= {}
-  sandbox = {}
 
   # Callers can send in a custom nomplate instance:
-  context = options.nomplate || new Nomtml()
+  context = options.context || new Nomtml()
+  compiledJs = CoffeeScript.compile source, context
 
-  # Rename Poorly-named Express View:
-  sandbox.rendered_view = options.body
-  delete options.body
+  return (opt_scope) ->
+    contextParents = [context]
+    currentProto = context.__proto__
+    while currentProto
+      contextParents.push currentProto
+      currentProto = currentProto.__proto__
 
-  sandbox[key] = value for key,value of options
-  addFunction(key, sandbox, context) for key of context
-    
-  if options.pretty != undefined
-    context.pretty = options.pretty
+    flatContext = loam.extend.apply null, contextParents
+    nodeContext = vm.createContext flatContext
 
-  compiled_js = CoffeeScript.compile source, context
-  vm.runInNewContext compiled_js, sandbox
-  
-  return ->
+    # console.log 'nodecontext: ', nodeContext
+    console.log 'compiled: ', compiledJs
+    console.log 'nodeContext: ', nodeContext.node
+
+    vm.runInContext compiledJs, nodeContext
     context.output
+

@@ -36,6 +36,7 @@ class Nomtml extends Nomplate
   this.htmlFiveNodes.forEach (node) =>
     this.prototype[node] = (args...) ->
       args.unshift(node)
+      console.log 'args: ', args, 'this: ', this
       if this.node == undefined
         throw "Nomtml unable to find node: " + node
       this.node.apply(this, args)

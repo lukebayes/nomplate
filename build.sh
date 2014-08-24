@@ -6,5 +6,5 @@
 # To simply build once, call:
 # ./build.sh
 
-coffee $1 -o dist/ ./
+coffee --map $1 -o lib/ ./
 

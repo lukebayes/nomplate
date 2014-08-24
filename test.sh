@@ -1,5 +1,5 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 ./build.sh
-jasmine-node --captureExceptions dist/src dist/spec
+jasmine-node --captureExceptions lib/src lib/spec
 
