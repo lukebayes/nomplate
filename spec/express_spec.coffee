@@ -6,13 +6,13 @@ describe 'Express compiler', ->
   compile = (source, options) ->
     Compiler.compile(source, options)()
 
-  iit 'compiles ugly', ->
+  it 'compiles ugly', ->
     result = compile 'html()', { pretty: false }
-    expect(result()).toEqual '<html></html>'
+    expect(result).toEqual '<html></html>'
 
   it 'compiles pretty', ->
     result = compile 'div()', { pretty: true }
-    expect(result).toEqual '<div></div>'
+    expect(result).toEqual '<div></div>\n'
 
   it 'compiles without options', ->
     result = compile 'span(foo)', { foo: 'hello' }
