@@ -19,7 +19,7 @@ html ->
 
     div { id: 'content' }, ->
       h3 "Content: "
-      div rendered_view
+      div yieldView
 
     div { id: 'footer' }, ->
       h3 "Footer: "

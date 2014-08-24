@@ -6,25 +6,27 @@ class Main extends Nomtml
   ##
   # Custom helper to main navigation elements:
   navAnchor: (name) ->
-    this.anchor '/' + name, name.toUpperCase(), class: name
+    @anchor '/' + name, name.toUpperCase(), class: name
+
   ##
   # Template method that will be called from renderer:
   content: ->
-    this.html =>
-      this.head =>
-        this.title 'Main Title'
-        this.stylesheet '/stylesheets/main.css'
-        this.javascript '/javascripts/main.js'
-        this.javascript ->
+    @html ->
+      @head ->
+        @title 'Main Title'
+        @stylesheet '/stylesheets/main.css'
+        @javascript '/javascripts/main.js'
+        @javascript ->
           alert 'Hello World'
 
-      this.body =>
-        this.div class: 'header', =>
-          this.navAnchor 'home'
-          this.navAnchor 'about'
-          this.navAnchor 'contact'
+      @body ->
+        @div class: 'header', ->
+          @navAnchor 'home'
+          @navAnchor 'about'
+          @navAnchor 'contact'
 
-        this.div class: 'middle'
-        this.div class: 'footer'
+        @div class: 'middle'
+
+        @div class: 'footer'
 
 exports.Main = Main

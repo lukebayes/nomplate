@@ -1,4 +1,4 @@
-
+fs = require 'fs'
 vm = require 'vm'
 CoffeeScript = require 'coffee-script'
 Nomtml = require './nomtml'
@@ -12,7 +12,11 @@ addFunction = (key, recipient, source) ->
   else
     console.log "view option '" + key + "' is blocking application of Nomtml attribute of same name"
 
-exports.compile = (source, options) ->
+renderLayout = (layout) ->
+  console.log 'rendering layout now: ', layout
+
+render = (source, options) ->
+  console.log 'render: ', source
   options ||= {}
   sandbox = {}
 
@@ -20,7 +24,9 @@ exports.compile = (source, options) ->
   context = options.nomplate || new Nomtml()
 
   # Rename Poorly-named Express View:
-  sandbox.rendered_view = options.body
+  sandbox.renderLayout = (layout) ->
+    console.log 'RENDINER LAYOUT: ', layout
+
   delete options.body
 
   sandbox[key] = value for key,value of options
@@ -34,4 +40,17 @@ exports.compile = (source, options) ->
   
   return ->
     context.output
+
+renderFile = (path, options, callback) ->
+  encoding = 'utf-8'
+  console.log 'RENDER FILE WITH:', path, options, callback
+  fs.readFile path, {encoding: encoding}, (err, data) ->
+    callback err, render(data.toString(), options)()
+
+
+module.exports = {
+  render: render
+  renderFile: renderFile
+  renderLayout: renderLayout
+}
 

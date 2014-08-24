@@ -1,14 +1,17 @@
+nomplate = require 'nomplate'
+express = require 'express'
 
-require('nomplate')
+console.log 'nomplate: ', nomplate.__express
 
-express = require('express')
-
-app = express.createServer()
-app.use(express.staticProvider(__dirname + '/public'))
-app.register('.coffee', require('nomplate/express'))
+app = express()
+app.use express.static(__dirname + '/public')
+app.engine '.nomplate', nomplate.__express
+app.set 'view engine', 'nomplate'
+app.set 'view options', layout: 'main', pretty: true
 
 app.get '/', (req, res) ->
-  res.render 'index.coffee', content_from_render: 'Hello World'
+  res.render 'index', message: 'Hello World', layout: 'main'
 
 console.log '>> Listening on 3000'
 app.listen 3000
+
