@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import jsBeautify from 'js-beautify';
 import jsdom from 'jsdom';
 
 import FakeStorage from './test/fake_storage';
@@ -16,13 +15,8 @@ function createWindow(ready) {
   });
 }
 
-function beautify(element) {
-  return jsBeautify.html(element.outerHTML || element);
-}
-
 export {
   FakeStorage,
   createWindow,
-  beautify,
 };
 /* eslint-ensable import/no-extraneous-dependencies */
