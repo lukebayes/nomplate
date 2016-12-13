@@ -1,0 +1,25 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": false
+    },
+    "warnIgnoredByDefault": false
+  },
+  "plugins": [
+    "mocha"
+  ],
+  "rules": {
+    "object-curly-spacing": 0,
+    "semi": 2
+  },
+  "globals": {
+    "after": true,
+    "afterEach": true,
+    "before": true,
+    "beforeEach": true,
+    "describe": true,
+    "it": true
+  }
+}
