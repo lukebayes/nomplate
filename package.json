@@ -1,21 +1,16 @@
 {
   "name": "nomplate",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "Nomplate: Node template engine",
-  "main": "index.js",
-  "directories": {
-    "src": "src",
-    "dist": "dist"
-  },
-  "scripts": {
-    "build": "make build",
-    "test": "make test"
-  },
+  "main": "nomplate.js",
+  "files": [
+    "nomplate.js",
+    "nomplate.min.gz",
+    "nomplate.min.js",
+    "express.js"
+  ],
   "author": "Luke Bayes",
   "license": "MIT",
-  "dependencies": {
-    "express": "^4.14.0"
-  },
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
@@ -30,6 +25,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-mocha": "^4.7.0",
     "eslint-plugin-react": "^6.8.0",
+    "express": "^4.14.0",
     "js-beautify": "^1.6.4",
     "jsdom": "^9.8.3",
     "json-loader": "^0.5.4",

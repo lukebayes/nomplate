@@ -26,7 +26,7 @@ WEBPACK_SERVER_CONFIG=webpack-server.config.js
 
 .PHONY: test test-w dev-install build build-module lint clean
 
-build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz src/*.js
+build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz dist/package.json dist/express.js src/*.js
 
 # Run all JavaScript tests
 test: ${NODE}
@@ -38,7 +38,7 @@ test-w: ${NODE}
 build-module: src/*
 
 publish: clean build
-	npm publish
+	cd dist/ && npm publish
 
 serve:
 	$(BABEL_NODE) server.js
@@ -52,8 +52,11 @@ dist/nomplate.min.js:
 dist/nomplate.min.gz:
 	gzip --best -c dist/nomplate.min.js > dist/nomplate.min.gz
 
-dist/static:
-	mkdir -p dist/static
+dist/package.json:
+	cp -f package.json dist/package.json
+
+dist/express.js:
+	$(WEBPACK) --config $(WEBPACK_SERVER_CONFIG) express.js dist/express.js
 	
 lint:
 	$(ESLINT) --config $(PROJECT_ROOT)/.eslintrc.json .
