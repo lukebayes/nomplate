@@ -1,12 +1,10 @@
 {
   "name": "nomplate",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Nomplate: Node template engine",
   "main": "nomplate.js",
   "files": [
-    "nomplate.js",
-    "nomplate.min.gz",
-    "nomplate.min.js",
+    "index.js",
     "express.js"
   ],
   "author": "Luke Bayes",
