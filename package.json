@@ -1,10 +1,11 @@
 {
   "name": "nomplate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Nomplate: Node template engine",
   "main": "index.js",
   "directories": {
-    "src": "src"
+    "src": "src",
+    "dist": "dist"
   },
   "scripts": {
     "build": "make build",
