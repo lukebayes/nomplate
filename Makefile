@@ -26,7 +26,7 @@ WEBPACK_SERVER_CONFIG=webpack-server.config.js
 
 .PHONY: test test-w dev-install build build-module lint clean
 
-build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz
+build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz src/*.js
 
 # Run all JavaScript tests
 test: ${NODE}
@@ -36,6 +36,9 @@ test-w: ${NODE}
 	${MOCHA} --compilers js:babel-core/register --reporter dot ${TEST_FILES} -w
 
 build-module: src/*
+
+publish: clean build
+	npm publish
 
 serve:
 	$(BABEL_NODE) server.js
