@@ -1,4 +1,5 @@
 import dom from './dom';
+import htmlEncode from './html_encode';
 
 function renderString() {
   const carriageReturn = '\n';
@@ -8,10 +9,6 @@ function renderString() {
   let pretty = false;
   let indents = 0;
   let stream = null;
-
-  function escapeHTML(str) {
-    return str.replace(/[^0-9A-Za-z ]/g, c => `&#${c.charCodeAt(0)};`);
-  }
 
   function writeToStream(message) {
     if (stream) {
@@ -33,7 +30,7 @@ function renderString() {
         const updatedKey = key === 'className' ? 'class' : key;
         const value = attributes[key];
         if (typeof value !== 'function' && value !== false) {
-          rendered.push(`${updatedKey}="${value}"`);
+          rendered.push(`${updatedKey}="${htmlEncode(value)}"`);
         }
       });
 
@@ -96,7 +93,7 @@ function renderString() {
     }
 
     if (textValue) {
-      write(escapeHTML(textValue));
+      write(htmlEncode(textValue));
     }
 
     if (children.length > 0) {

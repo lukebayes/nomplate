@@ -74,6 +74,11 @@ describe('Nomplate ElementBuilder', () => {
     assert.equal(script.attrs.src, '/abcd.js');
   });
 
+  it.skip('escapes markup', () => {
+    const div = builder('div', '<script>');
+    // assert.equal(div.textValue, '&lt;script&gt;');
+  });
+
   it('collapses handler', () => {
     const ul = builder('ul', () => {
       builder('li', 'one');

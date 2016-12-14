@@ -11,6 +11,19 @@ describe('Nomplate renderElement', () => {
     document = jsdom('<body></body>');
   });
 
+  it('escapes text content', () => {
+    const div = dom.div({className: '<', style: '>'}, '<script>');
+
+    const element = renderElement(div, null, document);
+
+    assert.equal(element.getAttribute('class'), '&lt;');
+    assert.equal(element.getAttribute('style'), '&gt;');
+    assert.equal(element.innerHTML, '&lt;script&gt;');
+
+    // NOTE(lbayes): jsdom will double encode these values:
+    assert.equal(element.outerHTML, '<div class="&amp;lt;" style="&amp;gt;">&lt;script&gt;</div>');
+  });
+
   it('transfers attributes', () => {
     const div = dom.div({style: 'color:#fc0;', className: 'abcd'});
     const element = renderElement(div, null, document);

@@ -66,9 +66,8 @@ describe('Nomplate renderer dom', () => {
   });
 
   it('escapes text content', () => {
-    const elem = dom.div('<script>');
-
-    assert.equal(render(elem), '<div>&#60;script&#62;</div>');
+    const elem = dom.div({className: '<', style: '>'}, '<script>');
+    assert.equal(render(elem), '<div class="&lt;" style="&gt;">&lt;script&gt;</div>');
   });
 
   it('omits false attrs', () => {

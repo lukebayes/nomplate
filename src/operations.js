@@ -1,3 +1,5 @@
+import htmlEncode from './html_encode';
+
 /**
  * Collection of isolated DOM mutations that can be built into a single list
  * when comparing a set of Nomplate Elements with DOM elements.
@@ -8,8 +10,8 @@ function top(stack) {
 }
 
 function setAttribute(name, value) {
-  return function _setAttribute(element) {
-    element.setAttribute(name, value);
+  return function _setAttribute(element, stack, document) {
+    element.setAttribute(name, htmlEncode(value, document));
     return element;
   };
 }
@@ -42,9 +44,9 @@ function enqueueOnRender(handler) {
 }
 
 function setClassName(value) {
-  return function _setClassName(element) {
+  return function _setClassName(element, stack, document) {
     /* eslint-disable no-param-reassign */
-    element.className = value;
+    element.className = htmlEncode(value, document);
     /* eslint-enable no-param-reassign */
     return element;
   };
@@ -140,9 +142,9 @@ function createTextNode(content) {
 }
 
 function updateTextContent(content) {
-  return function _updateTextContent(element) {
+  return function _updateTextContent(element, stack, document) {
     /* eslint-disable no-param-reassign */
-    element.textContent = content;
+    element.textContent = htmlEncode(content, document);
     /* eslint-enable no-param-reassign */
     return element;
   };
