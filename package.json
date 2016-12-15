@@ -21,7 +21,9 @@
     "src",
     "bin/nomplate",
     "index.js",
-    "express.js"
+    "express.js",
+    "nomplate.min.js",
+    "nomplate.min.gz"
   ],
   "author": "Luke Bayes",
   "license": "MIT",

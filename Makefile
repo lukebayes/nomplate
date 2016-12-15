@@ -27,7 +27,7 @@ WEBPACK_SERVER_CONFIG=webpack-server.config.js
 
 .PHONY: test test-w dev-install build build-module lint clean
 
-build: dist/index.js
+build: dist/index.js dist/nomplate.min.js dist/nomplate.min.gz
 
 # Run all JavaScript tests
 test: ${NODE}
