@@ -44,10 +44,13 @@ publish: clean build
 serve:
 	$(BABEL_NODE) server.js
 
-dist/index.js: src/* index.js express.js package.json
+dist/index.js: src/* index.js express.js package.json bin/*
 	$(BABEL) src/ --out-dir dist/src --copy-files
 	$(BABEL) index.js --out-file dist/index.js
 	$(BABEL) express.js --out-file dist/express.js
+	mkdir -p dist/bin
+	$(BABEL) bin/nomplate --out-file dist/bin/nomplate
+	chmod 755 dist/bin/nomplate
 	cp package.json dist/package.json
 
 dist/nomplate.min.js:

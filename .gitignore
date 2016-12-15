@@ -1,7 +1,6 @@
 lib
 node_modules
 vendor
-bin
 log
 data
 tmp
