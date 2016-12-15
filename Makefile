@@ -20,13 +20,14 @@ NODE_MODULES_BIN=node_modules/.bin
 ESLINT=$(NODE_MODULES_BIN)/eslint
 MOCHA=$(NODE_MODULES_BIN)/_mocha
 WEBPACK=$(NODE_MODULES_BIN)/webpack
+BABEL=$(NODE_MODULES_BIN)/babel
 BABEL_NODE=$(NODE_MODULES_BIN)/babel-node
 WEBPACK_CLIENT_CONFIG=webpack-client.config.js
 WEBPACK_SERVER_CONFIG=webpack-server.config.js
 
 .PHONY: test test-w dev-install build build-module lint clean
 
-build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz dist/package.json dist/express.js src/*.js
+build: dist/index.js
 
 # Run all JavaScript tests
 test: ${NODE}
@@ -43,17 +44,17 @@ publish: clean build
 serve:
 	$(BABEL_NODE) server.js
 
-dist/nomplate.js:
-	$(WEBPACK) --config $(WEBPACK_CLIENT_CONFIG) index.js dist/nomplate.js
+dist/index.js: src/* index.js express.js package.json
+	$(BABEL) src/ --out-dir dist/src --copy-files
+	$(BABEL) index.js --out-file dist/index.js
+	$(BABEL) express.js --out-file dist/express.js
+	cp package.json dist/package.json
 
 dist/nomplate.min.js:
 	$(WEBPACK) --optimize-minimize --config $(WEBPACK_CLIENT_CONFIG) index.js dist/nomplate.min.js
 
 dist/nomplate.min.gz:
 	gzip --best -c dist/nomplate.min.js > dist/nomplate.min.gz
-
-dist/package.json:
-	cp -f package.json dist/package.json
 
 dist/express.js:
 	$(WEBPACK) --config $(WEBPACK_SERVER_CONFIG) express.js dist/express.js
