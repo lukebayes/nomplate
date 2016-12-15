@@ -2,12 +2,6 @@ import builder from './builder';
 
 const dom = {};
 
-function elementWrapper(nodeName) {
-  return function _elementWrapper(optAttrs, optHandler, optContent) {
-    return builder(nodeName, optAttrs, optHandler, optContent);
-  };
-}
-
 dom.htmlFourNodes = [
   'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'b', 'base', 'basefont',
   'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'caption', 'center',
@@ -39,15 +33,15 @@ dom.collapsibleNodes = [
 
 // Apply Each available node to the Html proto:
 dom.htmlFiveNodes.forEach((nodeName) => {
-  dom[nodeName] = elementWrapper(nodeName);
+  dom[nodeName] = builder.elementWrapper(nodeName);
 });
 
 dom.collapsibleNodes.forEach((nodeName) => {
   // TODO(lbayes): Introduce support for callapsible annotations.
-  dom[nodeName] = elementWrapper(nodeName);
+  dom[nodeName] = builder.elementWrapper(nodeName);
 });
 
 // Enable creation of text nodes.
-dom.text = elementWrapper('text');
+dom.text = builder.elementWrapper('text');
 
 export default dom;

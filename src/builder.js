@@ -147,5 +147,12 @@ builder.forceUpdate = function _forceUpdate() {
   schedule.forceUpdate();
 };
 
+// Expose the element wrapper for the dom and svg clients.
+builder.elementWrapper = function(nodeName) {
+  return function _elementWrapper(optAttrs, optHandler, optContent) {
+    return builder(nodeName, optAttrs, optHandler, optContent);
+  };
+}
+
 export default builder;
 
