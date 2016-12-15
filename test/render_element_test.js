@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import {assert} from 'chai';
 import {jsdom} from 'jsdom';
 
-import {dom, renderElement} from '../';
+import {dom, svg, renderElement} from '../';
 
 describe('Nomplate renderElement', () => {
   let document;
@@ -282,6 +282,16 @@ describe('Nomplate renderElement', () => {
       // Remove all children.
       renderElement(render([]), element, document);
       assert.equal(element.outerHTML, '<ul></ul>');
+    });
+
+    it('creates svg elements with createElementNS', () => {
+      const root = dom.div(() => {
+        svg(() => {
+          svg.rect({width: 200, height: 100});
+        });
+      });
+      const element = renderElement(root, null, document);
+      assert.equal(element.outerHTML, '<div><svg><rect width="200" height="100"></rect></svg></div>');
     });
 
     it('receives the real dom element on request', () => {

@@ -18,10 +18,11 @@ class TextElement {
  * Element struct
  */
 class Element {
-  constructor(nodeName, args, parent) {
+  constructor(nodeName, args, parent, optNamespace) {
     this.nodeName = nodeName || DEFAULT_NODE_NAME;
     this.attrs = (args && args.attrs) || null;
     this.parent = parent;
+    this.namespace = optNamespace;
 
     this._children = null;
     this._textContent = null;

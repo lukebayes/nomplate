@@ -1,6 +1,6 @@
 {
   "name": "nomplate",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Nomplate: Node template engine",
   "main": "nomplate.js",
   "repository": {
