@@ -1,6 +1,8 @@
 import builder from './builder';
 
-const svg = builder.elementWrapper('svg');
+const namespace = 'http://www.w3.org/2000/svg';
+
+const svg = builder.elementWrapper('svg', namespace);
 
 const svgNodes = [
   'a', 'altGlyph', 'altGlyphDef', 'altGlyphItem', 'animate', 'animateColor', 'animateMotion',
@@ -18,7 +20,7 @@ const svgNodes = [
 
 // Apply Each available node to the Html proto:
 svgNodes.forEach((nodeName) => {
-  svg[nodeName] = builder.elementWrapper(nodeName);
+  svg[nodeName] = builder.elementWrapper(nodeName, namespace);
 });
 
 export default svg;

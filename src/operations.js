@@ -124,7 +124,14 @@ function popElement() {
 
 function createElement(nomElement, getUpdateElement) {
   return function _createElement(element, stack, document) {
-    const domElement = document.createElement(nomElement.nodeName);
+    let domElement;
+
+    if (nomElement.namespace) {
+      domElement = document.createElementNS(nomElement.namespace, nomElement.nodeName);
+    } else {
+      domElement = document.createElement(nomElement.nodeName);
+    }
+
     /* eslint-disable no-param-reassign */
     nomElement.domElement = domElement;
     /* eslint-enable no-param-reassign */

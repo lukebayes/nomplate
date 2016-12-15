@@ -116,11 +116,11 @@ function processArgs(...args) {
  * TODO(lbayes): Need to verify/resolve issues with tags that support text
  * inlineTextChild and arbitrary childNodes (e.g., paragraph tag)
  */
-function builder(nodeName, optAttrs, optHandler, optContent) {
+function builder(nodeName, optAttrs, optHandler, optContent, optNamespace) {
   try {
     const parent = top();
     const attrs = processArgs(optAttrs, optHandler, optContent);
-    const elem = new Element(nodeName, attrs, parent);
+    const elem = new Element(nodeName, attrs, parent, optNamespace);
 
     if (parent) {
       parent.childNodes.push(elem);
@@ -148,9 +148,9 @@ builder.forceUpdate = function _forceUpdate() {
 };
 
 // Expose the element wrapper for the dom and svg clients.
-builder.elementWrapper = function(nodeName) {
+builder.elementWrapper = function(nodeName, optNamespace) {
   return function _elementWrapper(optAttrs, optHandler, optContent) {
-    return builder(nodeName, optAttrs, optHandler, optContent);
+    return builder(nodeName, optAttrs, optHandler, optContent, optNamespace);
   };
 }
 
