@@ -11,7 +11,7 @@ function top(stack) {
 
 function setAttribute(name, value) {
   return function _setAttribute(element, stack, document) {
-    element.setAttribute(name, htmlEncode(value, document));
+    element.setAttribute(name, htmlEncode(value));
     return element;
   };
 }

@@ -15,6 +15,10 @@ function getTextArea(document) {
  * http://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
  */
 function htmlEncode(str, optDocument) {
+  if (typeof str === 'number' || typeof str === 'boolean') {
+    return str;
+  }
+
   if (optDocument) {
     // If we have a document object, use the much faster textArea encoding scheme.
     const textArea = getTextArea(optDocument);

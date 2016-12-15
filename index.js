@@ -7,6 +7,7 @@ import operations from './src/operations';
 import renderElement from './src/render_element';
 import renderString from './src/render_string';
 import scheduler from './src/scheduler';
+import svg from './src/svg';
 
 // Expose the forceUpdate function.
 const forceUpdate = builder.forceUpdate;
@@ -22,5 +23,6 @@ export {
   renderElement,
   renderString,
   scheduler,
+  svg,
 };
 
