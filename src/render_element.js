@@ -135,6 +135,9 @@ function elementAttributesToOperations(ops, nomElement, domElement) {
  */
 function elementToOperations(ops, nomElement, domElement, document) {
   if (!domElement) {
+    if (!nomElement) {
+      throw new Error('elementToOperations requires a Nomplate Element');
+    }
     // We did receive a context DOM element, create the tree directly.
     if (nomElement.nodeName === 'text') {
       ops.push(operations.createTextNode(nomElement.textContent));
