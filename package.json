@@ -1,13 +1,25 @@
 {
   "name": "nomplate",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Nomplate: Node template engine",
   "main": "nomplate.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukebayes/nomplate.git"
+  },
+  "keywords": [
+    "framework",
+    "ui",
+    "toolkit"
+  ],
   "directories": {
     "bin": "./bin",
     "src": "./src"
   },
   "files": [
+    "bin",
+    "src",
+    "bin/nomplate",
     "index.js",
     "express.js"
   ],
