@@ -54,11 +54,11 @@ describe('Nomplate Element', () => {
         assert.equal(element.outerHTML, '<ul><button data-nomhandlers="onclick">add</button></ul>');
         element.firstChild.click();
         assert.equal(element.outerHTML, '<ul><button data-nomhandlers="onclick">add</button><li>item-0</li></ul>');
-      }), null, document);
+      }), document);
     });
 
     it.skip('renders multiple times', () => {
-      const element = renderElement(render(), null, document);
+      const element = renderElement(render(), document);
       element.firstChild.click();
       element.firstChild.click();
       element.firstChild.click();

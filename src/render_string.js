@@ -75,7 +75,7 @@ function renderString() {
     return textValue === null && childCount === 0 && dom.collapsibleNodes.indexOf(nodeName) > -1;
   }
 
-  function renderElement(element) {
+  function renderNode(element) {
     const attributes = element.attrs;
     const children = element.children;
     const nodeName = element.nodeName;
@@ -117,7 +117,7 @@ function renderString() {
 
   function processChildren(childNodes) {
     childNodes.forEach((child) => {
-      renderElement(child);
+      renderNode(child);
     });
   }
 
@@ -130,7 +130,7 @@ function renderString() {
     indents = 0;
     stream = optStream || null;
 
-    renderElement(element);
+    renderNode(element);
 
     const result = output.join('');
     output = [];

@@ -29,6 +29,6 @@ describe('svg', () => {
       });
     });
 
-    const str = renderElement(element, null, document);
+    const str = renderElement(element, document);
   });
 });
