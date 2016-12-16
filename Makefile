@@ -50,8 +50,6 @@ dist/index.js: src/* index.js express.js package.json bin/*
 	$(BABEL) express.js --out-file dist/express.js
 	mkdir -p dist/bin
 	$(BABEL) bin/nomplate.js --out-file dist/bin/nomplate.js
-	mv dist/bin/nomplate.js dist/bin/nomplate
-	chmod 755 dist/bin/nomplate
 	cp package.json dist/package.json
 
 dist/nomplate.min.js:
