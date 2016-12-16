@@ -6,20 +6,20 @@ const KEY_UP = 'keyup';
 // TODO(lbayes): Provide the globals to the module.
 const localSetTimeout = global.setTimeout;
 
-function getUpdateElement(nomElement, domElement, document) {
+function getUpdateElement(nomElement, document, optDomElement) {
   return function _updateElement(builder, handler, optCompleteHandler) {
-    const parentNode = domElement.parentNode;
+    const parentNode = optDomElement.parentNode;
     const newNomElement = builder(nomElement.nodeName, nomElement.attrs, handler);
     localSetTimeout(() => {
-      const nullOrParentElement = parentNode ? null : domElement;
+      const nullOrParentElement = parentNode ? null : optDomElement;
 
       /* eslint-disable no-use-before-define */
-      const newDomElement = renderElement(newNomElement, nullOrParentElement, document);
+      const newDomElement = renderElement(newNomElement, document, nullOrParentElement);
       /* eslint-enable no-use-before-define */
 
       localSetTimeout(() => {
         if (parentNode) {
-          parentNode.replaceChild(newDomElement, domElement);
+          parentNode.replaceChild(newDomElement, optDomElement);
         }
 
         if (optCompleteHandler && typeof optCompleteHandler === 'function') {
@@ -33,13 +33,13 @@ function getUpdateElement(nomElement, domElement, document) {
 }
 
 /**
- * Execute all operations to update the provided domElement with the provided
+ * Execute all operations to update the provided optDomElement with the provided
  * nomElement. The document is used to createElements and text nodes.
  *
  * If any operation handler returns a function, it will be appended to the
  * trailing actions list and executed after the tree has been created.
  */
-function executeOperations(ops, nomElement, domElement, document) {
+function executeOperations(ops, nomElement, document, optDomElement) {
   const stack = [];
   const trailingActions = [];
 
@@ -50,7 +50,7 @@ function executeOperations(ops, nomElement, domElement, document) {
       return lastElement;
     }
     return result;
-  }, domElement);
+  }, optDomElement);
 
   trailingActions.forEach((action) => {
     action();
@@ -81,7 +81,7 @@ function createDispatcherOperation(ops, nomElement, origKey, value) {
   }
 }
 
-function elementAttributesToOperations(ops, nomElement, domElement) {
+function elementAttributesToOperations(ops, nomElement, optDomElement) {
   const attrs = nomElement.attrs || EMPTY_ATTRS;
   const modifiedKeys = {};
 
@@ -89,7 +89,7 @@ function elementAttributesToOperations(ops, nomElement, domElement) {
   Object.keys(attrs).forEach((key) => {
     const value = attrs[key];
     if (key === 'className' || key === 'classname') {
-      if (value !== (domElement && domElement.className)) {
+      if (value !== (optDomElement && optDomElement.className)) {
         ops.push(operations.setClassName(attrs[key]));
       }
     } else if (key === 'onRender' || key === 'onrender') {
@@ -100,15 +100,15 @@ function elementAttributesToOperations(ops, nomElement, domElement) {
       }
     } else if (typeof value === 'function') {
       createDispatcherOperation(ops, nomElement, key, value);
-    } else if (value !== false && value !== (domElement && domElement.getAttribute(key))) {
+    } else if (value !== false && value !== (optDomElement && optDomElement.getAttribute(key))) {
       ops.push(operations.setAttribute(key, value));
     }
     modifiedKeys[key] = true;
   });
 
   // Look for attributes that need to be removed.
-  if (domElement) {
-    const domAttrs = domElement.attributes;
+  if (optDomElement) {
+    const domAttrs = optDomElement.attributes;
     for (let i = 0, len = domAttrs.length; i < len; i += 1) {
       const key = domAttrs[i].name;
       if (key === 'class') {
@@ -133,8 +133,8 @@ function elementAttributesToOperations(ops, nomElement, domElement) {
  * Create (or modify) a DOM element using the provided nomElement as a
  * blueprint. Recurse into children via write or update DOM child nodes.
  */
-function elementToOperations(ops, nomElement, domElement, document) {
-  if (!domElement) {
+function elementToOperations(ops, nomElement, document, optDomElement) {
+  if (!optDomElement) {
     if (!nomElement) {
       throw new Error('elementToOperations requires a Nomplate Element');
     }
@@ -146,10 +146,10 @@ function elementToOperations(ops, nomElement, domElement, document) {
       ops.push(operations.createElement(nomElement, getUpdateElement));
       ops.push(operations.pushElement(nomElement));
       // Synchronize element attributes, including className and event handlers.
-      elementAttributesToOperations(ops, nomElement, null);
+      elementAttributesToOperations(ops, nomElement);
       // Traverse into the each child.
       /* eslint-disable no-use-before-define */
-      writeDomChildren(ops, nomElement, null, document);
+      writeDomChildren(ops, nomElement, document);
       /* eslint-enable no-use-before-define */
       ops.push(operations.popElement());
       ops.push(operations.appendChild());
@@ -157,21 +157,21 @@ function elementToOperations(ops, nomElement, domElement, document) {
   } else if (nomElement.nodeName === 'text') {
     ops.push(operations.updateTextContent(nomElement.textContent));
   } else {
-    ops.push(operations.pushElement(nomElement, domElement));
+    ops.push(operations.pushElement(nomElement, optDomElement));
     // Synchronize element attributes, including className and event handlers.
-    elementAttributesToOperations(ops, nomElement, domElement);
+    elementAttributesToOperations(ops, nomElement, optDomElement);
     // Traverse into the each child.
     /* eslint-disable no-use-before-define */
-    updateDomChildNodes(ops, nomElement, domElement, document);
+    updateDomChildNodes(ops, nomElement, document, optDomElement);
     /* eslint-enable no-use-before-define */
     ops.push(operations.popElement());
   }
   return ops;
 }
 
-function updateDomChildNodes(ops, nomElement, domElement, document) {
+function updateDomChildNodes(ops, nomElement, document, optDomElement) {
   const nomKids = nomElement.childNodes;
-  const domKids = Array.prototype.slice.call(domElement.childNodes);
+  const domKids = Array.prototype.slice.call(optDomElement.childNodes);
 
   if (nomElement.hasUpdateableHandler) {
     ops.push(operations.setRenderFunction(getUpdateElement, nomElement, document));
@@ -183,7 +183,7 @@ function updateDomChildNodes(ops, nomElement, domElement, document) {
     const domKid = domKids[i];
     const nomKid = nomKids[i];
     if (domKid && nomKid && domKid.nodeName === nomKid.nodeName) {
-      elementToOperations(ops, nomKid, domKid, document);
+      elementToOperations(ops, nomKid, document, domKid);
       matchedKids.push(i);
     } else {
       ops.push(operations.removeChild(domKids[i]));
@@ -194,33 +194,33 @@ function updateDomChildNodes(ops, nomElement, domElement, document) {
   i = 0;
   while (i < nomKids.length) {
     if (matchedKids.indexOf(i) === -1) {
-      elementToOperations(ops, nomKids[i], null, document);
+      elementToOperations(ops, nomKids[i], document);
     }
     i += 1;
   }
 }
 
-function writeDomChildren(ops, nomElement, domElement, document) {
+function writeDomChildren(ops, nomElement, document) {
   const kids = nomElement.childNodes || [];
   if (kids.length > 0) {
     // We're in a greenfield and need to create children.
     kids.forEach((child) => {
-      elementToOperations(ops, child, null, document);
+      elementToOperations(ops, child, document);
     });
   }
 }
 
 /**
- * Using the provided nomElement, and the optionally provided domElement,
+ * Using the provided nomElement, and the optionally provided optDomElement,
  * create a collection of transformations that will make a tree of DOM elements
- * that represent the nomElement tree. If a domElement is provided, it will be
+ * that represent the nomElement tree. If a optDomElement is provided, it will be
  * interrogated and it will only be touched in places where it differs from
  * the nomElement tree.
  */
-function renderElement(nomElement, optDomElement, document) {
+function renderElement(nomElement, document, optDomElement) {
   const ops = [];
-  elementToOperations(ops, nomElement, optDomElement, document);
-  return executeOperations(ops, nomElement, optDomElement, document);
+  elementToOperations(ops, nomElement, document, optDomElement);
+  return executeOperations(ops, nomElement, document, optDomElement);
 }
 
 export default renderElement;
