@@ -1,6 +1,6 @@
 {
   "name": "nomplate",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Nomplate: Node template engine",
   "main": "nomplate.js",
   "repository": {
@@ -15,6 +15,9 @@
   "directories": {
     "bin": "./bin",
     "src": "./src"
+  },
+  "bin": {
+    "nomplate": "./bin/nomplate.js"
   },
   "files": [
     "bin",
