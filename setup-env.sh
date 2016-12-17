@@ -28,12 +28,3 @@ echo "Updated PATH with ${BASEDIR}/lib/nodejs/bin"
 # Add node_moduels/.bin to the path
 add_to_path "${BASEDIR}/node_modules/.bin"
 echo "Updated PATH with ${BASEDIR}/node_modules/.bin"
-
-# Add lib/postgres/bin to the path
-add_to_path "${BASEDIR}/lib/postgres/bin"
-echo "Updated PATH with ${BASEDIR}/lib/postgres/bin"
-
-# Add lib/postgres/lib to LD_LIBRARY_PATH
-add_to_lib_path "${BASEDIR}/lib/postgres/lib"
-echo "Updated LD_LIBRARY_PATH with ${BASEDIR}/lib/postgres/lib"
-
