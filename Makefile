@@ -5,6 +5,7 @@
 # Operating System (darwin or linux)
 PLATFORM:=$(shell uname | tr A-Z a-z)
 ARCH=x64
+PROJECT_ROOT=$(shell git rev-parse --show-toplevel)
 
 # Nodejs
 NODE_VERSION=7.2.0
