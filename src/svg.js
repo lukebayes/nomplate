@@ -1,4 +1,4 @@
-import builder from './builder';
+const builder = require('./builder');
 
 const namespace = 'http://www.w3.org/2000/svg';
 
@@ -23,4 +23,4 @@ svgNodes.forEach((nodeName) => {
   svg[nodeName] = builder.elementWrapper(nodeName, namespace);
 });
 
-export default svg;
+module.exports = svg;

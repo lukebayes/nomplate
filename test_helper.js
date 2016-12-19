@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import jsdom from 'jsdom';
-
-import FakeStorage from './test/fake_storage';
+const FakeStorage = require('./test/fake_storage');
+const jsdom = require('jsdom');
 
 /**
  * Create a fake JSDOM window object.
@@ -15,7 +14,7 @@ function createWindow(ready) {
   });
 }
 
-export {
+module.exports = {
   FakeStorage,
   createWindow,
 };

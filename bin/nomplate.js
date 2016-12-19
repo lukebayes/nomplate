@@ -1,9 +1,8 @@
-#! /usr/bin/env babel-node
-import path from 'path';
-import fs from 'fs';
-
-import {dom, renderString} from '../';
-
+#! /usr/bin/env node
+const path = require('path');
+const fs = require('fs');
+const dom = require('../').dom;
+const renderString = require('../').renderString;
 
 const args = process.argv;
 

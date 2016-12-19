@@ -1,7 +1,7 @@
-import {assert} from 'chai';
-import sinon from 'sinon';
-
-import {builder, dom} from '../';
+const assert = require('chai').assert;
+const builder = require('../').builder;
+const dom = require('../').dom;
+const sinon = require('sinon');
 
 describe('Nomplate ElementBuilder', () => {
   beforeEach(() => {

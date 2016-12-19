@@ -30,7 +30,7 @@ function generateId() {
   return id;
 }
 
-export default generateId;
+module.exports = generateId;
 
 /* eslint-enable no-bitwise */
 /* eslint-enable no-mixed-operators */

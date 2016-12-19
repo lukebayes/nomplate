@@ -1,4 +1,4 @@
-import operations from './operations';
+const operations = require('./operations');
 
 const EMPTY_ATTRS = Object.freeze({});
 const KEY_UP = 'keyup';
@@ -223,5 +223,5 @@ function renderElement(nomElement, document, optDomElement) {
   return executeOperations(ops, nomElement, document, optDomElement);
 }
 
-export default renderElement;
+module.exports = renderElement;
 

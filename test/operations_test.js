@@ -1,7 +1,7 @@
-import {assert} from 'chai';
-import {jsdom} from 'jsdom';
-
-import {Element, operations} from '../';
+const Element = require('../').Element;
+const assert = require('chai').assert;
+const jsdom = require('jsdom').jsdom;
+const operations = require('../').operations;
 
 // NOTE(lbayes): Operation executions are more fully tested in
 // render_element_test.js

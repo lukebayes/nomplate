@@ -1,6 +1,5 @@
-import {assert} from 'chai';
-
-import {htmlEncode} from '../';
+const assert = require('chai').assert;
+const htmlEncode = require('../').htmlEncode;
 
 describe('HTMLEncode', () => {
 

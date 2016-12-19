@@ -52,5 +52,5 @@ function scheduler(animationFrame) {
   return schedule;
 }
 
-export default scheduler;
+module.exports = scheduler;
 

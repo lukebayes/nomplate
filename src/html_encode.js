@@ -38,5 +38,5 @@ function htmlEncode(str, optDocument) {
   }
 }
 
-export default htmlEncode;
+module.exports = htmlEncode;
 

@@ -1,5 +1,5 @@
-import dom from './dom';
-import htmlEncode from './html_encode';
+const dom = require('./dom');
+const htmlEncode = require('./html_encode');
 
 function renderString() {
   const carriageReturn = '\n';
@@ -138,6 +138,5 @@ function renderString() {
   };
 }
 
-
-export default renderString;
+module.exports = renderString;
 

@@ -1,5 +1,5 @@
-import Element from './element';
-import scheduler from './scheduler';
+const Element = require('./element');
+const scheduler = require('./scheduler');
 
 /**
  * This is global, module state that exists across multiple calls into this
@@ -152,7 +152,7 @@ builder.elementWrapper = function(nodeName, optNamespace) {
   return function _elementWrapper(optAttrs, optHandler, optContent) {
     return builder(nodeName, optAttrs, optHandler, optContent, optNamespace);
   };
-}
+};
 
-export default builder;
+module.exports = builder;
 

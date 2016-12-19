@@ -1,18 +1,8 @@
+const TextElement = require('./text_element');
+
 /* eslint-disable no-underscore-dangle */
 // Shared attribute object to avoid GC churn.
 const DEFAULT_NODE_NAME = 'node';
-const FROZEN_CHILD_NODES = Object.freeze([]);
-const FROZEN_ATTRIBUTES = Object.freeze([]);
-
-class TextElement {
-  constructor(textContent, parentNode) {
-    this.nodeName = 'text';
-    this.textContent = textContent;
-    this.parent = parentNode;
-    this.attributes = FROZEN_ATTRIBUTES;
-    this.childNodes = FROZEN_CHILD_NODES;
-  }
-}
 
 /**
  * Element struct
@@ -75,6 +65,6 @@ class Element {
   }
 }
 
-export default Element;
+module.exports = Element;
 
 /* eslint-enable no-underscore-dangle */

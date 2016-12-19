@@ -13,4 +13,4 @@ class FakeStorage {
   }
 }
 
-export default FakeStorage;
+module.exports = FakeStorage;

@@ -1,6 +1,6 @@
-import path from 'path';
+const path = require('path');
 
-import renderString from './render_string';
+const renderString = require('./render_string');
 
 // TODO(lbayes): Move this outward.
 const render = renderString();
@@ -45,7 +45,7 @@ function renderFile(source, options, callback) {
   }
 }
 
-export {
+module.exports = {
   renderFile,
   renderLayout,
 };

@@ -1,8 +1,7 @@
-lib
 node_modules
-vendor
+lib
+bin
 log
 data
 tmp
 dist
-.tmp-view.html

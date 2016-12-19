@@ -1,7 +1,8 @@
-import {assert} from 'chai';
-import {jsdom} from 'jsdom';
-
-import {Element, dom, renderElement} from '../';
+const Element = require('../').Element;
+const assert = require('chai').assert;
+const dom = require('../').dom;
+const jsdom = require('jsdom').jsdom;
+const renderElement = require('../').renderElement;
 
 describe('Nomplate Element', () => {
   let instance;

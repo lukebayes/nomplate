@@ -1,18 +1,18 @@
-import Element from './src/element';
-import builder from './src/builder';
-import dom from './src/dom';
-import generateId from './src/generate_id';
-import htmlEncode from './src/html_encode';
-import operations from './src/operations';
-import renderElement from './src/render_element';
-import renderString from './src/render_string';
-import scheduler from './src/scheduler';
-import svg from './src/svg';
+const Element = require('./src/element');
+const builder = require('./src/builder');
+const dom = require('./src/dom');
+const generateId = require('./src/generate_id');
+const htmlEncode = require('./src/html_encode');
+const operations = require('./src/operations');
+const renderElement = require('./src/render_element');
+const renderString = require('./src/render_string');
+const scheduler = require('./src/scheduler');
+const svg = require('./src/svg');
 
 // Expose the forceUpdate function.
 const forceUpdate = builder.forceUpdate;
 
-export {
+module.exports = {
   Element,
   builder,
   dom,

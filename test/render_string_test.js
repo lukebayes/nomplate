@@ -1,6 +1,6 @@
-import {assert} from 'chai';
-
-import {dom, renderString} from '../';
+const assert = require('chai').assert;
+const dom = require('../').dom;
+const renderString = require('../').renderString;
 
 describe('Nomplate renderer dom', () => {
   let tree;

@@ -1,6 +1,5 @@
-import {assert} from 'chai';
-
-import {dom} from '../';
+const assert = require('chai').assert;
+const dom = require('../').dom;
 
 describe('Nomplate dom', () => {
   describe('basics', () => {

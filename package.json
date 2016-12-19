@@ -1,8 +1,8 @@
 {
   "name": "nomplate",
-  "version": "1.1.5",
+  "version": "1.1.10",
   "description": "Nomplate: Node template engine",
-  "main": "nomplate.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/lukebayes/nomplate.git"
@@ -14,6 +14,7 @@
   ],
   "directories": {
     "bin": "./bin",
+    "dist": "./dist",
     "src": "./src"
   },
   "bin": {
@@ -21,12 +22,14 @@
   },
   "files": [
     "bin",
-    "src",
     "bin/nomplate",
-    "index.js",
     "express.js",
+    "index.js",
+    "nomplate.min.gz",
     "nomplate.min.js",
-    "nomplate.min.gz"
+    "src",
+    "test_helper.js",
+    "test/fake_storage.js"
   ],
   "author": "Luke Bayes",
   "license": "MIT",

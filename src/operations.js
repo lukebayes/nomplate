@@ -1,4 +1,4 @@
-import htmlEncode from './html_encode';
+const htmlEncode = require('./html_encode');
 
 /**
  * Collection of isolated DOM mutations that can be built into a single list
@@ -181,7 +181,7 @@ function replaceChild() {
   };
 }
 
-export default {
+module.exports = {
   appendChild,
   enqueueOnRender,
   createElement,

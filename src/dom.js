@@ -1,4 +1,4 @@
-import builder from './builder';
+const builder = require('./builder');
 
 const dom = {};
 
@@ -44,4 +44,4 @@ dom.collapsibleNodes.forEach((nodeName) => {
 // Enable creation of text nodes.
 dom.text = builder.elementWrapper('text');
 
-export default dom;
+module.exports = dom;
