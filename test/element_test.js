@@ -26,6 +26,21 @@ describe('Nomplate Element', () => {
     assert.equal(instance.textContent, 'efgh');
   });
 
+  describe('firstChild', () => {
+    it('returns null for no children', () => {
+      instance = new Element();
+      assert.isNull(instance.firstChild);
+    });
+
+    it('returns the first child', () => {
+      instance = new Element('root');
+      instance.childNodes.push(new Element('abcd'));
+      instance.childNodes.push(new Element('efgh'));
+      instance.childNodes.push(new Element('ijkl'));
+      assert.equal(instance.firstChild.nodeName, 'abcd');
+    });
+  });
+
   describe('updates', () => {
     let document;
 

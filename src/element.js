@@ -63,6 +63,10 @@ class Element {
     }
     return this._children;
   }
+
+  get firstChild() {
+    return (this.childNodes && this.childNodes[0]) || null;
+  }
 }
 
 module.exports = Element;
