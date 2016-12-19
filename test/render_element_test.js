@@ -1,8 +1,9 @@
-import sinon from 'sinon';
-import {assert} from 'chai';
-import {jsdom} from 'jsdom';
-
-import {dom, svg, renderElement} from '../';
+const assert = require('chai').assert;
+const dom = require('../').dom;
+const jsdom = require('jsdom').jsdom;
+const renderElement = require('../').renderElement;
+const sinon = require('sinon');
+const svg = require('../').svg;
 
 describe('Nomplate renderElement', () => {
   let document;

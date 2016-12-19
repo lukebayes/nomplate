@@ -1,6 +1,5 @@
-import {assert} from 'chai';
-
-import {generateId} from '../';
+const assert = require('chai').assert;
+const generateId = require('../').generateId;
 
 describe('Nomplate ID', () => {
   it('is callable', () => {

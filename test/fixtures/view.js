@@ -1,4 +1,4 @@
-import {dom} from '../../';
+const dom = require('../../').dom;
 
 function view(options) {
   return dom.div(() => {
@@ -7,5 +7,5 @@ function view(options) {
   });
 }
 
-export default view;
+module.exports = view;
 

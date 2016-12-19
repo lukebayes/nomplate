@@ -1,4 +1,4 @@
-import {renderFile} from './src/express';
+const express = require('./src/express');
 
-export default renderFile;
+module.exports = express;
 

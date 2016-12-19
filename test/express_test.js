@@ -1,7 +1,6 @@
-import {assert} from 'chai';
-
-import {dom} from '../';
-import {renderLayout} from '../src/express';
+const assert = require('chai').assert;
+const dom = require('../').dom;
+const renderLayout = require('../express').renderLayout;
 
 describe('Nomplate express', () => {
   function view() {

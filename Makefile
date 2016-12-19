@@ -24,36 +24,27 @@ WEBPACK=$(NODE_MODULES_BIN)/webpack
 BABEL=$(NODE_MODULES_BIN)/babel
 BABEL_NODE=$(NODE_MODULES_BIN)/babel-node
 WEBPACK_CLIENT_CONFIG=webpack-client.config.js
-WEBPACK_SERVER_CONFIG=webpack-server.config.js
 
 .PHONY: test test-w dev-install build build-module lint clean
 
-build: dist/index.js dist/nomplate.min.js dist/nomplate.min.gz
+build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz
 
 # Run all JavaScript tests
 test: ${NODE}
-	${MOCHA} --compilers js:babel-core/register --reporter dot ${TEST_FILES}
+	${MOCHA} --reporter dot ${TEST_FILES}
 
 test-w: ${NODE}
-	${MOCHA} --compilers js:babel-core/register --reporter dot ${TEST_FILES} -w
+	${MOCHA} --reporter dot ${TEST_FILES} -w
 
 build-module: src/*
 
 publish: clean build
-	cd dist/ && npm publish
+	npm publish
 
-serve:
-	$(BABEL_NODE) server.js
+dist/nomplate.js: index.js src/*
+	$(WEBPACK) --config $(WEBPACK_CLIENT_CONFIG) index.js dist/nomplate.js
 
-dist/index.js: src/* index.js express.js package.json bin/*
-	$(BABEL) src/ --out-dir dist/src --copy-files
-	$(BABEL) index.js --out-file dist/index.js
-	$(BABEL) express.js --out-file dist/express.js
-	mkdir -p dist/bin
-	$(BABEL) bin/nomplate.js --out-file dist/bin/nomplate.js
-	cp package.json dist/package.json
-
-dist/nomplate.min.js:
+dist/nomplate.min.js: index.js src/*
 	$(WEBPACK) --optimize-minimize --config $(WEBPACK_CLIENT_CONFIG) index.js dist/nomplate.min.js
 
 dist/nomplate.min.gz:
@@ -73,6 +64,7 @@ integrate: clean lint build test
 clean: 
 	rm -rf dist
 	rm -rf tmp
+	rm -f .tmp-view.html
 
 # Intall development dependencies (OS X and Linux only)
 dev-install: $(NODE) $(NODE_MODULES_BIN)

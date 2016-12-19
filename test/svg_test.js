@@ -1,7 +1,9 @@
-import {assert} from 'chai';
-import {jsdom} from 'jsdom';
-
-import {dom, svg, renderElement, renderString} from '../';
+const assert = require('chai').assert;
+const dom = require('../').dom;
+const jsdom = require('jsdom').jsdom;
+const renderElement = require('../').renderElement;
+const renderString = require('../').renderString;
+const svg = require('../').svg;
 
 const render = renderString();
 

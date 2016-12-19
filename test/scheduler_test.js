@@ -1,7 +1,7 @@
-import {assert} from 'chai';
-import sinon from 'sinon';
-
-import {Element, scheduler} from '../';
+const Element = require('../').Element;
+const assert = require('chai').assert;
+const scheduler = require('../').scheduler;
+const sinon = require('sinon');
 
 describe('Nomplate scheduler', () => {
   let schedule;
