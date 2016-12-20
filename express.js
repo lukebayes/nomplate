@@ -1,4 +1,4 @@
-const express = require('./src/express');
+const renderFile = require('./src/render_file');
 
-module.exports = express;
+module.exports = renderFile;
 

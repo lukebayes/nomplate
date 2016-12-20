@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const dom = require('../').dom;
-const renderLayout = require('../express').renderLayout;
+const renderLayout = require('../src/render_layout');
 
 describe('Nomplate express', () => {
   function view() {
