@@ -1,4 +1,19 @@
+const path = require('path');
 const renderLayout = require('./render_layout');
+
+function getLayoutPath(options) {
+  if (!options || !options.settings) {
+    throw new Error('Nomplate requires options.settings');
+  }
+
+  const name = (options.layout || options.settings['view options'].layout);
+
+  if (!options.settings.views) {
+    throw new Error('You must configure the views path for layouts');
+  }
+
+  return name ? path.join(options.settings.views, name) : '';
+}
 
 function renderFile(source, options, callback) {
   try {
@@ -13,4 +28,6 @@ function renderFile(source, options, callback) {
     callback(err);
   }
 }
+
+module.exports = renderFile;
 

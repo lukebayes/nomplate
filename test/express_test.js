@@ -1,38 +1,44 @@
 const assert = require('chai').assert;
 const dom = require('../').dom;
-const renderLayout = require('../src/render_layout');
+const path = require('path');
+const renderFile = require('../express');
 
 describe('Nomplate express', () => {
-  function view() {
-    return dom.ul({id: 'abcd'}, () => {
-      dom.li('one');
-      dom.li('two');
-      dom.li('three');
-    });
-  }
+  let fixture;
+  let options;
 
-  function layout(options, renderView) {
-    return dom.div({id: 'layout'}, () => {
-      dom.h1('Layout');
-      renderView();
-    });
-  }
-
-  it('renders simple layout', () => {
-    const str = renderLayout(layout, view, null, () => {});
-    assert.equal(str, '<div id="layout"><h1>Layout</h1><ul id="abcd"><li>one</li><li>two</li><li>three</li></ul></div>');
-  });
-
-  it('renders pretty layout', () => {
-    const options = {
+  beforeEach(() => {
+    fixture = path.resolve(path.join(__dirname, 'fixtures/view.js'));
+    options = {
       settings: {
         'view options': {
-          pretty: true,
+          layout: 'view'
         },
-      },
-    };
-    const str = renderLayout(layout, view, options, () => {});
-    assert.equal(str, '<div id="layout">\n  <h1>Layout</h1>\n  <ul id="abcd">\n    <li>one</li>\n    <li>two</li>\n    <li>three</li>\n  </ul>\n</div>\n');
+        views: path.resolve(path.join(__dirname, 'fixtures'))
+      }
+    }
+  });
+
+  it('is a funcction', () => {
+    assert.isFunction(renderFile);
+  });
+
+  it('requires options.settings', (done) => {
+    renderFile(fixture, {}, (err, text) => {
+      try {
+        assert(err);
+        assert.match(err.message, /Nomplate requires options.settings/);
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
+
+  it('renders a file', (done) => {
+    renderFile(fixture, options, (err, text) => {
+      done(err);
+    });
   });
 });
 
