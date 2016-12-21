@@ -16,7 +16,7 @@ describe('Nomplate express', () => {
         },
         views: path.resolve(path.join(__dirname, 'fixtures'))
       }
-    }
+    };
   });
 
   it('is a funcction', () => {
