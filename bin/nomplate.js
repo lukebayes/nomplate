@@ -11,7 +11,13 @@ function printHelp() {
 }
 
 function printError(message) {
-  console.error(message);
+  if (String(message).toLowerCase().includes('unexpected token import')) {
+    console.log('Nomplate does not support ES6-style "import" for modules.\n\
+    Please use "require" statements instead.\n\
+    e.g. const nomplate = require("nomplate")');
+  } else {
+    console.error(message);
+  }
   process.exit(1);
 }
 
@@ -33,11 +39,11 @@ function processArgKey(key) {
   while (key[0] === '-') {
     key = key.slice(1);
   }
-
   return key;
 }
 
 function processHandlerArgs(args) {
+
   const hash = {};
   for (let i = 0, len = args.length; i < len; i += 1) {
     let key = args[i];
@@ -61,7 +67,7 @@ function validate(args) {
   }
 }
 
-function execute(args) {
+function execute(args) {  
   validate(args);
 
   let outputFile = null;
@@ -76,10 +82,21 @@ function execute(args) {
     args.splice(prettyIndex, 1);
   }
 
-  let file = path.resolve(args.pop());
-  let handlerArgs = processHandlerArgs(args);
+  let helpIndex = args.findIndex((arg) => arg === '--help');
+  if (helpIndex > -1) {
+    args.splice(helpIndex, 1);
+    printHelp();
+    return;
+  }
 
-  let handler = require(file);
+  let handlerArgs = processHandlerArgs(args);
+  let file = path.resolve(args.pop());
+
+  try {
+    let handler = require(file);
+  } catch (e) {
+    printError(e);
+  }
 
   if (handler.default && typeof handler.default === 'function') {
     handler = handler.default;
