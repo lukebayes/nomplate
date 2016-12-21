@@ -89,16 +89,17 @@ function execute(args) {
     return;
   }
 
-  let handlerArgs = processHandlerArgs(args);
   let file = path.resolve(args.pop());
+  let handlerArgs = processHandlerArgs(args);
 
+  let handler = null;
   try {
-    let handler = require(file);
+    handler = require(file);
   } catch (e) {
     printError(e);
   }
 
-  if (handler.default && typeof handler.default === 'function') {
+  if (handler && handler.default && typeof handler.default === 'function') {
     handler = handler.default;
   }
 
