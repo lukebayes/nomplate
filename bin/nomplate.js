@@ -12,12 +12,11 @@ function printHelp() {
 
 function printError(message) {
   if (String(message).toLowerCase().includes('unexpected token import')) {
-    console.log('Nomplate does not support ES6-style "import" for modules.\n\
+    console.error('Nomplate does not support ES6-style "import" for modules.\n\
     Please use "require" statements instead.\n\
     e.g. const nomplate = require("nomplate")');
-  } else {
-    console.error(message);
   }
+  console.error(message);
   process.exit(1);
 }
 
@@ -43,7 +42,6 @@ function processArgKey(key) {
 }
 
 function processHandlerArgs(args) {
-
   const hash = {};
   for (let i = 0, len = args.length; i < len; i += 1) {
     let key = args[i];
@@ -67,7 +65,7 @@ function validate(args) {
   }
 }
 
-function execute(args) {  
+function execute(args) {
   validate(args);
 
   let outputFile = null;
@@ -86,7 +84,7 @@ function execute(args) {
   if (helpIndex > -1) {
     args.splice(helpIndex, 1);
     printHelp();
-    return;
+    process.exit(1);
   }
 
   let file = path.resolve(args.pop());
@@ -116,4 +114,3 @@ if (require.main === module) {
   // The first two args are the node runtime and this file.
   execute(process.argv.slice(2));
 }
-
