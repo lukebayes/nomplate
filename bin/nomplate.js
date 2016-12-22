@@ -114,3 +114,4 @@ if (require.main === module) {
   // The first two args are the node runtime and this file.
   execute(process.argv.slice(2));
 }
+
