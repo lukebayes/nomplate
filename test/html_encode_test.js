@@ -22,5 +22,17 @@ describe('HTMLEncode', () => {
   it('encodes single quote', () => {
     assert.equal(htmlEncode('\''), '&#39;');
   });
+
+  it('encodes null', () => {
+    assert.equal(htmlEncode(null), '');
+  });
+
+  it('encodes undefined', () => {
+    assert.equal(htmlEncode(undefined), '');
+  });
+
+  it('encodes unknown object', () => {
+    assert.equal(htmlEncode({abcd: 1234, efgh: 'cee'}), '');
+  });
 });
 

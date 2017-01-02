@@ -70,6 +70,11 @@ describe('Nomplate renderer dom', () => {
     assert.equal(render(elem), '<div class="&lt;" style="&gt;">&lt;script&gt;</div>');
   });
 
+  it('handls null text content', () => {
+    const elem = dom.div({className: 'abcd'}, null);
+    assert.equal(render(elem), '<div class="abcd"></div>');
+  });
+
   it('omits false attrs', () => {
     const result = render(dom.input({type: 'checkbox', checked: false}));
     assert.equal(result, '<input type="checkbox"></input>');

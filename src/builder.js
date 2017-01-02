@@ -90,7 +90,7 @@ function processArgs(...args) {
         inlineTextChild = value;
       } else if (type === 'function') {
         handler = value;
-      } else {
+      } else if (value) {
         attrs = processAttrs(value);
       }
     }
