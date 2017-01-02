@@ -54,7 +54,7 @@ class Element {
       this._textContent = str !== '' ? str : null;
     }
 
-    return this._textContent;
+    return this._textContent || '';
   }
 
   get children() {

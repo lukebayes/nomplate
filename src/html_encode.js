@@ -15,8 +15,11 @@ function getTextArea(document) {
  * http://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
  */
 function htmlEncode(str, optDocument) {
-  if (typeof str === 'number' || typeof str === 'boolean') {
-    return str;
+  const type = typeof str;
+  if (type === 'number' || type === 'boolean') {
+    return String(str);
+  } else if (str === null || type === 'undefined' || !str.replace) {
+    return '';
   }
 
   if (optDocument) {

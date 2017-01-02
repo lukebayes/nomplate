@@ -49,6 +49,15 @@ describe('Nomplate ElementBuilder', () => {
     assert.equal(root.children.length, 3);
   });
 
+  it('handles null args', () => {
+    const root = builder('div', () => {
+      builder('div', {className: 'abcd'}, null);
+    });
+
+    assert.equal(root.nodeName, 'div');
+    assert.equal(root.firstChild.textContent, '');
+  });
+
   it('resets the stack, even on error', () => {
     try {
       builder('div', () => {
