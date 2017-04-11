@@ -12,7 +12,7 @@ describe('Nomplate dom', () => {
       const html = dom.html(() => {
         dom.head(() => {
           dom.script({src: '/abcd.js'});
-          dom.link({type: 'text/stylesheet', rel: '/abcd.css'});
+          dom.link({type: 'text/css', rel: 'stylesheet', href: '/abcd.css'});
         });
 
         dom.body(() => {
@@ -31,8 +31,9 @@ describe('Nomplate dom', () => {
       assert.equal(head.childNodes[0].nodeName, 'script');
       assert.equal(head.childNodes[0].attrs.src, '/abcd.js');
       assert.equal(head.childNodes[1].nodeName, 'link');
-      assert.equal(head.childNodes[1].attrs.type, 'text/stylesheet');
-      assert.equal(head.childNodes[1].attrs.rel, '/abcd.css');
+      assert.equal(head.childNodes[1].attrs.type, 'text/css');
+      assert.equal(head.childNodes[1].attrs.href, '/abcd.css');
+      assert.equal(head.childNodes[1].attrs.rel, 'stylesheet');
 
       const body = html.childNodes[1];
       assert.equal(body.childNodes[0].nodeName, 'h1');
@@ -46,6 +47,22 @@ describe('Nomplate dom', () => {
       assert.equal(ul.childNodes[0].textContent, 'one');
       assert.equal(ul.childNodes[1].textContent, 'two');
       assert.equal(ul.childNodes[2].textContent, 'three');
+    });
+  });
+
+  describe('stylesheet helper', () => {
+    it('creates a link element', () => {
+      const html = dom.html(() => {
+        dom.head(() => {
+          dom.stylesheet('/abcd.css');
+        });
+      });
+
+      const link = html.firstChild.firstChild;
+      assert(link);
+      assert.equal(link.nodeName, 'link');
+      assert.equal(link.attrs.type, 'text/css');
+      assert.equal(link.attrs.href, '/abcd.css');
     });
   });
 
