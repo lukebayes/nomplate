@@ -128,3 +128,37 @@ window.onload = function() {
   parent.appendChild(element);
 };
 ```
+
+# Contributing
+The build system is only proven to work on Linux and OS X, though it may work on Windows if your path and Node are configured properly.
+
+```bash
+mkdir nomplate
+cd nomplate
+git clone https://github.com/lukebayes/nomplate.git .
+source setup-env.sh
+make dev-install
+# Wait for node and npm modules to be installed
+source setup-env.sh # Yeah, do it again...
+make test
+```
+
+Watch files for changes and run tests on change:
+```bash
+make test-w
+```
+
+Lint all files:
+```bash
+make lint
+```
+
+Build a distributable library into "dist" folder:
+```bash
+make build
+```
+
+Remove all artifacts
+```bash
+make clean
+```
