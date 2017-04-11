@@ -76,6 +76,9 @@ function renderString() {
   }
 
   function renderNode(element) {
+    if (!element) {
+      throw new Error('Cannot render falsy element.');
+    }
     const attributes = element.attrs;
     const children = element.children;
     const nodeName = element.nodeName;

@@ -44,4 +44,9 @@ dom.collapsibleNodes.forEach((nodeName) => {
 // Enable creation of text nodes.
 dom.text = builder.elementWrapper('text');
 
+// Helper for stylesheets.
+dom.stylesheet = (href) => {
+  return dom.link({type: 'text/css', rel: 'stylesheet', href: href});
+};
+
 module.exports = dom;
