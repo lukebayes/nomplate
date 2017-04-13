@@ -47,7 +47,6 @@ class Element {
   get textContent() {
     if (!this._textContent) {
       const str = this.childNodes
-        .filter(node => node.nodeName === 'text')
         .map(node => node.textContent)
         .join('');
 
