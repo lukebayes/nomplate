@@ -67,7 +67,7 @@ describe('Nomplate dom', () => {
   });
 
   describe('text content', () => {
-    it.skip('manages nested text content', () => {
+    it('manages nested text content', () => {
       const para = dom.p(() => {
         dom.text('hello ');
         dom.b('world');
