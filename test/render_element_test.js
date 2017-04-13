@@ -256,7 +256,7 @@ describe('Nomplate renderElement', () => {
     });
 
     it('updates a child', () => {
-      function render(labels) {
+      function renderDocument(labels) {
         return dom.ul(() => {
           labels.forEach((label) => {
             dom.li(label);
@@ -264,24 +264,24 @@ describe('Nomplate renderElement', () => {
         });
       }
 
-      // Render the tree for the first time.
-      const element = renderElement(render(['abcd']), document);
+      // renderDocument the tree for the first time.
+      const element = renderElement(renderDocument(['abcd']), document);
       assert.equal(element.outerHTML, '<ul><li>abcd</li></ul>');
 
       // Add a child to the list.
-      renderElement(render(['abcd', 'efgh']), document, element);
+      renderElement(renderDocument(['abcd', 'efgh']), document, element);
       assert.equal(element.outerHTML, '<ul><li>abcd</li><li>efgh</li></ul>');
 
       // Add another child to the list.
-      renderElement(render(['abcd', 'efgh', 'ijkl']), document, element);
+      renderElement(renderDocument(['abcd', 'efgh', 'ijkl']), document, element);
       assert.equal(element.outerHTML, '<ul><li>abcd</li><li>efgh</li><li>ijkl</li></ul>');
 
       // Remove the first child.
-      renderElement(render(['efgh', 'ijkl']), document, element);
+      renderElement(renderDocument(['efgh', 'ijkl']), document, element);
       assert.equal(element.outerHTML, '<ul><li>efgh</li><li>ijkl</li></ul>');
 
       // Remove all children.
-      renderElement(render([]), document, element);
+      renderElement(renderDocument([]), document, element);
       assert.equal(element.outerHTML, '<ul></ul>');
     });
 
@@ -327,13 +327,13 @@ describe('Nomplate renderElement', () => {
       let element;
       let button;
 
-      function render() {
+      function renderDocument(renderHandler) {
         const labels = [];
 
         function getAddItemHandler(update) {
           return function _getAddItemHandler() {
             labels.push(`item-${labels.length}`);
-            update();
+            update(renderHandler);
           };
         }
 
@@ -358,23 +358,29 @@ describe('Nomplate renderElement', () => {
         });
       }
 
-      beforeEach(() => {
-        element = renderElement(render(), document);
+      it('removes last item', (done) => {
+        function renderHandler() {
+          const listItems = element.querySelectorAll('li');
+
+          try {
+            assert.equal(listItems.length, 4);
+            assert.equal(listItems[0].textContent, 'item-0');
+            assert.equal(listItems[1].textContent, 'item-1');
+            assert.equal(listItems[2].textContent, 'item-2');
+            assert.equal(listItems[3].textContent, 'item-3');
+            done();
+          } catch(err) {
+            done(err);
+          }
+        }
+
+        element = renderElement(renderDocument(renderHandler), document);
         button = element.querySelector('button');
-      });
 
-      it.skip('removes last item', () => {
         button.click();
         button.click();
         button.click();
         button.click();
-        const listItems = element.querySelectorAll('li');
-
-        assert.equal(listItems.length, 4);
-        assert.equal(listItems[0].textContent, 'item-0');
-        assert.equal(listItems[1].textContent, 'item-1');
-        assert.equal(listItems[2].textContent, 'item-2');
-        assert.equal(listItems[3].textContent, 'item-3');
       });
     });
   });
