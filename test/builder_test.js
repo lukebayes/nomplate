@@ -105,6 +105,13 @@ describe('Nomplate ElementBuilder', () => {
     assert.equal(ul.children[2].textContent, 'three');
   });
 
+  it('onenter and onkeyup are mutually exclusive', () => {
+    const keyHandler = sinon.spy();
+    assert.throws(() => {
+      dom.div({onenter: keyHandler, onkeyup: keyHandler});
+    }, /are mutually exclusive/);
+  });
+
   it('handles null attrs (though not recommended)', () => {
     const ul = builder('ul', null, () => {
       builder('li', null, 'one');

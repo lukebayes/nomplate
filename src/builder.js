@@ -65,10 +65,14 @@ function processHandler(elem, handler) {
 }
 
 function processAttrs(attrs) {
-  if (attrs && attrs.className) {
-    /* eslint-disable no-param-reassign */
-    attrs.className = processClassName(attrs.className);
-    /* eslint-enable no-param-reassign */
+  if (attrs) {
+    if (attrs.className) {
+      /* eslint-disable no-param-reassign */
+      attrs.className = processClassName(attrs.className);
+      /* eslint-enable no-param-reassign */
+    } else if (attrs.onenter && attrs.onkeyup) {
+      throw new Error('onenter and onkeyup are mutually exclusive, consider adding a switch statement to your onkeyup handler for the enter case.');
+    }
   }
   return attrs;
 }

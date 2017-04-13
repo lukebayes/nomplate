@@ -74,28 +74,6 @@ describe('Nomplate renderElement', () => {
     assert.equal(clickHandler.callCount, 1);
   });
 
-  // TODO(lbayes): Subscriptions to onEnter and onKeyup are mutually exclusive!
-  it.skip('applies onenter and onkeyup', () => {
-    function getEventFor(keyCode) {
-      const event = document.createEvent('KeyboardEvent');
-      event.initKeyboardEvent('keyup', true, true, null, false, false, false, false, keyCode);
-      return event;
-    }
-
-    const keyHandler = sinon.spy();
-    const div = dom.div({onenter: keyHandler, onkeyup: keyHandler});
-    const element = renderElement(div, document);
-
-    element.dispatchEvent(getEventFor(12));
-    assert.equal(keyHandler.callCount, 1);
-    element.dispatchEvent(getEventFor(12));
-    assert.equal(keyHandler.callCount, 2);
-
-    // Trigger enter key
-    element.dispatchEvent(getEventFor(13));
-    assert.equal(keyHandler.callCount, 4, 'Should have called both handlers');
-  });
-
   it('removes handler', () => {
     const handler = sinon.spy();
     const div = dom.div({onclick: handler, onkeyup: handler, onkeydown: handler});
