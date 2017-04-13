@@ -83,9 +83,9 @@ describe('Nomplate ElementBuilder', () => {
     assert.equal(script.attrs.src, '/abcd.js');
   });
 
-  it.skip('escapes markup', () => {
+  it('does not escape markup, unless rendered', () => {
     const div = builder('div', '<script>');
-    // assert.equal(div.textValue, '&lt;script&gt;');
+    assert.equal(div.textValue, '<script>');
   });
 
   it('collapses handler', () => {
