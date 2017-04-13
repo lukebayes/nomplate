@@ -73,16 +73,26 @@ describe('Nomplate Element', () => {
       }), document);
     });
 
-    it.skip('renders multiple times', () => {
-      const element = renderElement(render(), document);
-      element.firstChild.click();
-      element.firstChild.click();
-      element.firstChild.click();
-      assert.equal(element.outerHTML, '<ul><button data-nomhandlers="onclick">add</button>' +
-        '<li>item-0</li>' +
-        '<li>item-1</li>' +
-        '<li>item-2</li>' +
-      '</ul>');
+    it('renders multiple times', (done) => {
+      // Wait for async render.
+      function completeHandler() {
+        try {
+          assert.equal(element.outerHTML, '<ul><button data-nomhandlers="onclick">add</button>' +
+            '<li>item-1</li>' +
+            '<li>item-2</li>' +
+            '<li>item-3</li>' +
+          '</ul>');
+          done();
+        } catch(err) {
+          done(err);
+        }
+      }
+
+      const element = renderElement(render(completeHandler), document);
+      const button = element.firstChild;
+      button.click();
+      button.click();
+      button.click();
     });
   });
 });
