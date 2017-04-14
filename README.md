@@ -128,6 +128,14 @@ window.onload = function() {
   parent.appendChild(element);
 };
 ```
+# TODO MVC?
+[Here's an early prototype](https://github.com/lukebayes/todomvc-app-template/tree/nomplate) of the famous TODOMVC application implemented as a fully client side Nomplate application.
+
+Here are some highlights:
+* 6kb minified and gzipped for the entire library AND application
+* < 80ms time to fully rendered and interactive application
+* Fully unit tested with tests that finish in around 100ms
+* [Components](https://github.com/lukebayes/todomvc-app-template/tree/nomplate/js/components) are composable and easily comprehensible
 
 # Contributing
 The build system is only proven to work on Linux and OS X, though it may work on Windows if your path and Node are configured properly.
