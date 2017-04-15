@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
+const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
-const jsdom = require('jsdom').jsdom;
 const renderElement = require('../').renderElement;
 const renderString = require('../').renderString;
 const svg = require('../').svg;
@@ -8,10 +8,10 @@ const svg = require('../').svg;
 const render = renderString();
 
 describe('svg', () => {
-  let document;
+  let doc;
 
   beforeEach(() => {
-    document = jsdom('<body></body>');
+    doc = createWindow().document;
   });
 
   it('is callable', () => {
@@ -31,6 +31,6 @@ describe('svg', () => {
       });
     });
 
-    const str = renderElement(element, document);
+    const str = renderElement(element, doc);
   });
 });
