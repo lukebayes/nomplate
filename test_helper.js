@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const FakeStorage = require('./test/fake_storage');
 const jsdom = require('jsdom').jsdom;
+const simulant = require('jsdom-simulant');
 
 /**
  * Create a JSDOM window object for test cases.
@@ -21,5 +22,6 @@ function createWindow(optOptions) {
 module.exports = {
   FakeStorage,
   createWindow,
+  fire: simulant.fire
 };
 /* eslint-ensable import/no-extraneous-dependencies */
