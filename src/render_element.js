@@ -10,25 +10,19 @@ function getUpdateElement(nomElement, document, optDomElement) {
   return function _updateElement(builder, handler, optCompleteHandler) {
     const parentNode = optDomElement.parentNode;
     const newNomElement = builder(nomElement.nodeName, nomElement.attrs, handler);
-    localSetTimeout(() => {
-      const nullOrParentElement = parentNode ? null : optDomElement;
+    const nullOrParentElement = parentNode ? null : optDomElement;
 
-      /* eslint-disable no-use-before-define */
-      const newDomElement = renderElement(newNomElement, document, nullOrParentElement);
-      /* eslint-enable no-use-before-define */
+    /* eslint-disable no-use-before-define */
+    const newDomElement = renderElement(newNomElement, document, nullOrParentElement);
+    /* eslint-enable no-use-before-define */
 
-      localSetTimeout(() => {
-        if (parentNode) {
-          parentNode.replaceChild(newDomElement, optDomElement);
-        }
+    if (parentNode) {
+      parentNode.replaceChild(newDomElement, optDomElement);
+    }
 
-        if (optCompleteHandler && typeof optCompleteHandler === 'function') {
-          localSetTimeout(() => {
-            optCompleteHandler(newDomElement, newNomElement);
-          }, 0);
-        }
-      }, 0);
-    }, 0);
+    if (optCompleteHandler && typeof optCompleteHandler === 'function') {
+      optCompleteHandler(newDomElement, newNomElement);
+    }
   };
 }
 
@@ -52,9 +46,16 @@ function executeOperations(ops, nomElement, document, optDomElement) {
     return result;
   }, optDomElement);
 
-  trailingActions.forEach((action) => {
-    action();
-  });
+  // Any operation that returns a function (e.g., onRender ops) will have the
+  // returned handler executed in the next interval.
+  // This allows handlers like onRender to accept DOM elements and call methods
+  // (like focus()) after the elements have been attached to the document
+  // during and update() lifecycle.
+  localSetTimeout(() => {
+    trailingActions.forEach((action) => {
+      action();
+    });
+  }, 0);
 
   return root;
 }

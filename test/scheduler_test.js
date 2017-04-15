@@ -52,7 +52,7 @@ describe('Nomplate scheduler', () => {
     assert.equal(childRender.callCount, 0);
   });
 
-  it('skips deep children', () => {
+  it('skips children', () => {
     const root = new Element('aye');
     const rootRender = sinon.spy();
 

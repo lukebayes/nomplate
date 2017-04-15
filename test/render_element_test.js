@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
 const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
-const simulant = require('jsdom-simulant');
 const renderElement = require('../').renderElement;
+const simulant = require('jsdom-simulant');
 const sinon = require('sinon');
 const svg = require('../').svg;
 
@@ -331,7 +331,7 @@ describe('Nomplate renderElement', () => {
       assert.equal(element.outerHTML, '<div><svg><rect width="200" height="100"></rect></svg></div>');
     });
 
-    it('receives the real dom element on request', () => {
+    it('receives the real dom element on request', (done) => {
       const onRender = sinon.spy();
 
       const root = dom.div({id: 'abcd', onRender}, () => {
@@ -348,15 +348,47 @@ describe('Nomplate renderElement', () => {
       }
 
       renderElement(root, doc);
-      assert.equal(onRender.callCount, 5);
-      assert.equal(getCallArgument(0).id, 'abcd');
-      assert.equal(getCallArgument(1).id, 'efgh');
-      assert.equal(getCallArgument(2).id, 'ijkl');
-      assert.equal(getCallArgument(2).outerHTML, '<li id="ijkl">ijkl</li>');
-      assert.equal(getCallArgument(3).id, 'mnop');
-      assert.equal(getCallArgument(3).outerHTML, '<li id="mnop">mnop</li>');
-      assert.equal(getCallArgument(4).id, 'qrst');
-      assert.equal(getCallArgument(4).outerHTML, '<li id="qrst">qrst</li>');
+
+      setTimeout(() => {
+        try {
+          assert.equal(onRender.callCount, 5);
+          assert.equal(getCallArgument(0).id, 'abcd');
+          assert.equal(getCallArgument(1).id, 'efgh');
+          assert.equal(getCallArgument(2).id, 'ijkl');
+          assert.equal(getCallArgument(2).outerHTML, '<li id="ijkl">ijkl</li>');
+          assert.equal(getCallArgument(3).id, 'mnop');
+          assert.equal(getCallArgument(3).outerHTML, '<li id="mnop">mnop</li>');
+          assert.equal(getCallArgument(4).id, 'qrst');
+          assert.equal(getCallArgument(4).outerHTML, '<li id="qrst">qrst</li>');
+          done();
+        } catch (err) {
+          done(err);
+        }
+      }, 0);
+
+    });
+
+    it.skip('receives onRender after being attached', () => {
+      // Return true if the provided element is attached to the stub document.
+      function elementIsAttached(element) {
+        if (element === doc) {
+          return true;
+        }
+        const parent = element.parentNode;
+        if (parent) {
+          return elementIsAttached(parent);
+        }
+        return false;
+      }
+
+      // Called onRender by nomplate.
+      function onRender(element) {
+        assert(elementIsAttached(element), 'onRender should be called after attachment to document');
+      }
+
+      const element = renderElement(dom.div({id: 'abcd', onRender: onRender}), doc);
+      doc.body.appendChild(element);
+      console.log('finished');
     });
 
     describe('deep mutations', () => {

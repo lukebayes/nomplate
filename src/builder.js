@@ -39,8 +39,8 @@ function processClassName(value) {
   return value;
 }
 
-function getRenderScheduler(elem, handler) {
-  return function _getRenderScheduler(optCompleteHandler) {
+function getUpdateScheduler(elem, handler) {
+  return function _getUpdateScheduler(optCompleteHandler) {
     if (elem.onRender) {
       schedule(elem, () => {
         /* eslint-disable no-use-before-define */
@@ -57,7 +57,7 @@ function processHandler(elem, handler) {
     /* eslint-disable no-param-reassign */
     elem.hasUpdateableHandler = true;
     /* eslint-enable no-param-reassign */
-    handler(getRenderScheduler(elem, handler));
+    handler(getUpdateScheduler(elem, handler));
   } else {
     handler();
   }
