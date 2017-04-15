@@ -1,21 +1,21 @@
 const assert = require('chai').assert;
+const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
-const jsdom = require('jsdom').jsdom;
 const renderElement = require('../').renderElement;
 const sinon = require('sinon');
 const svg = require('../').svg;
 
 describe('Nomplate renderElement', () => {
-  let document;
+  let doc;
 
   beforeEach(() => {
-    document = jsdom('<body></body>');
+    doc = createWindow().document;
   });
 
   it('escapes text content', () => {
     const div = dom.div({className: '<', style: '>'}, '<script>');
 
-    const element = renderElement(div, document);
+    const element = renderElement(div, doc);
 
     assert.equal(element.getAttribute('class'), '&lt;');
     assert.equal(element.getAttribute('style'), '&gt;');
@@ -27,7 +27,7 @@ describe('Nomplate renderElement', () => {
 
   it('transfers attributes', () => {
     const div = dom.div({style: 'color:#fc0;', className: 'abcd'});
-    const element = renderElement(div, document);
+    const element = renderElement(div, doc);
 
     assert.equal(element.getAttribute('style'), 'color:#fc0;');
     assert.equal(element.className, 'abcd');
@@ -39,36 +39,36 @@ describe('Nomplate renderElement', () => {
     assert.equal(div.childNodes.length, 1, 'Has a text child');
     assert.equal(div.textContent, 'abcd');
 
-    const element = renderElement(div, document);
+    const element = renderElement(div, doc);
     assert.equal(element.outerHTML, '<div>abcd</div>');
     assert.equal(element.childNodes.length, 1);
   });
 
   it('does not apply existing attribute', () => {
     const div = dom.div({style: 'color:#fc0;', className: 'abcd'});
-    const element = document.createElement('div');
+    const element = doc.createElement('div');
     element.className = 'abcd';
     element.setAttribute('style', 'color:#fc0;');
     sinon.spy(element, 'setAttribute');
-    renderElement(div, document, element);
+    renderElement(div, doc, element);
 
     assert.equal(element.setAttribute.callCount, 0, 'There should be no assignment');
   });
 
   it('removes missing attrs', () => {
     const div = dom.div();
-    const element = document.createElement('div');
+    const element = doc.createElement('div');
     element.setAttribute('style', 'color:#fc0;');
 
     assert.equal(element.outerHTML, '<div style="color:#fc0;"></div>');
-    renderElement(div, document, element);
+    renderElement(div, doc, element);
     assert.equal(element.outerHTML, '<div></div>');
   });
 
   it('applies on handler', () => {
     const clickHandler = sinon.spy();
     const div = dom.div({onclick: clickHandler});
-    const element = renderElement(div, document);
+    const element = renderElement(div, doc);
 
     element.click();
     assert.equal(clickHandler.callCount, 1);
@@ -77,10 +77,10 @@ describe('Nomplate renderElement', () => {
   it('removes handler', () => {
     const handler = sinon.spy();
     const div = dom.div({onclick: handler, onkeyup: handler, onkeydown: handler});
-    const element = renderElement(div, document);
+    const element = renderElement(div, doc);
     const div2 = dom.div({onkeyup: handler});
 
-    renderElement(div2, document, element);
+    renderElement(div2, doc, element);
     element.click();
     assert.equal(element.outerHTML, '<div data-nomhandlers="onkeyup"></div>');
     assert.equal(handler.callCount, 0);
@@ -88,7 +88,7 @@ describe('Nomplate renderElement', () => {
 
   it('discards false attribute values', () => {
     const checkbox = dom.input({type: 'checkbox', checked: false});
-    const element = renderElement(checkbox, document);
+    const element = renderElement(checkbox, doc);
 
     // NOTE(lbayes): The jsdom library renders checkboxes with no closing tag.
     assert.equal(element.outerHTML, '<input type="checkbox">');
@@ -101,7 +101,7 @@ describe('Nomplate renderElement', () => {
       dom.text('another');
     });
 
-    const element = renderElement(p, document);
+    const element = renderElement(p, doc);
     assert.equal(element.outerHTML, '<p>hello<b>world</b>another</p>');
   });
 
@@ -113,7 +113,7 @@ describe('Nomplate renderElement', () => {
         dom.li('three');
       });
 
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
 
       assert.equal(element.className, 'list');
       assert.equal(element.childNodes.length, 3);
@@ -141,7 +141,7 @@ describe('Nomplate renderElement', () => {
         });
       });
 
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       assert.equal(root.className, 'root');
 
       // Navigate to the first LI component and verify it is where we expect it.
@@ -152,84 +152,84 @@ describe('Nomplate renderElement', () => {
   describe('updates', () => {
     it('replaces textContent', () => {
       const root = dom.div('hello');
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       assert.equal(element.outerHTML, '<div>hello</div>');
 
       // Update the textContent
       const other = dom.div('world');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<div>world</div>');
     });
 
     it('replaces className', () => {
       const root = dom.div({className: 'abcd'});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.div({className: 'efgh'});
 
       assert.equal(element.outerHTML, '<div class="abcd"></div>');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<div class="efgh"></div>');
     });
 
     it('removes className', () => {
       const root = dom.div({className: 'abcd'});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.div();
 
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<div></div>');
     });
 
     it('replaces attribute', () => {
       const root = dom.a({href: '/abcd'});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.a({href: '/efgh'});
 
       assert.equal(element.outerHTML, '<a href="/abcd"></a>');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<a href="/efgh"></a>');
     });
 
     it('removes attribute', () => {
       const root = dom.a({href: '/abcd'});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.a();
 
       assert.equal(element.outerHTML, '<a href="/abcd"></a>');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<a></a>');
     });
 
     it('replaces handler', () => {
       const handler = sinon.spy();
       const root = dom.div({onclick: handler});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.div();
 
       assert.equal(element.outerHTML, '<div data-nomhandlers="onclick"></div>');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<div></div>');
     });
 
     it('adds handlers', () => {
       const handler = sinon.spy();
       const root = dom.div({onclick: handler});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.div({onclick: handler, onkeydown: handler});
 
       assert.equal(element.outerHTML, '<div data-nomhandlers="onclick"></div>');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<div data-nomhandlers="onclick onkeydown"></div>');
     });
 
     it('update handlers', () => {
       const handler = sinon.spy();
       const root = dom.div({onclick: handler});
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       const other = dom.div({onkeydown: handler});
 
       assert.equal(element.outerHTML, '<div data-nomhandlers="onclick"></div>');
-      renderElement(other, document, element);
+      renderElement(other, doc, element);
       assert.equal(element.outerHTML, '<div data-nomhandlers="onkeydown"></div>');
     });
 
@@ -243,23 +243,23 @@ describe('Nomplate renderElement', () => {
       }
 
       // renderDocument the tree for the first time.
-      const element = renderElement(renderDocument(['abcd']), document);
+      const element = renderElement(renderDocument(['abcd']), doc);
       assert.equal(element.outerHTML, '<ul><li>abcd</li></ul>');
 
       // Add a child to the list.
-      renderElement(renderDocument(['abcd', 'efgh']), document, element);
+      renderElement(renderDocument(['abcd', 'efgh']), doc, element);
       assert.equal(element.outerHTML, '<ul><li>abcd</li><li>efgh</li></ul>');
 
       // Add another child to the list.
-      renderElement(renderDocument(['abcd', 'efgh', 'ijkl']), document, element);
+      renderElement(renderDocument(['abcd', 'efgh', 'ijkl']), doc, element);
       assert.equal(element.outerHTML, '<ul><li>abcd</li><li>efgh</li><li>ijkl</li></ul>');
 
       // Remove the first child.
-      renderElement(renderDocument(['efgh', 'ijkl']), document, element);
+      renderElement(renderDocument(['efgh', 'ijkl']), doc, element);
       assert.equal(element.outerHTML, '<ul><li>efgh</li><li>ijkl</li></ul>');
 
       // Remove all children.
-      renderElement(renderDocument([]), document, element);
+      renderElement(renderDocument([]), doc, element);
       assert.equal(element.outerHTML, '<ul></ul>');
     });
 
@@ -269,7 +269,7 @@ describe('Nomplate renderElement', () => {
           svg.rect({width: 200, height: 100});
         });
       });
-      const element = renderElement(root, document);
+      const element = renderElement(root, doc);
       assert.equal(element.outerHTML, '<div><svg><rect width="200" height="100"></rect></svg></div>');
     });
 
@@ -289,7 +289,7 @@ describe('Nomplate renderElement', () => {
         return onRender.getCall(index).args[0];
       }
 
-      renderElement(root, document);
+      renderElement(root, doc);
       assert.equal(onRender.callCount, 5);
       assert.equal(getCallArgument(0).id, 'abcd');
       assert.equal(getCallArgument(1).id, 'efgh');
@@ -352,7 +352,7 @@ describe('Nomplate renderElement', () => {
           }
         }
 
-        element = renderElement(renderDocument(renderHandler), document);
+        element = renderElement(renderDocument(renderHandler), doc);
         button = element.querySelector('button');
 
         button.click();

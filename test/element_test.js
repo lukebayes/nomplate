@@ -1,7 +1,7 @@
 const Element = require('../').Element;
 const assert = require('chai').assert;
+const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
-const jsdom = require('jsdom').jsdom;
 const renderElement = require('../').renderElement;
 
 describe('Nomplate Element', () => {
@@ -42,10 +42,10 @@ describe('Nomplate Element', () => {
   });
 
   describe('updates', () => {
-    let document;
+    let doc;
 
     beforeEach(() => {
-      document = jsdom('<body></body>');
+      doc = createWindow().document;
     });
 
     function render(onComplete) {
@@ -70,7 +70,7 @@ describe('Nomplate Element', () => {
         assert.equal(element.outerHTML, '<ul><button data-nomhandlers="onclick">add</button></ul>');
         element.firstChild.click();
         assert.equal(element.outerHTML, '<ul><button data-nomhandlers="onclick">add</button><li>item-0</li></ul>');
-      }), document);
+      }), doc);
     });
 
     it('renders multiple times', (done) => {
@@ -88,7 +88,7 @@ describe('Nomplate Element', () => {
         }
       }
 
-      const element = renderElement(render(completeHandler), document);
+      const element = renderElement(render(completeHandler), doc);
       const button = element.firstChild;
       button.click();
       button.click();
