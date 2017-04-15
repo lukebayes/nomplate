@@ -1,17 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const FakeStorage = require('./test/fake_storage');
-const jsdom = require('jsdom');
+const jsdom = require('jsdom').jsdom;
 
 /**
- * Create a fake JSDOM window object.
+ * Create a JSDOM window object for test cases.
  */
-function createWindow(ready) {
-  jsdom.env('<html><body></body></html>', null, (err, window) => {
-    /* eslint-disable no-param-reassign */
-    window.localStorage = new FakeStorage();
-    /* eslint-enable no-param-reassign */
-    ready(window);
-  });
+function createWindow(optOptions) {
+  let doc = jsdom('<html><body></body></html>', optOptions);
+  /* eslint-disable no-param-reassign */
+  doc.defaultView.localStorage = new FakeStorage();
+  /* eslint-enable no-param-reassign */
+  return doc.defaultView;
 }
 
 module.exports = {
