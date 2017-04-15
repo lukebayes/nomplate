@@ -1,6 +1,7 @@
 const assert = require('chai').assert;
 const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
+const simulant = require('jsdom-simulant');
 const renderElement = require('../').renderElement;
 const sinon = require('sinon');
 const svg = require('../').svg;
@@ -146,6 +147,63 @@ describe('Nomplate renderElement', () => {
 
       // Navigate to the first LI component and verify it is where we expect it.
       assert.equal(element.children[1].firstChild.firstChild.textContent, 'one');
+    });
+  });
+
+  describe('events', () => {
+    let button;
+    let buttonHandler;
+    let root;
+    let rootHandler;
+    let stopProp;
+
+    beforeEach(() => {
+      stopProp = false;
+      rootHandler = sinon.spy();
+      buttonHandler = sinon.spy((event) => {
+        if (stopProp) {
+          event.stopPropagation();
+        }
+      });
+      root = renderElement(dom.div({onclick: rootHandler}, () => {
+        dom.div(() => {
+          dom.div(() => {
+            dom.button({id: 'btn', onclick: buttonHandler});
+          });
+        });
+      }), doc);
+
+      button = root.querySelector('#btn');
+    });
+
+    it('stopPropagation stops bubbling', () => {
+      stopProp = true;
+      simulant.fire(button, 'click');
+      assert.equal(rootHandler.callCount, 0);
+    });
+
+    it('wires up click handler', () => {
+      simulant.fire(button, 'click');
+      assert.equal(buttonHandler.callCount, 1);
+    });
+
+    it('bubbles click events', () => {
+      simulant.fire(button, 'click');
+      assert.equal(rootHandler.callCount, 1);
+    });
+
+    // Uncaught exceptions in DOM Element event listeners are being silently swallowed by JSDOM.
+    it.skip('sends keyboard events', () => {
+      let didFire = false;
+      function handler(event) {
+        didFire = true;
+        throw new Error('fake-error');
+        assert.equal(event.keyCode, 24);
+      }
+
+      const element = renderElement(dom.input({onkeyup: handler}), doc);
+      simulant.fire(element, 'keyup', {keyCode: 23});
+      assert(didFire, 'Handler should have fired');
     });
   });
 

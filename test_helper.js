@@ -10,6 +10,11 @@ function createWindow(optOptions) {
   /* eslint-disable no-param-reassign */
   doc.defaultView.localStorage = new FakeStorage();
   /* eslint-enable no-param-reassign */
+
+  doc.defaultView.onerror = (messageOrEvent, source, lineno, colno, error) => {
+    console.error('nomplate/test_helper.js createWindow() encountered an uncaught exception. This is likely caused by a thrown exception in an application event handler.');
+    console.error(error);
+  };
   return doc.defaultView;
 }
 
