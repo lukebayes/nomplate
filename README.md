@@ -8,7 +8,7 @@ Nomplate is a microscopic (< 5kb), insanely fast (<80ms to interactive client) c
 ## What does it look like?
 /src/key_presses.js
 ```javascript
-import {dom} from 'nomplate';
+const dom = require('nomplate').dom;
 
 const keysPressed = [];
 
@@ -31,9 +31,9 @@ function keyPresses() {
       });
     });
   })
-};
+}
 
-export default keyPresses;
+module.exports = keyPresses;
 ```
 Every HTML node name is available on the `dom` object as a method (e.g., div, span, li, ul, section, header, footer, etc.).
 
@@ -59,8 +59,8 @@ dom.div({className: 'abcd'}, () => {
 
 ## Configure your [Express](https://expressjs.com) server:
 ```javascript
-import express from 'express';
-import nomplateExpress from 'nomplate/express';
+const express = require('express');
+const nomplateExpress = require('nomplate/express');
 
 const app = express();
 
@@ -86,7 +86,7 @@ app.listen(8080, () => {
 
 ## The /views/main.js layout:
 ```javascript
-import {dom} from 'nomplate';
+const dom = require('nomplate').dom;
 
 function main(options, renderView) {
   return dom.html({lang: 'en'}, () => {
@@ -101,32 +101,35 @@ function main(options, renderView) {
       renderView();
     });
   });
-};
+}
 
-export default main;
+module.exports = main;
 ```
 
 ## The /views/app.js template
 ```javascript
-import {dom} from 'nomplate';
+const dom = require('nomplate').dom;
 
 function app(options) {
   return dom.section({id: 'my-app'});
-};
+}
 
-export default app;
+module.exports = app;
 ```
 
 ## Configure the client
 ```javascript
-import keyPresses from './src/key_presses';
-import {renderElement} from 'nomplate';
+const keyPresses = require('./src/key_presses');
+const renderElement = require('nomplate').renderElement;
+
+// Elements can be created immediately (i.e., before the entire page loads).
+const element = renderElement(keyPresses(), document);
 
 window.onload = function() {
+  // Wait for page load before attaching elements:
   const parent = document.getElementById('my-app');
-  const element = renderElement(keyPresses(), document);
   parent.appendChild(element);
-};
+}
 ```
 # TODO MVC?
 [Here's an early prototype](https://github.com/lukebayes/todomvc-app-template/tree/nomplate) of the famous TODOMVC application implemented as a fully client side Nomplate application.
