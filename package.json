@@ -1,8 +1,13 @@
 {
   "name": "nomplate",
-  "version": "1.1.20",
+  "version": "1.1.21",
   "description": "Nomplate: Node template engine",
   "main": "index.js",
+  "engines": {
+    "node": ">=6.10.2"
+  },
+  "bugs": "https://github.com/lukebayes/nomplate/issues",
+  "homepage": "https://github.com/lukebayes/nomplate",
   "repository": {
     "type": "git",
     "url": "https://github.com/lukebayes/nomplate.git"
@@ -33,6 +38,18 @@
     "test_helper.js"
   ],
   "author": "Luke Bayes",
+  "contributors": [
+    {
+      "name": "Luke Bayes",
+      "email": "lukebayes@gmail.com",
+      "url": "https://lukebayes.com"
+    },
+    {
+      "name": "Trevor O'Brien",
+      "email": "tmobrien55@gmail.com",
+      "url": "http://trevorobrien.com"
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "babel": "^6.5.2",
