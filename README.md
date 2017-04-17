@@ -60,6 +60,9 @@ dom.div({className: 'abcd'}, () => {
 ## Configure your [Express](https://expressjs.com) server:
 ```javascript
 const express = require('express');
+// NOTE: nomplate/express is required independently in order to avoid
+// polluting the client binary with functionality that is only relevant
+// on the server.
 const nomplateExpress = require('nomplate/express');
 
 const app = express();
