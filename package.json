@@ -1,6 +1,6 @@
 {
   "name": "nomplate",
-  "version": "1.1.18",
+  "version": "1.1.19",
   "description": "Nomplate: Node template engine",
   "main": "index.js",
   "repository": {
@@ -23,13 +23,14 @@
   "files": [
     "bin",
     "bin/nomplate",
+    "dist",
+    "dist/nomplate.min.gz",
+    "dist/nomplate.min.js",
     "express.js",
     "index.js",
-    "nomplate.min.gz",
-    "nomplate.min.js",
     "src",
-    "test_helper.js",
-    "test/fake_storage.js"
+    "test/fake_storage.js",
+    "test_helper.js"
   ],
   "author": "Luke Bayes",
   "license": "MIT",
