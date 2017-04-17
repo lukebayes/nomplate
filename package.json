@@ -1,6 +1,6 @@
 {
   "name": "nomplate",
-  "version": "1.1.21",
+  "version": "1.1.22",
   "description": "Nomplate: Node template engine",
   "main": "index.js",
   "engines": {
@@ -67,13 +67,10 @@
     "express": "^4.14.0",
     "js-beautify": "^1.6.4",
     "jsdom": "^9.8.3",
-    "jsdom-simulant": "^1.1.1",
+    "jsdom-simulant": "^1.1.2",
     "json-loader": "^0.5.4",
     "mocha": "^3.1.2",
     "sinon": "^1.17.6",
     "webpack": "^1.13.3"
-  },
-  "dependencies": {
-    "babel-cli": "^6.18.0"
   }
 }
