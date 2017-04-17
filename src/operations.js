@@ -38,7 +38,13 @@ function enqueueOnRender(handler) {
     // If functions are returned, they will be added to the end of the
     // operation list and executed after the DOM tree has been constructed.
     return function _enqueueOnRenderInternal() {
-      handler(element);
+      // PERF(lbayes): try..catch blocks have notorious performance problems,
+      // investigate altarnative approaches.
+      try {
+        handler(element);
+      } catch (err) {
+        console.error(err);
+      }
     };
   };
 }
