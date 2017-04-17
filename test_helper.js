@@ -19,8 +19,16 @@ function createWindow(optOptions) {
   return doc.defaultView;
 }
 
+/**
+ * Create a JSDOM window object and return the related document.
+ */
+function createDocument(optOptions) {
+  return createWindow(optOptions).document;
+}
+
 module.exports = {
   FakeStorage,
+  createDocument,
   createWindow,
   fire: simulant.fire
 };

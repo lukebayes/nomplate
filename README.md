@@ -123,16 +123,17 @@ module.exports = app;
 ## Configure the client
 ```javascript
 const keyPresses = require('./src/key_presses');
+const ready = require('nomplate').ready;
 const renderElement = require('nomplate').renderElement;
 
 // Elements can be created immediately (i.e., before the entire page loads).
 const element = renderElement(keyPresses(), document);
 
-window.onload = function() {
+ready(document, () => {
   // Wait for page load before attaching elements:
   const parent = document.getElementById('my-app');
   parent.appendChild(element);
-}
+});
 ```
 # TODO MVC?
 [Here's an early prototype](https://github.com/lukebayes/todomvc-app-template/tree/nomplate) of the famous TODOMVC application implemented as a fully client side Nomplate application.
