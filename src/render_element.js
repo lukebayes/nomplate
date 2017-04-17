@@ -52,6 +52,11 @@ function executeOperations(ops, nomElement, document, optDomElement) {
   // (like focus()) after the elements have been attached to the document
   // during and update() lifecycle.
   localSetTimeout(() => {
+    // NOTE(lbayes): This is now disconnected from the main request thread,
+    // exceptions may get swallowed. The implementation of enqueueOnRender
+    // does make an effort to continue after user-defined exceptions, so at
+    // least we should not see mysterious missed calls if a previous call
+    // fails.
     trailingActions.forEach((action) => {
       action();
     });

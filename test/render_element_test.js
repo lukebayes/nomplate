@@ -331,6 +331,38 @@ describe('Nomplate renderElement', () => {
       assert.equal(element.outerHTML, '<div><svg><rect width="200" height="100"></rect></svg></div>');
     });
 
+    it('proceeds when onRender handlers fail', (done) => {
+      let message;
+
+      // Ensure we log the async error.
+      sinon.stub(console, 'error', (_message) => {
+        message =_message;
+      });
+
+      const one = () => { throw new Error('fake-error'); };
+      const two = sinon.spy();
+
+      const root = dom.div(() => {
+        dom.div({onRender: one});
+        dom.div({onRender: two});
+      });
+
+      renderElement(root, doc);
+
+      setTimeout(() => {
+        try {
+          assert.equal(two.callCount, 1);
+          assert.match(console.error.getCall(0).args[0], /fake-error/);
+          done();
+        } catch (err) {
+          done(err);
+        } finally {
+          // Ensure we clean up the console.error stub
+          console.error.restore();
+        }
+      }, 0);
+    });
+
     it('receives the real dom element on request', (done) => {
       const onRender = sinon.spy();
 
