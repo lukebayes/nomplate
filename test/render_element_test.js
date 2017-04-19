@@ -1,4 +1,5 @@
 const assert = require('chai').assert;
+const config = require('../').config;
 const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
 const renderElement = require('../').renderElement;
@@ -349,7 +350,7 @@ describe('Nomplate renderElement', () => {
 
       renderElement(root, doc);
 
-      setTimeout(() => {
+      config().setTimeout(() => {
         try {
           assert.equal(two.callCount, 1);
           assert.match(console.error.getCall(0).args[0], /fake-error/);
@@ -381,7 +382,7 @@ describe('Nomplate renderElement', () => {
 
       renderElement(root, doc);
 
-      setTimeout(() => {
+      config().setTimeout(() => {
         try {
           assert.equal(onRender.callCount, 5);
           assert.equal(getCallArgument(0).id, 'abcd');

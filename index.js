@@ -1,5 +1,6 @@
 const Element = require('./src/element');
 const builder = require('./src/builder');
+const config = require('./src/config');
 const dom = require('./src/dom');
 const generateId = require('./src/generate_id');
 const htmlEncode = require('./src/html_encode');
@@ -16,6 +17,7 @@ const forceUpdate = builder.forceUpdate;
 module.exports = {
   Element,
   builder,
+  config,
   dom,
   forceUpdate,
   generateId,

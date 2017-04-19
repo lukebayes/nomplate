@@ -1,5 +1,5 @@
 const Element = require('./element');
-const scheduler = require('./scheduler');
+const config = require('./config');
 
 /**
  * This is global, module state that exists across multiple calls into this
@@ -10,12 +10,10 @@ const scheduler = require('./scheduler');
  * There should be no way to leave state in this stack beyond a single outer
  * call to element().
  */
-// TODO(lbayes): Provide the globals, instead of reaching out to them.
-const schedule = scheduler(global.requestAnimationFrame || global.setTimeout);
-
-const stack = [];
 
 function top() {
+  const stack = config().builderStack;
+
   return stack[stack.length - 1] || null;
 }
 
@@ -42,7 +40,7 @@ function processClassName(value) {
 function getUpdateScheduler(elem, handler) {
   return function _getUpdateScheduler(optCompleteHandler) {
     if (elem.onRender) {
-      schedule(elem, () => {
+      config().schedule(elem, () => {
         /* eslint-disable no-use-before-define */
         elem.onRender(builder, handler, optCompleteHandler);
         /* eslint-enable no-use-before-define */
@@ -52,6 +50,8 @@ function getUpdateScheduler(elem, handler) {
 }
 
 function processHandler(elem, handler) {
+  const stack = config().builderStack;
+
   stack.push(elem);
   if (handler.length > 0) {
     /* eslint-disable no-param-reassign */
@@ -136,6 +136,7 @@ function builder(nodeName, optAttrs, optHandler, optContent, optNamespace) {
 
     return elem;
   } catch (err) {
+    const stack = config().builderStack;
     // We cannot allow global state to leak between callers, especially when
     // there is an exception.
     stack.length = 0;
@@ -148,7 +149,7 @@ function builder(nodeName, optAttrs, optHandler, optContent, optNamespace) {
 
 // Expose the stinkleton forceUpdate function.
 builder.forceUpdate = function _forceUpdate() {
-  schedule.forceUpdate();
+  config().schedule.forceUpdate();
 };
 
 // Expose the element wrapper for the dom and svg clients.

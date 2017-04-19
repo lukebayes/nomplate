@@ -1,10 +1,8 @@
+const config = require('./config');
 const operations = require('./operations');
 
 const EMPTY_ATTRS = Object.freeze({});
 const KEY_UP = 'keyup';
-
-// TODO(lbayes): Provide the globals to the module.
-const localSetTimeout = global.setTimeout;
 
 function getUpdateElement(nomElement, document, optDomElement) {
   return function _updateElement(builder, handler, optCompleteHandler) {
@@ -51,7 +49,7 @@ function executeOperations(ops, nomElement, document, optDomElement) {
   // This allows handlers like onRender to accept DOM elements and call methods
   // (like focus()) after the elements have been attached to the document
   // during and update() lifecycle.
-  localSetTimeout(() => {
+  config().setTimeout(() => {
     // NOTE(lbayes): This is now disconnected from the main request thread,
     // exceptions may get swallowed. The implementation of enqueueOnRender
     // does make an effort to continue after user-defined exceptions, so at

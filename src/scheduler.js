@@ -1,8 +1,24 @@
-
 /**
- * Render scheduler (stub for now).
+ * Render scheduler that provides scheduling and invalidation hooks for Nomplate
+ * elements to mark themselves as needing to be rendered.
+ *
+ * After one or more elements have declared the need for a render, the scheduler
+ * will wait until the next animation frame (or interval of zero milliseconds).
+ * Once the delay is complete, the list of subscribed elements will be filtered
+ * so that render is only triggered on the outermost unrelated elements in the
+ * tree.
+ *
+ * This ensures we do not waste time rendering and diffing child elements only
+ * to later render a parent or vice versa.
+ *
+ * There is a stinkleton module-global scheduler instance that is created
+ * within config.js and all clients should access that instance directly like:
+ *
+ * ```javascript
+ * config().schedule(nomElement);
+ * ```
  */
-function scheduler(animationFrame) {
+function scheduler(onNextFrame) {
   const pendingElements = [];
   const pendingHandlers = [];
 
@@ -39,7 +55,8 @@ function scheduler(animationFrame) {
       pendingHandlers.push(handler);
 
       if (!responseIsPending) {
-        animationFrame(execute);
+        onNextFrame(execute);
+        // config().requestAnimationFrame(execute);
         responseIsPending = true;
       }
     }
