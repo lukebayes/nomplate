@@ -49,13 +49,13 @@ function getOrCreateGlobalKeys() {
     /**
      * Global setTimeout implementation, can be faked in test environments.
      */
-    globalKeys.setTimeout = global.setTimeout;
+    globalKeys.setTimeout = global.setTimeout.bind(global);
 
     /**
      * Global requestAnimationFrame implementation.
      */
-    globalKeys.requestAnimationFrame = global.requestAnimationFrame ||
-      globalKeys.setTimeout;
+    globalKeys.requestAnimationFrame = (global.requestAnimationFrame ||
+      globalKeys.setTimeout).bind(global);
 
     /**
      * Instantiated scheduler.
