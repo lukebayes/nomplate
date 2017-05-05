@@ -14,7 +14,11 @@ describe('Config', () => {
   it('returns requestAnimationFrame', () => {
     result = config();
     assert.isFunction(result.requestAnimationFrame);
-    assert.equal(result.requestAnimationFrame, global.setTimeout);
+  });
+
+  it('uses setTimeoeut in node environment', (done) => {
+    result = config();
+    result.requestAnimationFrame(done);
   });
 
   it('can clobber an existing key', () => {
@@ -25,10 +29,11 @@ describe('Config', () => {
     assert.equal(spy.callCount, 1);
   });
 
-  it('can reset all globals', () => {
-    config({requestAnimationFrame: 'fake'});
+  it('can reset all globals', (done) => {
+    config({requestAnimationFrame: null});
+    assert.isNull(config().requestAnimationFrame);
     config.reset();
-    assert.equal(config().requestAnimationFrame, global.setTimeout);
+    config().requestAnimationFrame(done);
   });
 });
 
