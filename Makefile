@@ -8,7 +8,7 @@ ARCH=x64
 PROJECT_ROOT=$(shell git rev-parse --show-toplevel)
 
 # Nodejs
-NODE_VERSION=7.2.0
+NODE_VERSION=8.1.2
 NODE=lib/nodejs/bin/node
 NPM=lib/nodejs/bin/npm
 
