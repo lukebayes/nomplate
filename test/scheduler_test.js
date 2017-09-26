@@ -47,6 +47,20 @@ describe('Nomplate scheduler', () => {
     assert.equal(render.callCount, 1);
   });
 
+  it('calls completeHandler for skipped elements', () => {
+    const root = new Element('div');
+    const child = new Element('div');
+    const renderRoot = sinon.spy();
+    const renderChild = sinon.spy();
+    renderChild.onSkipped = sinon.spy();
+    child.parent = root;
+
+    schedule(root, renderRoot);
+    schedule(child, renderChild);
+    execute();
+    assert.equal(renderChild.onSkipped.callCount, 1);
+  });
+
   it('skips element children', () => {
     const root = new Element('ul');
     const rootRender = sinon.spy();

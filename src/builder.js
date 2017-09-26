@@ -39,12 +39,22 @@ function processClassName(value) {
 
 function getUpdateScheduler(elem, handler) {
   return function _getUpdateScheduler(optCompleteHandler) {
-    if (elem.onRender) {
-      config().schedule(elem, () => {
+    if (elem.render) {
+      function renderNow() {
         /* eslint-disable no-use-before-define */
-        elem.onRender(builder, handler, optCompleteHandler);
+        elem.render(builder, handler, optCompleteHandler);
         /* eslint-enable no-use-before-define */
-      });
+      }
+
+      if (optCompleteHandler) {
+        // Ensure the complete handler is called by the scheduler, even if this
+        // element is descheduled because a parent was also rendered.
+        renderNow.onSkipped = function() {
+          optCompleteHandler(elem);
+        };
+      }
+
+      config().schedule(elem, renderNow);
     }
   };
 }

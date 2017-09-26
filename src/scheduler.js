@@ -24,9 +24,34 @@ function scheduler(onNextFrame) {
   let responseIsPending = false;
 
   function execute() {
+    const filtered = [];
+
+    function filterChildren(entries) {
+      return entries.filter((entry, index) => {
+        let parent = entry.element.parent;
+        while (parent) {
+          if (elementIsPending(entries, parent)) {
+            filtered.push(entry);
+            return false;
+          }
+          parent = parent.parent;
+        }
+
+        return true;
+      });
+    }
+
     filterChildren(pending).forEach((entry) => {
       entry.handler();
     });
+
+    // Ensure that onRender handlers are called for skipped children.
+    filtered.forEach((entry) => {
+      if (entry.handler.onSkipped) {
+        entry.handler.onSkipped();
+      }
+    });
+
     pending.length = 0;
     responseIsPending = false;
   }
@@ -49,20 +74,6 @@ function scheduler(onNextFrame) {
 
 function elementIsPending(entries, nomElement) {
   return entries.some((entry) => { return entry.element === nomElement; });
-}
-
-function filterChildren(entries) {
-  return entries.filter((entry, index) => {
-    let parent = entry.element.parent;
-    while (parent) {
-      if (elementIsPending(entries, parent)) {
-        return false;
-      }
-      parent = parent.parent;
-    }
-
-    return true;
-  });
 }
 
 

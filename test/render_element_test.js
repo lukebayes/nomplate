@@ -1,4 +1,5 @@
 const assert = require('chai').assert;
+const builder = require('../').builder;
 const config = require('../').config;
 const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
@@ -482,6 +483,39 @@ describe('Nomplate renderElement', () => {
         button.click();
         button.click();
         button.click();
+      });
+    });
+
+    describe('onRender handler', () => {
+      it('is called, even for skipped children', () => {
+        let updateRoot = null;
+        let updateChild1 = null;
+        let updateChild2 = null;
+
+        const root = dom.div({id: 'root'}, (update) => {
+          updateRoot = update;
+
+          dom.div({id: 'child1'}, (update) => {
+            updateChild1 = update;
+          });
+
+          dom.div({id: 'child2'}, (update) => {
+            updateChild2 = update;
+          });
+        });
+
+        const elem = renderElement(root, doc);
+        const rootRendered = sinon.spy();
+        const child1Rendered = sinon.spy();
+        const child2Rendered = sinon.spy();
+        updateRoot(rootRendered);
+        updateChild1(child1Rendered);
+        updateChild2(child2Rendered);
+        builder.forceUpdate();
+
+        assert.equal(rootRendered.callCount, 1);
+        assert.equal(child1Rendered.callCount, 1);
+        assert.equal(child2Rendered.callCount, 1);
       });
     });
 

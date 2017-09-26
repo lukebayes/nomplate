@@ -27,7 +27,7 @@ function setRenderFunction(getUpdateElement, nomElement, document) {
   return function _setRenderFunction(domElement) {
     if (nomElement.hasUpdateableHandler) {
       /* eslint-disable no-param-reassign */
-      nomElement.onRender = getUpdateElement(nomElement, document, domElement);
+      nomElement.render = getUpdateElement(nomElement, document, domElement);
       /* eslint-enable no-param-reassign */
     }
   };
