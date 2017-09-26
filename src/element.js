@@ -25,7 +25,7 @@ class Element {
 
     // Handler that should be overridden by renderElement if there is an
     // updateable handler present.
-    this.onRender = null;
+    this.render = null;
     this.hasUpdateableHandler = false;
 
     // Append #text child if provided

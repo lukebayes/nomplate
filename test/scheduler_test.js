@@ -27,6 +27,16 @@ describe('Nomplate scheduler', () => {
     assert.equal(render.callCount, 1);
   });
 
+  it('clears pending after render', () => {
+    const element = new Element('div');
+    const render = sinon.spy();
+    schedule(element, render);
+    execute();
+    assert.equal(render.callCount, 1);
+    execute();
+    assert.equal(render.callCount, 1);
+  });
+
   it('filters duplicates', () => {
     const root = new Element('div');
     const render = sinon.spy();
@@ -35,6 +45,20 @@ describe('Nomplate scheduler', () => {
     execute();
 
     assert.equal(render.callCount, 1);
+  });
+
+  it('calls completeHandler for skipped elements', () => {
+    const root = new Element('div');
+    const child = new Element('div');
+    const renderRoot = sinon.spy();
+    const renderChild = sinon.spy();
+    renderChild.onSkipped = sinon.spy();
+    child.parent = root;
+
+    schedule(root, renderRoot);
+    schedule(child, renderChild);
+    execute();
+    assert.equal(renderChild.onSkipped.callCount, 1);
   });
 
   it('skips element children', () => {

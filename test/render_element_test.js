@@ -1,4 +1,5 @@
 const assert = require('chai').assert;
+const builder = require('../').builder;
 const config = require('../').config;
 const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
@@ -482,6 +483,94 @@ describe('Nomplate renderElement', () => {
         button.click();
         button.click();
         button.click();
+      });
+    });
+
+    describe('onRender handler', () => {
+      it('is called, even for skipped children', () => {
+        /**
+         * When calling the provided "update" function from a container block,
+         * one can provide a local function that will be called when the rendered.
+         * This ensures that we call your handler even if the actual element
+         * was skipped because a parent was rendered.
+         */
+        let updateRoot = null;
+        let updateChild1 = null;
+        let updateChild2 = null;
+
+        const root = dom.div({id: 'root'}, (update) => {
+          updateRoot = update;
+
+          dom.div({id: 'child1'}, (update) => {
+            updateChild1 = update;
+          });
+
+          dom.div({id: 'child2'}, (update) => {
+            updateChild2 = update;
+          });
+        });
+
+        const elem = renderElement(root, doc);
+        const rootRendered = sinon.spy();
+        const child1Rendered = sinon.spy();
+        const child2Rendered = sinon.spy();
+        updateRoot(rootRendered);
+        updateChild1(child1Rendered);
+        updateChild2(child2Rendered);
+        builder.forceUpdate();
+
+        assert.equal(rootRendered.callCount, 1);
+        assert.equal(child1Rendered.callCount, 1);
+        assert.equal(child2Rendered.callCount, 1);
+      });
+    });
+
+    describe('async update()', () => {
+      /**
+       * Bug #66 Two async handlers in a single container calling update
+       * will only render the first caller.
+       */
+      it.skip('mutates correct elements', (done) => {
+        // AND secondary onRender handlers that are provided to callers
+        // of update(), should always be called, even if they're discarded.
+        let state1 = 'abcd';
+        let state2 = null;
+        let updateHandlers = [];
+
+        const nomElements = dom.div({id: 'root'}, () => {
+          dom.div((update) => {
+            updateHandlers.push(update);
+
+            if (state1) {
+              dom.div({id: 'state1'}, state1);
+            }
+
+            if (state2) {
+              dom.div({id: 'state2'}, state2);
+            }
+          });
+        });
+
+        const root = renderElement(nomElements, doc);
+        console.log('FIRST RENDER', root.outerHTML);
+
+        updateHandlers[0](() => {
+          console.log('onRender');
+          state2 = 'efgh';
+          updateHandlers[0](() => {
+            done();
+          });
+        });
+
+        // updateHandlers[0](() => {
+          // console.log('outerHTML', root.outerHTML);
+          // console.log('textContent:', root.textContent);
+          // done();
+        // });
+
+        state2 = 'efgh';
+
+        console.log('element:', root.outerHTML);
       });
     });
   });
