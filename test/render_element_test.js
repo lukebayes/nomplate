@@ -488,6 +488,12 @@ describe('Nomplate renderElement', () => {
 
     describe('onRender handler', () => {
       it('is called, even for skipped children', () => {
+        /**
+         * When calling the provided "update" function from a container block,
+         * one can provide a local function that will be called when the rendered.
+         * This ensures that we call your handler even if the actual element
+         * was skipped because a parent was rendered.
+         */
         let updateRoot = null;
         let updateChild1 = null;
         let updateChild2 = null;
@@ -564,7 +570,7 @@ describe('Nomplate renderElement', () => {
 
         state2 = 'efgh';
 
-        console.log('element:', element.outerHTML);
+        console.log('element:', root.outerHTML);
       });
     });
   });
