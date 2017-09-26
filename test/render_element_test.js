@@ -484,6 +484,55 @@ describe('Nomplate renderElement', () => {
         button.click();
       });
     });
+
+    describe('async update()', () => {
+      /**
+       * Bug #66 Two async handlers in a single container calling update
+       * will only render the first caller.
+       */
+      it.skip('mutates correct elements', (done) => {
+        // AND secondary onRender handlers that are provided to callers
+        // of update(), should always be called, even if they're discarded.
+        let state1 = 'abcd';
+        let state2 = null;
+        let updateHandlers = [];
+
+        const nomElements = dom.div({id: 'root'}, () => {
+          dom.div((update) => {
+            updateHandlers.push(update);
+
+            if (state1) {
+              dom.div({id: 'state1'}, state1);
+            }
+
+            if (state2) {
+              dom.div({id: 'state2'}, state2);
+            }
+          });
+        });
+
+        const root = renderElement(nomElements, doc);
+        console.log('FIRST RENDER', root.outerHTML);
+
+        updateHandlers[0](() => {
+          console.log('onRender');
+          state2 = 'efgh';
+          updateHandlers[0](() => {
+            done();
+          });
+        });
+
+        // updateHandlers[0](() => {
+          // console.log('outerHTML', root.outerHTML);
+          // console.log('textContent:', root.textContent);
+          // done();
+        // });
+
+        state2 = 'efgh';
+
+        console.log('element:', element.outerHTML);
+      });
+    });
   });
 });
 

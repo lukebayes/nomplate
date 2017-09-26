@@ -27,6 +27,16 @@ describe('Nomplate scheduler', () => {
     assert.equal(render.callCount, 1);
   });
 
+  it('clears pending after render', () => {
+    const element = new Element('div');
+    const render = sinon.spy();
+    schedule(element, render);
+    execute();
+    assert.equal(render.callCount, 1);
+    execute();
+    assert.equal(render.callCount, 1);
+  });
+
   it('filters duplicates', () => {
     const root = new Element('div');
     const render = sinon.spy();

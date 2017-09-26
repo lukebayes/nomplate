@@ -19,55 +19,52 @@
  * ```
  */
 function scheduler(onNextFrame) {
-  const pendingElements = [];
-  const pendingHandlers = [];
+  const pending = [];
 
   let responseIsPending = false;
 
-  function filterChildren(elements) {
-    return elements.filter((elem, index) => {
-      let parent = elem.parent;
-      while (parent) {
-        if (elements.indexOf(parent) > -1) {
-          pendingHandlers.splice(index, 1);
-          return false;
-        }
-        parent = parent.parent;
-      }
-
-      return true;
-    });
-  }
-
   function execute() {
-    filterChildren(pendingElements).forEach((elem, index) => {
-      pendingHandlers[index]();
+    filterChildren(pending).forEach((entry) => {
+      entry.handler();
     });
-    pendingElements.length = 0;
-    pendingHandlers.length = 0;
+    pending.length = 0;
     responseIsPending = false;
   }
 
   // Schedule a handler to be called on the next animation frame
   function schedule(nomElement, handler) {
-    if (pendingElements.indexOf(nomElement) === -1) {
-      pendingElements.push(nomElement);
-      pendingHandlers.push(handler);
+    if (!elementIsPending(pending, nomElement)) {
+      pending.push({element: nomElement, handler: handler});
 
       if (!responseIsPending) {
         onNextFrame(execute);
-        // config().requestAnimationFrame(execute);
         responseIsPending = true;
       }
     }
   }
 
-  schedule.forceUpdate = () => {
-    execute();
-  };
-
+  schedule.forceUpdate = execute;
   return schedule;
 }
+
+function elementIsPending(entries, nomElement) {
+  return entries.some((entry) => { return entry.element === nomElement; });
+}
+
+function filterChildren(entries) {
+  return entries.filter((entry, index) => {
+    let parent = entry.element.parent;
+    while (parent) {
+      if (elementIsPending(entries, parent)) {
+        return false;
+      }
+      parent = parent.parent;
+    }
+
+    return true;
+  });
+}
+
 
 module.exports = scheduler;
 
