@@ -4,6 +4,10 @@ const operations = require('./operations');
 const EMPTY_ATTRS = Object.freeze({});
 const KEY_UP = 'keyup';
 
+/**
+ *  If a DOM element definition contains a block that has one or more arguments
+ *  defined, the inner function that this returns will
+ */
 function getUpdateElement(nomElement, document, optDomElement) {
   return function _updateElement(builder, handler, optCompleteHandler) {
     const parentNode = optDomElement.parentNode;
@@ -19,7 +23,9 @@ function getUpdateElement(nomElement, document, optDomElement) {
     }
 
     if (optCompleteHandler && typeof optCompleteHandler === 'function') {
-      optCompleteHandler(newDomElement, newNomElement);
+      setTimeout(() => {
+        optCompleteHandler(newDomElement, newNomElement);
+      });
     }
   };
 }
