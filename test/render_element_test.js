@@ -487,7 +487,7 @@ describe('Nomplate renderElement', () => {
     });
 
     describe('onRender handler', () => {
-      it('is called, even for skipped children', () => {
+      it('is called, even for skipped children', (done) => {
         /**
          * When calling the provided "update" function from a container block,
          * one can provide a local function that will be called when the rendered.
@@ -517,11 +517,15 @@ describe('Nomplate renderElement', () => {
         updateRoot(rootRendered);
         updateChild1(child1Rendered);
         updateChild2(child2Rendered);
-        builder.forceUpdate();
 
-        assert.equal(rootRendered.callCount, 1);
-        assert.equal(child1Rendered.callCount, 1);
-        assert.equal(child2Rendered.callCount, 1);
+        builder.forceUpdate();
+        // There is a timeout before complete handlers are triggered.
+        setTimeout(() => {
+          assert.equal(rootRendered.callCount, 1);
+          assert.equal(child1Rendered.callCount, 1);
+          assert.equal(child2Rendered.callCount, 1);
+          done();
+        });
       });
     });
 
@@ -530,7 +534,7 @@ describe('Nomplate renderElement', () => {
        * Bug #66 Two async handlers in a single container calling update
        * will only render the first caller.
        */
-      it.skip('mutates correct elements', (done) => {
+      it('mutates correct elements', (done) => {
         // AND secondary onRender handlers that are provided to callers
         // of update(), should always be called, even if they're discarded.
         let state1 = 'abcd';
@@ -552,25 +556,15 @@ describe('Nomplate renderElement', () => {
         });
 
         const root = renderElement(nomElements, doc);
-        console.log('FIRST RENDER', root.outerHTML);
+        state2 = 'efgh';
 
         updateHandlers[0](() => {
-          console.log('onRender');
-          state2 = 'efgh';
+          assert.equal(root.textContent, 'abcdefgh');
+          state2 = 'ijkl';
           updateHandlers[0](() => {
             done();
           });
         });
-
-        // updateHandlers[0](() => {
-          // console.log('outerHTML', root.outerHTML);
-          // console.log('textContent:', root.textContent);
-          // done();
-        // });
-
-        state2 = 'efgh';
-
-        console.log('element:', root.outerHTML);
       });
     });
   });
