@@ -8,7 +8,8 @@ ARCH=x64
 PROJECT_ROOT=$(shell git rev-parse --show-toplevel)
 
 # Nodejs
-NODE_VERSION=8.1.2
+# https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-x64.tar.xz
+NODE_VERSION=10.9.0
 NODE=lib/nodejs/bin/node
 NPM=lib/nodejs/bin/npm
 
@@ -59,7 +60,7 @@ lint:
 module-install: 
 	$(NPM) install
 
-integrate: clean lint build test
+integrate: clean lint test build
 
 clean: 
 	rm -rf dist
