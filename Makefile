@@ -9,7 +9,7 @@ PROJECT_ROOT=$(shell git rev-parse --show-toplevel)
 
 # Nodejs
 # https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-x64.tar.xz
-NODE_VERSION=10.9.0
+NODE_VERSION=10.15.0
 NODE=lib/nodejs/bin/node
 NPM=lib/nodejs/bin/npm
 
