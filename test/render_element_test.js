@@ -323,6 +323,41 @@ describe('Nomplate renderElement', () => {
       assert.equal(element.outerHTML, '<ul></ul>');
     });
 
+	it('updates from update handler', (done) => {
+		var labels = ['abcd', 'efgh', 'ijkl', 'mnop'];
+
+		function renderStub() {
+			return dom.div({id: 'abcd'}, () => {
+				dom.div({id: 'efgh'}, (update) => {
+
+					function clickHandler() {
+						labels.shift();
+						update();
+					}
+
+					labels.forEach((label) => {
+						dom.button({id: label, onclick: clickHandler}, label);
+					});
+				});
+			});
+		}
+
+		const element = renderElement(renderStub(), doc);
+		const firstButtons = element.querySelectorAll('button');
+		assert.equal(firstButtons.length, 4);
+		firstButtons[0].click();
+
+		builder.forceUpdate();
+		setTimeout(() => {
+			const secondButtons = element.querySelectorAll('button');
+			assert.equal(secondButtons.length, 3);
+			assert.isTrue(firstButtons[0] === secondButtons[0], 'Instance should be reused');
+			assert.isTrue(firstButtons[1] === secondButtons[1], 'Instance should be reused');
+			assert.isTrue(firstButtons[2] === secondButtons[2], 'Instance should be reused');
+			done();
+		}, 0);
+	});
+
     it('creates svg elements with createElementNS', () => {
       const root = dom.div(() => {
         svg(() => {

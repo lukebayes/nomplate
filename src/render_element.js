@@ -10,16 +10,13 @@ const KEY_UP = 'keyup';
  */
 function getUpdateElement(nomElement, document, optDomElement) {
   return function _updateElement(builder, handler, optCompleteHandler) {
-    const parentNode = optDomElement.parentNode;
     const newNomElement = builder(nomElement.nodeName, nomElement.attrs, handler);
-    const nullOrParentElement = parentNode ? null : optDomElement;
-
     /* eslint-disable no-use-before-define */
-    const newDomElement = renderElement(newNomElement, document, nullOrParentElement);
+    const newDomElement = renderElement(newNomElement, document, optDomElement);
     /* eslint-enable no-use-before-define */
 
-    if (parentNode) {
-      parentNode.replaceChild(newDomElement, optDomElement);
+    if (!!optDomElement && newDomElement !== optDomElement) {
+      optDomElement.parentNode.replaceChild(newDomElement, optDomElement);
     }
 
     if (optCompleteHandler && typeof optCompleteHandler === 'function') {
@@ -159,7 +156,7 @@ function elementToOperations(ops, nomElement, document, optDomElement) {
       elementAttributesToOperations(ops, nomElement);
       // Traverse into the each child.
       /* eslint-disable no-use-before-define */
-      writeDomChildren(ops, nomElement, document);
+      writeDomChildren(ops, nomElement, document, optDomElement && optDomElement.childNodes);
       /* eslint-enable no-use-before-define */
       ops.push(operations.popElement());
       ops.push(operations.appendChild());
@@ -167,6 +164,7 @@ function elementToOperations(ops, nomElement, document, optDomElement) {
   } else if (nomElement.nodeName === 'text') {
     ops.push(operations.updateTextContent(nomElement.textContent));
   } else {
+	// We're comparing the DOM and applying mutations, rather than clobbering it.
     ops.push(operations.pushElement(nomElement, optDomElement));
     // Synchronize element attributes, including className and event handlers.
     elementAttributesToOperations(ops, nomElement, optDomElement);
@@ -179,9 +177,9 @@ function elementToOperations(ops, nomElement, document, optDomElement) {
   return ops;
 }
 
-function updateDomChildNodes(ops, nomElement, document, optDomElement) {
+function updateDomChildNodes(ops, nomElement, document, domElement) {
   const nomKids = nomElement.childNodes;
-  const domKids = Array.prototype.slice.call(optDomElement.childNodes);
+  const domKids = Array.prototype.slice.call(domElement.childNodes);
 
   if (nomElement.hasUpdateableHandler) {
     ops.push(operations.setRenderFunction(getUpdateElement, nomElement, document));
@@ -192,7 +190,7 @@ function updateDomChildNodes(ops, nomElement, document, optDomElement) {
   while (i < domKids.length) {
     const domKid = domKids[i];
     const nomKid = nomKids[i];
-    if (domKid && nomKid && domKid.nodeName === nomKid.nodeName) {
+    if (domKid && nomKid && domKid.nodeName.toLowerCase() === nomKid.nodeName) {
       elementToOperations(ops, nomKid, document, domKid);
       matchedKids.push(i);
     } else {
