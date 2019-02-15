@@ -154,6 +154,13 @@ function createTextNode(content) {
   };
 }
 
+function updateInnerHTML(content) {
+  return function _updateInnerHTML(element, stack, document) {
+    element.innerHTML = content;
+    return element;
+  };
+}
+
 function updateTextContent(content) {
   return function _updateTextContent(element, stack, document) {
     /* eslint-disable no-param-reassign */
@@ -203,5 +210,6 @@ module.exports = {
   setClassName,
   setHandler,
   setRenderFunction,
+  updateInnerHTML,
   updateTextContent,
 };

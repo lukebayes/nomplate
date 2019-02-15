@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 const dom = require('../').dom;
+const renderString = require('../test_helper').renderString;
 
 describe('Nomplate dom', () => {
   describe('basics', () => {
@@ -97,6 +98,34 @@ describe('Nomplate dom', () => {
       assert.equal(collection.childNodes[2].nodeName, 'li');
       assert.equal(collection.childNodes[2].attrs.className, 'item-2');
       assert.equal(collection.childNodes[2].textContent, 'Label: item-2');
+    });
+  });
+
+  describe('selector', () => {
+    it('accepts selector definitions', () => {
+      const elem = dom.div(() => {
+        dom.style(() => {
+          dom.selector('.foo', {
+            color: '#fc0',
+            fontSize: '3em'
+          });
+          dom.selector('.bar', {
+            backgroundColor: '#f00',
+            fontFamily: 'Arial'
+          });
+        });
+        dom.div({className: 'foo'});
+        dom.div({className: 'bar'});
+      });
+
+      const styleNode = elem.firstChild;
+      assert.equal(styleNode.nodeName, 'style');
+      const selectors = styleNode.selectors;
+      assert.equal(selectors[0].selector, '.foo');
+      assert.equal(selectors[1].selector, '.bar');
+
+      const str = renderString(elem);
+      assert.equal(str, '<div><style>.foo{color:#fc0;font-size:3em;}.bar{background-color:#f00;font-family:Arial;}</style><div class="foo"></div><div class="bar"></div></div>');
     });
   });
 });
