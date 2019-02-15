@@ -2,6 +2,8 @@
 const FakeStorage = require('./test/fake_storage');
 const jsdom = require('jsdom').jsdom;
 const simulant = require('jsdom-simulant');
+const _renderElement = require('./src/render_element');
+const _renderString = require('./src/render_string');
 
 /**
  * Create a JSDOM window object for test cases.
@@ -26,10 +28,20 @@ function createDocument(optOptions) {
   return createWindow(optOptions).document;
 }
 
+function renderString(nomElement, optPrettyPrint) {
+	return _renderString()(nomElement, optPrettyPrint);
+}
+
+function renderElement(nomElement, optDomElement) {
+	return _renderElement(nomElement, createDocument(), optDomElement);
+}
+
 module.exports = {
   FakeStorage,
   createDocument,
   createWindow,
+  renderElement,
+  renderString,
   fire: simulant.fire
 };
 /* eslint-ensable import/no-extraneous-dependencies */
