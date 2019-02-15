@@ -25,16 +25,20 @@ function renderString() {
     const rendered = [];
 
     if (attributes) {
-      write(' ');
-      Object.keys(attributes).forEach((key) => {
-        const updatedKey = key === 'className' ? 'class' : key;
-        const value = attributes[key];
-        if (typeof value !== 'function' && value !== false) {
-          rendered.push(`${updatedKey}="${htmlEncode(value)}"`);
-        }
-      });
+      const keys = Object.keys(attributes);
+      if (keys.length > 0) {
+        write(' ');
+        keys.forEach((key) => {
+          const updatedKey = key === 'className' ? 'class' : key;
+          const value = attributes[key];
 
-      write(rendered.join(' '));
+          if (typeof value !== 'function' && value !== false) {
+            rendered.push(`${updatedKey}="${htmlEncode(value)}"`);
+          }
+        });
+
+        write(rendered.join(' '));
+      }
     } else {
       write('');
     }
@@ -126,7 +130,8 @@ function renderString() {
 
   /**
    * Render the provided element as a string result and if a stream is provided,
-   * write output into it as elements are processed.
+   * write output into it as elements are processed. This is how Nomplate can
+   * stream large HTML definitions to the client.
    */
   return function render(element, optPrettyPrint, optStream) {
     pretty = optPrettyPrint;

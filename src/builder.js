@@ -74,12 +74,32 @@ function processHandler(elem, handler) {
   stack.pop();
 }
 
+/**
+ * Transform camelCase style keys into dash-case style keys.
+ */
+function processStyleKey(key) {
+  return key.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
+function processStyleObject(obj) {
+  const parts = [];
+  Object.keys(obj).forEach((key) => {
+    parts.push(`${processStyleKey(key)}:${obj[key]};`);
+  });
+  return parts.join('');
+}
+
 function processAttrs(attrs) {
   if (attrs) {
     if (attrs.className) {
       /* eslint-disable no-param-reassign */
       attrs.className = processClassName(attrs.className);
       /* eslint-enable no-param-reassign */
+    } else if (attrs.style && typeof attrs.style === 'object') {
+      attrs.style = processStyleObject(attrs.style);
+      if (attrs.style === '') {
+        delete attrs.style;
+      }
     } else if (attrs.onenter && attrs.onkeyup) {
       throw new Error('onenter and onkeyup are mutually exclusive, consider adding a switch statement to your onkeyup handler for the enter case.');
     }

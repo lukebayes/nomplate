@@ -22,7 +22,6 @@ class Element {
     this.isCollapsible = false;
     this.textValue = null;
 
-
     // Handler that should be overridden by renderElement if there is an
     // updateable handler present.
     this.render = null;

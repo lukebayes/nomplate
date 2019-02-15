@@ -1,8 +1,9 @@
 const Element = require('../').Element;
 const assert = require('chai').assert;
-const createWindow = require('../test_helper').createWindow;
+const createDocument  = require('../test_helper').createDocument ;
 const dom = require('../').dom;
 const renderElement = require('../').renderElement;
+const renderString = require('../test_helper').renderString;
 
 describe('Nomplate Element', () => {
   let instance;
@@ -45,7 +46,7 @@ describe('Nomplate Element', () => {
     let doc;
 
     beforeEach(() => {
-      doc = createWindow().document;
+      doc = createDocument();
     });
 
     function render(onComplete) {
@@ -95,4 +96,33 @@ describe('Nomplate Element', () => {
       button.click();
     });
   });
+
+  describe('inline style object as value', () => {
+    it('ignores empty style object', () => {
+      const str = renderString(dom.div({style: {}}));
+      assert.equal(str, '<div></div>');
+    });
+
+    it('ignores empty style with other attrs', () => {
+      const str = renderString(dom.div({style: {}, id: 'abcd'}));
+      assert.equal(str, '<div id="abcd"></div>');
+    });
+
+    it('accepts a style object', () => {
+      const myStyle = {
+        color: 'blue',
+        fontSize: '3em'
+      };
+
+      const str = renderString(dom.div({style: myStyle}));
+      assert.equal(str, '<div style="color:blue;font-size:3em;"></div>');
+    });
+
+    it('does nothing with correctly formatted keys', () => {
+      const myStyle = {'font-size': '2em'};
+      const str = renderString(dom.div({style: myStyle}));
+      assert.equal(str, '<div style="font-size:2em;"></div>');
+    });
+  });
 });
+
