@@ -108,6 +108,16 @@ describe('Nomplate renderElement', () => {
     assert.equal(element.outerHTML, '<p>hello<b>world</b>another</p>');
   });
 
+  it('renders selector children', () => {
+    const style = dom.style(() => {
+      dom.selector('.foo', {color: 'red'});
+      dom.selector('.bar', {fontSize: '2em'});
+    });
+
+    const element = renderElement(style, doc);
+    assert.equal(element.outerHTML, '<style>.foo{color:red;}.bar{font-size:2em;}</style>');
+  });
+
   describe('tree', () => {
     it('creates a single level of depth', () => {
       const root = dom.ul({className: 'list'}, () => {

@@ -149,6 +149,7 @@ function elementToOperations(ops, nomElement, document, optDomElement) {
     if (nomElement.nodeName === 'text') {
       ops.push(operations.createTextNode(nomElement.textContent));
       ops.push(operations.appendChild());
+      ops.push(operations.updateInnerHTML(nomElement.textValue));
     } else {
       ops.push(operations.createElement(nomElement, getUpdateElement));
       ops.push(operations.pushElement(nomElement));
@@ -158,6 +159,10 @@ function elementToOperations(ops, nomElement, document, optDomElement) {
       /* eslint-disable no-use-before-define */
       writeDomChildren(ops, nomElement, document, optDomElement && optDomElement.childNodes);
       /* eslint-enable no-use-before-define */
+      if (nomElement.nodeName === 'style' && nomElement.selectors) {
+        ops.push(operations.updateInnerHTML(nomElement.textValue));
+      }
+
       ops.push(operations.popElement());
       ops.push(operations.appendChild());
     }

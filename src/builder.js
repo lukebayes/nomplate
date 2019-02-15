@@ -1,4 +1,5 @@
 const Element = require('./element');
+const camelToDash = require('./camel_to_dash');
 const config = require('./config');
 
 /**
@@ -74,17 +75,10 @@ function processHandler(elem, handler) {
   stack.pop();
 }
 
-/**
- * Transform camelCase style keys into dash-case style keys.
- */
-function processStyleKey(key) {
-  return key.replace(/([A-Z])/g, "-$1").toLowerCase();
-}
-
 function processStyleObject(obj) {
   const parts = [];
   Object.keys(obj).forEach((key) => {
-    parts.push(`${processStyleKey(key)}:${obj[key]};`);
+    parts.push(`${camelToDash(key)}:${obj[key]};`);
   });
   return parts.join('');
 }
@@ -187,6 +181,11 @@ builder.elementWrapper = function(nodeName, optNamespace) {
   return function _elementWrapper(optAttrs, optHandler, optContent) {
     return builder(nodeName, optAttrs, optHandler, optContent, optNamespace);
   };
+};
+
+// Add CSS selector to the current node.
+builder.addSelector = function(selector, styles) {
+  top().addSelector(selector, styles);
 };
 
 module.exports = builder;
