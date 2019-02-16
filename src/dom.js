@@ -49,7 +49,10 @@ dom.stylesheet = (href) => {
   return dom.link({type: 'text/css', rel: 'stylesheet', href: href});
 };
 
-// Helper for creating selectors declaratively.
+// Helper for creating CSS selectors declaratively.
 dom.selector = builder.addSelector;
+
+// Helper for creating CSS @keyframes statements..
+dom.keyframes = builder.addKeyframe;
 
 module.exports = dom;
