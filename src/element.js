@@ -5,6 +5,7 @@ const camelToDash = require('./camel_to_dash');
 // Shared attribute object to avoid GC churn.
 const DEFAULT_NODE_NAME = 'node';
 
+
 /**
  * Element struct
  */
@@ -23,6 +24,7 @@ class Element {
     this.childNodes = [];
     this.isCollapsible = false;
     this.selectors = null;
+    this.keyframes = null;
 
     // Handler that should be overridden by renderElement if there is an
     // updateable handler present.
@@ -37,7 +39,7 @@ class Element {
     }
   }
 
-  addSelector(selector, styles) {
+  addSelector(selector, rules) {
     if (this.nodeName !== 'style') {
       throw new Error('Selectors can only be added to style nodes');
     }
@@ -47,18 +49,31 @@ class Element {
     }
     this.selectors.push({
       selector,
-      styles
+      rules
+    });
+  }
+
+  renderSelectorRules(entries, rules) {
+    Object.keys(rules).forEach((key) => {
+      entries.push(`${camelToDash(key)}:${rules[key]};`);
     });
   }
 
   renderSelectors() {
     const entries = [];
     this.selectors.forEach((selector) => {
-      entries.push(`${selector.selector}{`);
-      const styles = selector.styles;
-      Object.keys(styles).forEach((key) => {
-        entries.push(`${camelToDash(key)}:${styles[key]};`);
-      });
+      const name = selector.selector;
+      entries.push(`${name}{`);
+      const rules = selector.rules;
+      if (name.indexOf('@') === 0) {
+        Object.keys(rules).forEach((key) => {
+          entries.push(`${key} {`);
+          this.renderSelectorRules(entries, rules[key]);
+          entries.push(`} `);
+        });
+      } else {
+        this.renderSelectorRules(entries, selector.rules);
+      }
       entries.push('}');
     });
 

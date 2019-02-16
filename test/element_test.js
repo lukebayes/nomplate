@@ -97,6 +97,34 @@ describe('Nomplate Element', () => {
     });
   });
 
+  describe('selectors', () => {
+    it('accepts regular selector', () => {
+      const style = dom.style(() => {
+        dom.selector('foo', {
+          backgroundColor: '#fc0',
+        });
+      });
+
+      assert.equal(style.textValue, 'foo{background-color:#fc0;}');
+    });
+
+    it('accepts keyframes selector', () => {
+      const style = dom.style(() => {
+        dom.keyframes('foo', {
+          from: {
+            opacity: 0,
+            backgroundColor: 'red',
+          },
+          to: {
+            opacity: 1,
+            backgroundColor: 'yellow',
+          },
+        });
+      });
+      assert.equal(style.textValue, '@keyframes foo{from {opacity:0;background-color:red;} to {opacity:1;background-color:yellow;} }');
+    });
+  });
+
   describe('inline style object as value', () => {
     it('ignores empty style object', () => {
       const str = renderString(dom.div({style: {}}));

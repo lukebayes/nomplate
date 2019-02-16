@@ -188,5 +188,9 @@ builder.addSelector = function(selector, styles) {
   top().addSelector(selector, styles);
 };
 
+builder.addKeyframe = function(name, rules) {
+  top().addSelector(`@keyframes ${name}`, rules);
+};
+
 module.exports = builder;
 
