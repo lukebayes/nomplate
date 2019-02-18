@@ -1,4 +1,3 @@
-const TextElement = require('./text_element');
 const camelToDash = require('./camel_to_dash');
 
 /* eslint-disable no-underscore-dangle */
@@ -12,13 +11,14 @@ const DEFAULT_NODE_NAME = 'node';
 class Element {
   constructor(nodeName, args, parent, optNamespace) {
     this.nodeName = nodeName || DEFAULT_NODE_NAME;
+    this.domElement = null;
     this.attrs = (args && args.attrs) || null;
     this.parent = parent;
     this.namespace = optNamespace;
 
     this._children = null;
     this._textContent = null;
-    this._textValue = null;
+    this._textValue = this.attrs && this.attrs.textValue || null;
     this._id = this.attrs && this.attrs.id;
     this._className = this.attrs && this.attrs.className;
     this.childNodes = [];
@@ -33,8 +33,9 @@ class Element {
 
     // Append #text child if provided
     if (args && args.inlineTextChild) {
-      this.childNodes.push(new TextElement(args.inlineTextChild, this));
-      // Inserting textValue here as shortcut for string renderer.
+      // Used by render_element:
+      this.childNodes.push(new Element('text', {attrs: {textValue: args.inlineTextChild}}, this));
+      // Used by render_string:
       this._textValue = args.inlineTextChild;
     }
   }
@@ -80,6 +81,17 @@ class Element {
     return entries.join('');
   }
 
+  replaceChild(newChild, oldChild) {
+    const kids = this.childNodes;
+    for (var i = 0, len = kids.length; i < len; ++i) {
+      if (kids[i] === oldChild) {
+        kids[i].parent = null;
+        kids[i] = newChild;
+        break;
+      }
+    }
+  }
+
   get id() {
     return this._id;
   }
@@ -89,17 +101,13 @@ class Element {
   }
 
   get textValue() {
-    if (this.nodeName === 'style' && this.selectors) {
-      return this.renderSelectors();
-    }
-
     return this._textValue;
   }
 
   get textContent() {
     if (!this._textContent) {
       const str = this.childNodes
-        .map(node => node.textContent)
+        .map(node => (node.textContent || node.textValue))
         .join('');
 
       this._textContent = str !== '' ? str : null;

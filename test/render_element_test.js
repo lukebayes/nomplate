@@ -1,616 +1,135 @@
 const assert = require('chai').assert;
 const builder = require('../').builder;
-const config = require('../').config;
-const createWindow = require('../test_helper').createWindow;
+const createDocument = require('../test_helper').createDocument;
 const dom = require('../').dom;
 const renderElement = require('../').renderElement;
-const simulant = require('jsdom-simulant');
-const sinon = require('sinon');
-const svg = require('../').svg;
 
-describe('Nomplate renderElement', () => {
+describe('renderElement', () => {
   let doc;
 
   beforeEach(() => {
-    doc = createWindow().document;
+    doc = createDocument();
   });
 
-  it('escapes text content', () => {
-    const div = dom.div({className: '<', style: '>'}, '<script>');
 
-    const element = renderElement(div, doc);
-
-    assert.equal(element.getAttribute('class'), '&lt;');
-    assert.equal(element.getAttribute('style'), '&gt;');
-    assert.equal(element.innerHTML, '&lt;script&gt;');
-
-    // NOTE(lbayes): jsdom will double encode these values:
-    assert.equal(element.outerHTML, '<div class="&amp;lt;" style="&amp;gt;">&lt;script&gt;</div>');
-  });
-
-  it('transfers attributes', () => {
-    const div = dom.div({style: 'color:#fc0;', className: 'abcd'});
-    const element = renderElement(div, doc);
-
-    assert.equal(element.getAttribute('style'), 'color:#fc0;');
-    assert.equal(element.className, 'abcd');
-  });
-
-  it('renders text content as child text node', () => {
-    const div = dom.div('abcd');
-    assert.equal(div.children.length, 0, 'Node children are empty');
-    assert.equal(div.childNodes.length, 1, 'Has a text child');
-    assert.equal(div.textContent, 'abcd');
-
-    const element = renderElement(div, doc);
-    assert.equal(element.outerHTML, '<div>abcd</div>');
-    assert.equal(element.childNodes.length, 1);
-  });
-
-  it('does not apply existing attribute', () => {
-    const div = dom.div({style: 'color:#fc0;', className: 'abcd'});
-    const element = doc.createElement('div');
-    element.className = 'abcd';
-    element.setAttribute('style', 'color:#fc0;');
-    sinon.spy(element, 'setAttribute');
-    renderElement(div, doc, element);
-
-    assert.equal(element.setAttribute.callCount, 0, 'There should be no assignment');
-  });
-
-  it('removes missing attrs', () => {
-    const div = dom.div();
-    const element = doc.createElement('div');
-    element.setAttribute('style', 'color:#fc0;');
-
-    assert.equal(element.outerHTML, '<div style="color:#fc0;"></div>');
-    renderElement(div, doc, element);
-    assert.equal(element.outerHTML, '<div></div>');
-  });
-
-  it('applies on handler', () => {
-    const clickHandler = sinon.spy();
-    const div = dom.div({onclick: clickHandler});
-    const element = renderElement(div, doc);
-
-    element.click();
-    assert.equal(clickHandler.callCount, 1);
-  });
-
-  it('removes handler', () => {
-    const handler = sinon.spy();
-    const div = dom.div({onclick: handler, onkeyup: handler, onkeydown: handler});
-    const element = renderElement(div, doc);
-    const div2 = dom.div({onkeyup: handler});
-
-    renderElement(div2, doc, element);
-    element.click();
-    assert.equal(element.outerHTML, '<div data-nomhandlers="onkeyup"></div>');
-    assert.equal(handler.callCount, 0);
-  });
-
-  it('discards false attribute values', () => {
-    const checkbox = dom.input({type: 'checkbox', checked: false});
-    const element = renderElement(checkbox, doc);
-
-    // NOTE(lbayes): The jsdom library renders checkboxes with no closing tag.
-    assert.equal(element.outerHTML, '<input type="checkbox">');
-  });
-
-  it('applies multiple text children', () => {
-    const p = dom.p(() => {
-      dom.text('hello');
-      dom.b('world');
-      dom.text('another');
+  describe('creation', () => {
+    it('creates simple element', () => {
+      const domElement = renderElement(dom.div(), doc);
+      assert.equal(domElement.nodeName, 'DIV');
     });
 
-    const element = renderElement(p, doc);
-    assert.equal(element.outerHTML, '<p>hello<b>world</b>another</p>');
-  });
-
-  it('renders selector children', () => {
-    const style = dom.style(() => {
-      dom.selector('.foo', {color: 'red'});
-      dom.selector('.bar', {fontSize: '2em'});
+    it('creates element with id', () => {
+      const domElement = renderElement(dom.div({id: 'abcd'}), doc);
+      assert.equal(domElement.outerHTML, '<div id="abcd"></div>');
     });
 
-    const element = renderElement(style, doc);
-    assert.equal(element.outerHTML, '<style>.foo{color:red;}.bar{font-size:2em;}</style>');
-  });
-
-  describe('tree', () => {
-    it('creates a single level of depth', () => {
-      const root = dom.ul({className: 'list'}, () => {
-        dom.li('one');
-        dom.li('two');
-        dom.li('three');
-      });
-
-      const element = renderElement(root, doc);
-
-      assert.equal(element.className, 'list');
-      assert.equal(element.childNodes.length, 3);
-      const kids = element.childNodes;
-
-      assert.equal(kids[0].textContent, 'one');
-      assert.equal(kids[1].textContent, 'two');
-      assert.equal(kids[2].textContent, 'three');
+    it('assigns textContent', () => {
+      const domElement = renderElement(dom.div('one'), doc);
+      assert.equal(domElement.outerHTML, '<div>one</div>');
     });
 
-    it('creates nested children', () => {
-      const root = dom.div({className: 'root'}, () => {
-        dom.header({className: 'header'}, () => {
-          dom.h1('Hello World');
-        });
-        dom.section({className: 'main'}, () => {
-          dom.ul(() => {
-            dom.li('one');
-            dom.li('two');
-            dom.li('three');
-          });
-        });
-        dom.footer(() => {
-          dom.h2('Goodbye World');
-        });
-      });
-
-      const element = renderElement(root, doc);
-      assert.equal(root.className, 'root');
-
-      // Navigate to the first LI component and verify it is where we expect it.
-      assert.equal(element.children[1].firstChild.firstChild.textContent, 'one');
-    });
-  });
-
-  describe('events', () => {
-    let button;
-    let buttonHandler;
-    let root;
-    let rootHandler;
-    let stopProp;
-
-    beforeEach(() => {
-      stopProp = false;
-      rootHandler = sinon.spy();
-      buttonHandler = sinon.spy((event) => {
-        if (stopProp) {
-          event.stopPropagation();
-        }
-      });
-      root = renderElement(dom.div({onclick: rootHandler}, () => {
-        dom.div(() => {
-          dom.div(() => {
-            dom.button({id: 'btn', onclick: buttonHandler});
-          });
+    it('creates children', () => {
+      const domElement = renderElement(dom.div(() => {
+        dom.ul(() => {
+          dom.li('one');
+          dom.li('two');
+          dom.li('three');
         });
       }), doc);
 
-      button = root.querySelector('#btn');
-    });
-
-    it('stopPropagation stops bubbling', () => {
-      stopProp = true;
-      simulant.fire(button, 'click');
-      assert.equal(rootHandler.callCount, 0);
-    });
-
-    it('wires up click handler', () => {
-      simulant.fire(button, 'click');
-      assert.equal(buttonHandler.callCount, 1);
-    });
-
-    it('bubbles click events', () => {
-      simulant.fire(button, 'click');
-      assert.equal(rootHandler.callCount, 1);
-    });
-
-    // Uncaught exceptions in DOM Element event listeners are being silently swallowed by JSDOM.
-    it.skip('sends keyboard events', () => {
-      let didFire = false;
-      function handler(event) {
-        didFire = true;
-        throw new Error('fake-error');
-        assert.equal(event.keyCode, 24);
-      }
-
-      const element = renderElement(dom.input({onkeyup: handler}), doc);
-      simulant.fire(element, 'keyup', {keyCode: 23});
-      assert(didFire, 'Handler should have fired');
+      const ul = domElement.firstChild;
+      assert.equal(ul.nodeName, 'UL');
+      assert.equal(ul.childNodes.length, 3);
+      assert.equal(ul.childNodes[0].textContent, 'one');
+      assert.equal(ul.childNodes[1].textContent, 'two');
+      assert.equal(ul.childNodes[2].textContent, 'three');
     });
   });
 
   describe('updates', () => {
-    it('replaces textContent', () => {
-      const root = dom.div('hello');
-      const element = renderElement(root, doc);
-      assert.equal(element.outerHTML, '<div>hello</div>');
+    it('updates element className', () => {
+      const domOne = renderElement(dom.div({className: 'abcd'}), doc);
+      const domTwo = renderElement(dom.div({className: 'efgh'}), doc, domOne);
 
-      // Update the textContent
-      const other = dom.div('world');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<div>world</div>');
+      assert(domOne === domTwo, 'Elements should be the same');
+      assert.equal(domTwo.className, 'efgh');
+      assert.equal(domOne.className, 'efgh', 'Should modify original reference');
     });
 
-    it('replaces className', () => {
-      const root = dom.div({className: 'abcd'});
-      const element = renderElement(root, doc);
-      const other = dom.div({className: 'efgh'});
+    it('updates element text content', () => {
+      let updater = null;
+      let label = 'two';
+      let id = 'abcd';
+      let ul;
 
-      assert.equal(element.outerHTML, '<div class="abcd"></div>');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<div class="efgh"></div>');
-    });
-
-    it('removes className', () => {
-      const root = dom.div({className: 'abcd'});
-      const element = renderElement(root, doc);
-      const other = dom.div();
-
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<div></div>');
-    });
-
-    it('replaces attribute', () => {
-      const root = dom.a({href: '/abcd'});
-      const element = renderElement(root, doc);
-      const other = dom.a({href: '/efgh'});
-
-      assert.equal(element.outerHTML, '<a href="/abcd"></a>');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<a href="/efgh"></a>');
-    });
-
-    it('removes attribute', () => {
-      const root = dom.a({href: '/abcd'});
-      const element = renderElement(root, doc);
-      const other = dom.a();
-
-      assert.equal(element.outerHTML, '<a href="/abcd"></a>');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<a></a>');
-    });
-
-    it('replaces handler', () => {
-      const handler = sinon.spy();
-      const root = dom.div({onclick: handler});
-      const element = renderElement(root, doc);
-      const other = dom.div();
-
-      assert.equal(element.outerHTML, '<div data-nomhandlers="onclick"></div>');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<div></div>');
-    });
-
-    it('adds handlers', () => {
-      const handler = sinon.spy();
-      const root = dom.div({onclick: handler});
-      const element = renderElement(root, doc);
-      const other = dom.div({onclick: handler, onkeydown: handler});
-
-      assert.equal(element.outerHTML, '<div data-nomhandlers="onclick"></div>');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<div data-nomhandlers="onclick onkeydown"></div>');
-    });
-
-    it('update handlers', () => {
-      const handler = sinon.spy();
-      const root = dom.div({onclick: handler});
-      const element = renderElement(root, doc);
-      const other = dom.div({onkeydown: handler});
-
-      assert.equal(element.outerHTML, '<div data-nomhandlers="onclick"></div>');
-      renderElement(other, doc, element);
-      assert.equal(element.outerHTML, '<div data-nomhandlers="onkeydown"></div>');
-    });
-
-    it('updates a child', () => {
-      function renderDocument(labels) {
-        return dom.ul(() => {
-          labels.forEach((label) => {
-            dom.li(label);
-          });
+      const domElement = renderElement(dom.div(() => {
+        dom.ul((update) => {
+          updater = update;
+          dom.li('one');
+          dom.li({id: id}, label);
+          dom.li('three');
         });
-      }
+      }), doc);
 
-      // renderDocument the tree for the first time.
-      const element = renderElement(renderDocument(['abcd']), doc);
-      assert.equal(element.outerHTML, '<ul><li>abcd</li></ul>');
+      ul = domElement.firstChild;
 
-      // Add a child to the list.
-      renderElement(renderDocument(['abcd', 'efgh']), doc, element);
-      assert.equal(element.outerHTML, '<ul><li>abcd</li><li>efgh</li></ul>');
+      assert.equal(ul.nodeName, 'UL');
+      assert.equal(ul.childNodes.length, 3);
+      assert.equal(ul.childNodes[0].textContent, 'one');
+      assert.equal(ul.childNodes[1].textContent, 'two');
+      assert.equal(ul.childNodes[2].textContent, 'three');
 
-      // Add another child to the list.
-      renderElement(renderDocument(['abcd', 'efgh', 'ijkl']), doc, element);
-      assert.equal(element.outerHTML, '<ul><li>abcd</li><li>efgh</li><li>ijkl</li></ul>');
+      label = 'two-point-five';
+      id = 'efgh';
+      updater();
+      builder.forceUpdate();
 
-      // Remove the first child.
-      renderElement(renderDocument(['efgh', 'ijkl']), doc, element);
-      assert.equal(element.outerHTML, '<ul><li>efgh</li><li>ijkl</li></ul>');
+      ul = domElement.firstChild;
+      assert.equal(ul.nodeName, 'UL');
 
-      // Remove all children.
-      renderElement(renderDocument([]), doc, element);
-      assert.equal(element.outerHTML, '<ul></ul>');
+      // assert.equal(ul.childNodes.length, 3);
+      assert.equal(ul.childNodes[0].textContent, 'one');
+      assert.equal(ul.childNodes[1].textContent, 'two-point-five');
+      assert.equal(ul.childNodes[2].textContent, 'three');
     });
 
-	it('updates from update handler', (done) => {
-		var labels = ['abcd', 'efgh', 'ijkl', 'mnop'];
+    it('removes first child', (done) => {
+      let updater = null;
+      let showFirst = true;
+      let showLast = true;
 
-		function renderStub() {
-			return dom.div({id: 'abcd'}, () => {
-				dom.div({id: 'efgh'}, (update) => {
-
-					function clickHandler() {
-						labels.shift();
-						update();
-					}
-
-					labels.forEach((label) => {
-						dom.button({id: label, onclick: clickHandler}, label);
-					});
-				});
-			});
-		}
-
-		const element = renderElement(renderStub(), doc);
-		const firstButtons = element.querySelectorAll('button');
-		assert.equal(firstButtons.length, 4);
-		firstButtons[0].click();
-
-		builder.forceUpdate();
-		setTimeout(() => {
-			const secondButtons = element.querySelectorAll('button');
-			assert.equal(secondButtons.length, 3);
-			assert.isTrue(firstButtons[0] === secondButtons[0], 'Instance should be reused');
-			assert.isTrue(firstButtons[1] === secondButtons[1], 'Instance should be reused');
-			assert.isTrue(firstButtons[2] === secondButtons[2], 'Instance should be reused');
-			done();
-		}, 0);
-	});
-
-    it('creates svg elements with createElementNS', () => {
-      const root = dom.div(() => {
-        svg(() => {
-          svg.rect({width: 200, height: 100});
-        });
-      });
-      const element = renderElement(root, doc);
-      assert.equal(element.outerHTML, '<div><svg><rect width="200" height="100"></rect></svg></div>');
-    });
-
-    it('proceeds when onRender handlers fail', (done) => {
-      let message;
-
-      // Ensure we log the async error.
-      sinon.stub(console, 'error', (_message) => {
-        message =_message;
-      });
-
-      const one = () => { throw new Error('fake-error'); };
-      const two = sinon.spy();
-
-      const root = dom.div(() => {
-        dom.div({onRender: one});
-        dom.div({onRender: two});
-      });
-
-      renderElement(root, doc);
-
-      config().setTimeout(() => {
-        try {
-          assert.equal(two.callCount, 1);
-          assert.match(console.error.getCall(0).args[0], /fake-error/);
-          done();
-        } catch (err) {
-          done(err);
-        } finally {
-          // Ensure we clean up the console.error stub
-          console.error.restore();
-        }
-      }, 0);
-    });
-
-    it('receives the real dom element on request', (done) => {
-      const onRender = sinon.spy();
-
-      const root = dom.div({id: 'abcd', onRender}, () => {
-        dom.ul({id: 'efgh', onRender}, () => {
-          dom.li({id: 'ijkl', onRender}, 'ijkl');
-          dom.li({id: 'mnop', onRender}, 'mnop');
-          // NOTE: ensure key case changes still work.
-          dom.li({id: 'qrst', onRender}, 'qrst');
-        });
-      });
-
-      function getCallArgument(index) {
-        return onRender.getCall(index).args[0];
-      }
-
-      renderElement(root, doc);
-
-      config().setTimeout(() => {
-        try {
-          assert.equal(onRender.callCount, 5);
-          assert.equal(getCallArgument(0).id, 'abcd');
-          assert.equal(getCallArgument(1).id, 'efgh');
-          assert.equal(getCallArgument(2).id, 'ijkl');
-          assert.equal(getCallArgument(2).outerHTML, '<li id="ijkl">ijkl</li>');
-          assert.equal(getCallArgument(3).id, 'mnop');
-          assert.equal(getCallArgument(3).outerHTML, '<li id="mnop">mnop</li>');
-          assert.equal(getCallArgument(4).id, 'qrst');
-          assert.equal(getCallArgument(4).outerHTML, '<li id="qrst">qrst</li>');
-          done();
-        } catch (err) {
-          done(err);
-        }
-      }, 0);
-
-    });
-
-    it.skip('receives onRender after being attached', () => {
-      // Return true if the provided element is attached to the stub document.
-      function elementIsAttached(element) {
-        if (element === doc) {
-          return true;
-        }
-        const parent = element.parentNode;
-        if (parent) {
-          return elementIsAttached(parent);
-        }
-        return false;
-      }
-
-      // Called onRender by nomplate.
-      function onRender(element) {
-        assert(elementIsAttached(element), 'onRender should be called after attachment to document');
-      }
-
-      const element = renderElement(dom.div({id: 'abcd', onRender: onRender}), doc);
-      doc.body.appendChild(element);
-      console.log('finished');
-    });
-
-    describe('deep mutations', () => {
-      let element;
-      let button;
-
-      function renderDocument(renderHandler) {
-        const labels = [];
-
-        function getAddItemHandler(update) {
-          return function _getAddItemHandler() {
-            labels.push(`item-${labels.length}`);
-            update(renderHandler);
-          };
-        }
-
-        return dom.div(() => {
-          dom.header(() => {
-            dom.h1('header');
-            dom.input();
-          });
-          dom.section({className: 'main'}, (update) => {
-            dom.button({onclick: getAddItemHandler(update)}, 'add');
-            dom.ul(() => {
-              dom.input({className: 'input'});
-              labels.forEach((item) => {
-                dom.li(() => {
-                  dom.div(() => {
-                    dom.div(item);
-                  });
-                });
-              });
-            });
-          });
-        });
-      }
-
-      it('removes last item', (done) => {
-        function renderHandler() {
-          const listItems = element.querySelectorAll('li');
-
-          try {
-            assert.equal(listItems.length, 4);
-            assert.equal(listItems[0].textContent, 'item-0');
-            assert.equal(listItems[1].textContent, 'item-1');
-            assert.equal(listItems[2].textContent, 'item-2');
-            assert.equal(listItems[3].textContent, 'item-3');
-            done();
-          } catch(err) {
-            done(err);
+      const nomElement = dom.div(() => {
+        dom.ul((update) => {
+          updater = update;
+          if (showFirst) {
+            dom.li({id: 'abcd'});
           }
-        }
-
-        element = renderElement(renderDocument(renderHandler), doc);
-        button = element.querySelector('button');
-
-        button.click();
-        button.click();
-        button.click();
-        button.click();
-      });
-    });
-
-    describe('onRender handler', () => {
-      it('is called, even for skipped children', (done) => {
-        /**
-         * When calling the provided "update" function from a container block,
-         * one can provide a local function that will be called when the rendered.
-         * This ensures that we call your handler even if the actual element
-         * was skipped because a parent was rendered.
-         */
-        let updateRoot = null;
-        let updateChild1 = null;
-        let updateChild2 = null;
-
-        const root = dom.div({id: 'root'}, (update) => {
-          updateRoot = update;
-
-          dom.div({id: 'child1'}, (update) => {
-            updateChild1 = update;
-          });
-
-          dom.div({id: 'child2'}, (update) => {
-            updateChild2 = update;
-          });
-        });
-
-        const elem = renderElement(root, doc);
-        const rootRendered = sinon.spy();
-        const child1Rendered = sinon.spy();
-        const child2Rendered = sinon.spy();
-        updateRoot(rootRendered);
-        updateChild1(child1Rendered);
-        updateChild2(child2Rendered);
-
-        builder.forceUpdate();
-        // There is a timeout before complete handlers are triggered.
-        setTimeout(() => {
-          assert.equal(rootRendered.callCount, 1);
-          assert.equal(child1Rendered.callCount, 1);
-          assert.equal(child2Rendered.callCount, 1);
-          done();
+          dom.li({id: 'efgh'});
+          if (showLast) {
+            dom.li({id: 'ijkl'});
+          }
         });
       });
-    });
 
-    describe('async update()', () => {
-      /**
-       * Bug #66 Two async handlers in a single container calling update
-       * will only render the first caller.
-       */
-      it('mutates correct elements', (done) => {
-        // AND secondary onRender handlers that are provided to callers
-        // of update(), should always be called, even if they're discarded.
-        let state1 = 'abcd';
-        let state2 = null;
-        let updateHandlers = [];
+      const domElement = renderElement(nomElement, doc);
 
-        const nomElements = dom.div({id: 'root'}, () => {
-          dom.div((update) => {
-            updateHandlers.push(update);
+      let ul = domElement.firstChild;
+      assert.equal(ul.childNodes.length, 3);
+      assert.equal(ul.firstChild.id, 'abcd');
 
-            if (state1) {
-              dom.div({id: 'state1'}, state1);
-            }
+      showFirst = false;
+      updater();
+      builder.forceUpdate();
+      assert.equal(ul.firstChild.id, 'efgh');
 
-            if (state2) {
-              dom.div({id: 'state2'}, state2);
-            }
-          });
-        });
+      showLast = false;
+      updater();
+      builder.forceUpdate();
 
-        const root = renderElement(nomElements, doc);
-        state2 = 'efgh';
-
-        updateHandlers[0](() => {
-          assert.equal(root.textContent, 'abcdefgh');
-          state2 = 'ijkl';
-          updateHandlers[0](() => {
-            done();
-          });
-        });
-      });
+      ul = domElement.firstChild;
+      assert.equal(ul.lastChild.id, 'efgh');
+      assert.equal(ul.childNodes.length, 1);
+      done();
     });
   });
 });
