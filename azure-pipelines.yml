@@ -5,7 +5,7 @@
 
 trigger:
 - master
-- origin/*
+- remotes/origin/*
 
 pool:
   vmImage: 'Ubuntu-16.04'
