@@ -12,9 +12,15 @@ pool:
 steps:
 - script: |
     make dev-install
-  displayName: 'make dev-install'
+    source setup-env.sh
+    npm install
+    source setup-env.sh
+  displayName: 'Prepare the environment'
 
 - script: |
-    npm install
     make build
-  displayName: 'npm install and build'
+  displayName: 'Build sources'
+
+- script: |
+    make test
+  displayName: 'Run tests'
