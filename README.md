@@ -3,7 +3,7 @@
 
 Nomplate is a microscopic (< 5kb), insanely fast (<30ms to interaction) client and server side template engine and component system that makes it dead simple to create, compose, _test_ and deploy visual components using Plain Old JavaScript wherever it runs.
 
-_(Testing pipeline builds)_
+_(Testing pipeline builds 2)_
 
 ![Gnome Plate](https://raw.githubusercontent.com/lukebayes/nomplate/master/Gnomplate.jpg "Gnome Plate")
 
