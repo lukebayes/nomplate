@@ -40,7 +40,7 @@ test-w: ${NODE}
 # Open a new chrome tab at chrome://inspect and click the small blue link
 # that says, "Open dedicated DevTools for Node."
 test-debug: ${NODE}
-	${MOCHA} --inspect --debug-brk
+	${MOCHA} --inspect-brk
 
 build-module: src/*
 
