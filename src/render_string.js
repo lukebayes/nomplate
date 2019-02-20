@@ -99,9 +99,12 @@ function renderString() {
       write('>');
     }
 
-    if (textValue) {
+    if (element.nodeName === 'style' && element.selectors.length > 0) {
+      write(element.renderSelectors());
+    } else if (textValue) {
       write(htmlEncode(textValue));
     }
+
 
     if (children.length > 0) {
       writeCarriageReturn();
@@ -122,8 +125,8 @@ function renderString() {
     writeCarriageReturn();
   }
 
-  function processChildren(childNodes) {
-    childNodes.forEach((child) => {
+  function processChildren(children) {
+    children.forEach((child) => {
       renderNode(child);
     });
   }

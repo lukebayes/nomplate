@@ -105,7 +105,7 @@ describe('Nomplate Element', () => {
         });
       });
 
-      assert.equal(style.textValue, 'foo{background-color:#fc0;}');
+      assert.equal(style.renderSelectors(), 'foo{background-color:#fc0;}');
     });
 
     it('accepts keyframes selector', () => {
@@ -121,7 +121,7 @@ describe('Nomplate Element', () => {
           },
         });
       });
-      assert.equal(style.textValue, '@keyframes foo{from {opacity:0;background-color:red;} to {opacity:1;background-color:yellow;} }');
+      assert.equal(style.renderSelectors(), '@keyframes foo{from {opacity:0;background-color:red;} to {opacity:1;background-color:yellow;} }');
     });
   });
 

@@ -37,6 +37,11 @@ test: ${NODE}
 test-w: ${NODE}
 	${MOCHA} --reporter dot ${TEST_FILES} -w
 
+# Open a new chrome tab at chrome://inspect and click the small blue link
+# that says, "Open dedicated DevTools for Node."
+test-debug: ${NODE}
+	${MOCHA} --inspect --debug-brk
+
 build-module: src/*
 
 publish: clean build
