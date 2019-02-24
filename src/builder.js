@@ -14,7 +14,6 @@ const config = require('./config');
 
 function top() {
   const stack = config().builderStack;
-
   return stack[stack.length - 1] || null;
 }
 

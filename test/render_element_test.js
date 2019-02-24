@@ -93,7 +93,7 @@ describe('renderElement', () => {
       assert.equal(ul.childNodes[2].textContent, 'three');
     });
 
-    it('removes first child', (done) => {
+    it('removes first child', () => {
       let updater = null;
       let showFirst = true;
       let showLast = true;
@@ -113,23 +113,75 @@ describe('renderElement', () => {
 
       const domElement = renderElement(nomElement, doc);
 
-      let ul = domElement.firstChild;
+      // UL has three children.
+      const ul = domElement.firstChild;
       assert.equal(ul.childNodes.length, 3);
       assert.equal(ul.firstChild.id, 'abcd');
 
+      // Update removes first child.
       showFirst = false;
       updater();
       builder.forceUpdate();
       assert.equal(ul.firstChild.id, 'efgh');
 
+      // Update removes first and last child.
       showLast = false;
       updater();
       builder.forceUpdate();
 
-      ul = domElement.firstChild;
       assert.equal(ul.lastChild.id, 'efgh');
       assert.equal(ul.childNodes.length, 1);
-      done();
+
+      // Update adds first and last children back.
+      showFirst = true;
+      showLast = true;
+      updater();
+      builder.forceUpdate();
+
+      const kids = ul.childNodes;
+      assert.equal(kids.length, 3);
+      assert.equal(kids[0].id, 'abcd');
+      assert.equal(kids[1].id, 'efgh');
+      assert.equal(kids[2].id, 'ijkl');
+    });
+
+    it('updates reordered children with keys', () => {
+      let updater;
+      let data = ['abcd', 'efgh', 'ijkl'];
+      const nomElement = dom.div(() => {
+        dom.ul({id: 'container'}, (update) => {
+          updater = update;
+
+          data.forEach((entry) => {
+            dom.li({key: entry}, entry);
+          });
+        });
+      });
+
+      const domElement = renderElement(nomElement, doc);
+
+      // Make a copy of childNodes so that we can check the first result against
+      // second result.
+      const firstKids = Array.prototype.slice.call(domElement.firstChild.childNodes);
+      assert.equal(firstKids.length, 3);
+      assert.equal(firstKids[0].textContent, 'abcd');
+      assert.equal(firstKids[0].getAttribute('data-nom-key'), 'abcd');
+      assert.equal(firstKids[1].textContent, 'efgh');
+      assert.equal(firstKids[1].getAttribute('data-nom-key'), 'efgh');
+      assert.equal(firstKids[2].textContent, 'ijkl');
+      assert.equal(firstKids[2].getAttribute('data-nom-key'), 'ijkl');
+
+      data = data.reverse();
+      updater();
+      builder.forceUpdate();
+
+      const secondKids = domElement.firstChild.childNodes;
+      assert.equal(secondKids[0].textContent, 'ijkl');
+      assert.equal(secondKids[1].textContent, 'efgh');
+      assert.equal(secondKids[2].textContent, 'abcd');
+
+      assert(firstKids[0] === secondKids[2], 'First and last children are reverse');
+      assert(firstKids[1] === secondKids[1], 'Middle kid remains');
     });
   });
 });

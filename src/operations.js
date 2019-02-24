@@ -24,6 +24,13 @@ function setAttribute(name, value) {
   };
 }
 
+function setDataAttribute(name, value) {
+  return function _setDataAttribute(domElement, stack, document) {
+    domElement.dataset[name] = value;
+    return domElement;
+  };
+}
+
 function removeAttribute(name) {
   return function _removeAttribute(domElement) {
     domElement.removeAttribute(name);
@@ -190,6 +197,18 @@ function appendChild() {
   };
 }
 
+function moveToIndex(existingNode, index) {
+  return function _insertDomBefore(domElement, stack, document) {
+    const parent = top(stack);
+    if (parent) {
+      const sibling = parent.childNodes[index];
+      if (sibling !== domElement) {
+        parent.insertBefore(existingNode, sibling);
+      }
+    }
+  };
+}
+
 function removeChild(child) {
   return function _removeChild(domElement, stack) {
     top(stack).removeChild(child);
@@ -258,6 +277,7 @@ module.exports = {
   createTextNode,
   enqueueOnRender,
   execute,
+  moveToIndex,
   popElement,
   pushDomElement,
   pushElement,
@@ -269,6 +289,7 @@ module.exports = {
   replaceChild,
   setAttribute,
   setClassName,
+  setDataAttribute,
   setHandler,
   setId,
   setRenderFunction,

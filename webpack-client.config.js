@@ -6,15 +6,15 @@ module.exports = {
   name: 'client',
   target: 'web',
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.json$/,
         loader: 'json-loader',
+        test: /\.json$/,
       },
       {
-        test: /\.js$/,
         loader: 'babel-loader',
-        query: {
+        test: /\.js$/,
+        options: {
           presets: ['es2015'],
         },
       },

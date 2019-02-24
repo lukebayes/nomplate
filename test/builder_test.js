@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 const builder = require('../').builder;
+const constants = require('../').constants;
 const dom = require('../').dom;
 const sinon = require('sinon');
 
@@ -18,7 +19,7 @@ describe('Nomplate ElementBuilder', () => {
     const root = builder();
     assert.equal(root.nodeName, 'node');
     assert.equal(root.children.length, 0);
-    assert.isNull(root.attrs);
+    assert.equal(root.attrs, constants.EMPTY_ATTRS);
     assert.isNull(root.parent);
   });
 

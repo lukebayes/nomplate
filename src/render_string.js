@@ -1,3 +1,5 @@
+const camelToDash = require('./camel_to_dash');
+const constants = require('./constants');
 const dom = require('./dom');
 const htmlEncode = require('./html_encode');
 
@@ -22,25 +24,28 @@ function renderString() {
   }
 
   function writeAttributes(attributes) {
-    const rendered = [];
-
     if (attributes) {
+      let key, value;
       const keys = Object.keys(attributes);
-      if (keys.length > 0) {
-        write(' ');
-        keys.forEach((key) => {
-          const updatedKey = key === 'className' ? 'class' : key;
-          const value = attributes[key];
+      const len = keys.length;
+      const parts = [];
 
-          if (typeof value !== 'function' && value !== false) {
-            rendered.push(`${updatedKey}="${htmlEncode(value)}"`);
-          }
-        });
+      for (var i = 0; i < len; ++i) {
+        key = keys[i];
+        value = attributes[key];
 
-        write(rendered.join(' '));
+        if (key === constants.CLASS_NAME) {
+          key = 'class';
+        } else if (key === 'key') {
+          key = constants.NOM_ATTR_KEY;
+        } else if (key.indexOf('data') === 0) {
+          key = camelToDash(key);
+        }
+
+        if (typeof value !== 'function' && value !== null && value !== undefined && value !== false) {
+          write(` ${key}="${htmlEncode(value)}"`);
+        }
       }
-    } else {
-      write('');
     }
   }
 
