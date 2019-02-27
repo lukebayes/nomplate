@@ -1,5 +1,6 @@
 const path = require('path');
 const renderLayout = require('./render_layout');
+const renderString = require('./render_string');
 
 function getLayoutPath(options) {
   if (!options || !options.settings) {
@@ -20,14 +21,20 @@ function renderFile(source, options, callback) {
     /* eslint-disable global-require */
     /* eslint-disable import/no-dynamic-require */
     const view = require(source);
-    const layout = require(getLayoutPath(options));
-    /* eslint-enable global-require */
-    /* eslint-enable import/no-dynamic-require */
-    callback(null, renderLayout(layout, view, options, callback));
+
+    if (options.layout === false) {
+      callback(null, renderString()(view(options)));
+    } else {
+      const layout = require(getLayoutPath(options));
+      /* eslint-enable global-require */
+      /* eslint-enable import/no-dynamic-require */
+      callback(null, renderLayout(layout, view, options, callback));
+    }
   } catch (err) {
     callback(err);
   }
 }
 
 module.exports = renderFile;
+
 
