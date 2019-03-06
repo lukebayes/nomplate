@@ -164,14 +164,18 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
     const value = attrs[keyWithCase];
     const key = keyWithCase.toLowerCase();
 
-    if (key === 'id' && (!optDomElement || value !== optDomElement.id)) {
-      ops.push(operations.setId(value));
+    if (key === 'id') {
+      if (!optDomElement || value !== optDomElement.id) {
+        ops.push(operations.setId(value));
+      }
     } else if (key === 'classname') {
       if (!optDomElement || value !== optDomElement.className) {
         ops.push(operations.setClassName(value));
       }
-    } else if (key === 'key' && (!optDomElement || value !== getNomKeyValue(optDomElement))) {
-      ops.push(operations.setAttribute(constants.NOM_ATTR_KEY, value));
+    } else if (key === 'key') {
+      if (!optDomElement || value !== getNomKeyValue(optDomElement)) {
+        ops.push(operations.setAttribute(key, value));
+      }
     } else if (key === 'onrender') {
       if (typeof value === 'function') {
         ops.push(operations.enqueueOnRender(value));
@@ -180,12 +184,14 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
       }
     } else if (typeof value === 'function') {
       createDispatcherOperation(ops, nomElement, key, value);
-    } else if (!optDomElement && value !== false && value !== 'false') {
-      // Ensure we set the attribute name with provided case.
-      ops.push(operations.setAttribute(keyWithCase, value));
+    } else if (!optDomElement) {
+      if (value !== false && value !== 'false') {
+        // Ensure we set the attribute name with provided case.
+        ops.push(operations.setAttribute(keyWithCase, value));
+      }
     } else if (optDomElement) {
       const domValue = optDomElement.getAttribute(keyWithCase);
-      if (value !== domValue || domValue !== 'false') {
+      if (value != domValue || domValue != 'false') {
         ops.push(operations.setAttribute(keyWithCase, value));
       }
     }
