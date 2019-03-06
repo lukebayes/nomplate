@@ -168,6 +168,26 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<div><input type="checkbox"></div>');
     });
 
+    it('represents checked attribute in property as well', () => {
+      let isChecked = true;
+      let updater;
+
+      const nomElement = dom.div((update) => {
+        updater = update;
+        dom.input({type: 'checkbox', checked: isChecked});
+      });
+
+      const domElement = renderElement(nomElement, doc);
+      assert(domElement.firstChild.checked, 'Expected checkbox property to be applied');
+
+      isChecked = false;
+      updater();
+      builder.forceUpdate();
+
+      assert(!domElement.firstChild.checked, 'Expected checkbox property to be applied');
+      assert.equal(domElement.outerHTML, '<div><input type="checkbox"></div>');
+    });
+
     it('never writes classname or key attributes', () => {
       let updater;
 

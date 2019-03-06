@@ -37,6 +37,17 @@ function processClassName(value) {
   return value;
 }
 
+/**
+ * Create the function that will be passed to a developer-provided update
+ * argument.
+ *
+ * When a component is declared, an update handler can be requested as follows:
+ *
+ *   dom.div((update) => { setTimeout(update, 400); });
+ *
+ * That update argument will receive the function that is returned from this
+ * definition.
+ */
 function getUpdateScheduler(elem, handler) {
   return function _getUpdateScheduler(optCompleteHandler) {
     if (elem.render) {
@@ -59,10 +70,25 @@ function getUpdateScheduler(elem, handler) {
   };
 }
 
+/**
+ * Process an element child handler declaration. This is how elements are
+ * composed in Nomplate.
+ *
+ *   dom.ul(() => {
+ *     dom.li('abcd');
+ *     dom.li('efgh');
+ *     dom.li('ijkl');
+ *   });
+ *
+ * The following method will call the handler and synchronously construct the
+ * Nomplate element tree.
+ */
 function processHandler(elem, handler) {
   const stack = config().builderStack;
 
   stack.push(elem);
+  // If the provided handler has provided arguments
+  // (i.e., an update() argument).
   if (handler.length > 0) {
     /* eslint-disable no-param-reassign */
     elem.hasUpdateableHandler = true;
