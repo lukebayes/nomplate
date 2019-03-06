@@ -22,8 +22,6 @@ NODE_MODULES_BIN=node_modules/.bin
 ESLINT=$(NODE_MODULES_BIN)/eslint
 MOCHA=$(NODE_MODULES_BIN)/_mocha
 WEBPACK=$(NODE_MODULES_BIN)/webpack
-BABEL=$(NODE_MODULES_BIN)/babel
-BABEL_NODE=$(NODE_MODULES_BIN)/babel-node
 WEBPACK_CLIENT_CONFIG=webpack-client.config.js
 
 .PHONY: test test-w dev-install build build-module lint clean
@@ -48,16 +46,16 @@ publish: clean build
 	npm publish
 
 dist/nomplate.js: index.js src/*
-	$(WEBPACK) --config $(WEBPACK_CLIENT_CONFIG) index.js dist/nomplate.js
+	$(WEBPACK) --mode development --config $(WEBPACK_CLIENT_CONFIG) index.js --output dist/nomplate.js
 
 dist/nomplate.min.js: index.js src/*
-	$(WEBPACK) --optimize-minimize --config $(WEBPACK_CLIENT_CONFIG) index.js dist/nomplate.min.js
+	$(WEBPACK) --mode production --optimize-minimize --config $(WEBPACK_CLIENT_CONFIG) index.js --output dist/nomplate.min.js
 
-dist/nomplate.min.gz:
+dist/nomplate.min.gz: dist/nomplate.min.js
 	gzip --best -c dist/nomplate.min.js > dist/nomplate.min.gz
 
 dist/express.js:
-	$(WEBPACK) --config $(WEBPACK_SERVER_CONFIG) express.js dist/express.js
+	$(WEBPACK) --mode development --config $(WEBPACK_SERVER_CONFIG) express.js --output dist/express.js
 	
 lint:
 	$(ESLINT) --config $(PROJECT_ROOT)/.eslintrc.json .
