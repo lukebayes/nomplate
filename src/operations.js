@@ -1,4 +1,5 @@
 const config = require('./config');
+const constants = require('./constants');
 const htmlEncode = require('./html_encode');
 
 /**
@@ -30,7 +31,8 @@ function setAttribute(name, value) {
 
 function setDataAttribute(name, value) {
   return function _setDataAttribute(domElement, stack, document) {
-    domElement.dataset[name] = value;
+    const updated = typeof value === 'string' ? htmlEncode(value, document) : value;
+    domElement.dataset[name] = updated;
     return domElement;
   };
 }
@@ -96,12 +98,12 @@ function setHandler(key, value) {
     /* eslint-disable no-param-reassign */
     domElement[key] = value;
     /* eslint-enable no-param-reassign */
-    const handlersString = domElement.getAttribute('data-nomhandlers');
+    const handlersString = domElement.getAttribute(constants.NOM_HANDLERS_KEY);
     const handlers = handlersString ? handlersString.split(' ') : [];
     if (handlers.indexOf(key) === -1) {
       handlers.push(key);
     }
-    domElement.setAttribute('data-nomhandlers', handlers.join(' '));
+    domElement.setAttribute(constants.NOM_HANDLERS_KEY, handlers.join(' '));
     return domElement;
   };
 }
@@ -115,16 +117,16 @@ function removeHandler(key) {
     /* eslint-disable no-param-reassign */
     domElement[key] = null;
     /* eslint-enable no-param-reassign */
-    const handlers = domElement.getAttribute('data-nomhandlers').split(' ');
+    const handlers = domElement.getAttribute(constants.NOM_HANDLERS_KEY).split(' ');
     const index = handlers.indexOf(key);
     if (index > -1) {
       handlers.splice(index, 1);
     }
 
     if (handlers.length === 0) {
-      domElement.removeAttribute('data-nomhandlers');
+      domElement.removeAttribute(constants.NOM_HANDLERS_KEY);
     } else {
-      domElement.setAttribute('data-nomhandlers', handlers.join(' '));
+      domElement.setAttribute(constants.NOM_HANDLERS_KEY, handlers.join(' '));
     }
     return domElement;
   };

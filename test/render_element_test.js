@@ -168,6 +168,24 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<div><input type="checkbox"></div>');
     });
 
+    it('never writes classname attribute', () => {
+      let updater;
+
+      const nomElement = dom.div((update) => {
+        updater = update;
+        dom.div({className: 'abcd'});
+      });
+
+      const domElement = renderElement(nomElement, doc);
+      assert.equal(domElement.outerHTML, '<div><div class="abcd"></div></div>');
+
+      updater();
+      builder.forceUpdate();
+
+      assert.equal(domElement.outerHTML, '<div><div class="abcd"></div></div>',
+        'Should not introduce two attributes (class & classname) when value is unchanged');
+    });
+
     it('updates reordered children with keys', () => {
       let updater;
       let data = ['abcd', 'efgh', 'ijkl'];

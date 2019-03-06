@@ -166,8 +166,10 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
 
     if (key === 'id' && (!optDomElement || value !== optDomElement.id)) {
       ops.push(operations.setId(value));
-    } else if (key === 'classname' && (!optDomElement || value !== optDomElement.className)) {
-      ops.push(operations.setClassName(value));
+    } else if (key === 'classname') {
+      if (!optDomElement || value !== optDomElement.className) {
+        ops.push(operations.setClassName(value));
+      }
     } else if (key === 'key' && (!optDomElement || value !== getNomKeyValue(optDomElement))) {
       ops.push(operations.setAttribute(constants.NOM_ATTR_KEY, value));
     } else if (key === 'onrender') {
