@@ -28,8 +28,8 @@ function setAttribute(name, value) {
       domElement.setAttribute(updatedName, htmlEncode(value));
     }
 
-    if (name === 'checked') {
-      domElement.checked = value;
+    if (constants.PROP_ATTRS.indexOf(name) > -1) {
+      domElement[name] = value;
     }
 
     return domElement;
@@ -46,10 +46,11 @@ function setDataAttribute(name, value) {
 
 function removeAttribute(name) {
   return function _removeAttribute(domElement) {
-    domElement.removeAttribute(name);
-    if (name === 'checked') {
-      domElement.checked = false;
+    if (constants.PROP_ATTRS.indexOf(name) > -1) {
+      domElement[name] = '';
     }
+
+    domElement.removeAttribute(name);
     return domElement;
   };
 }
