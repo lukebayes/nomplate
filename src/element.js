@@ -1,26 +1,20 @@
 const camelToDash = require('./camel_to_dash');
-
-/* eslint-disable no-underscore-dangle */
-// Shared attribute object to avoid GC churn.
-const DEFAULT_NODE_NAME = 'node';
-
+const constants = require('./constants');
 
 /**
  * Element struct
  */
 class Element {
   constructor(nodeName, args, parent, optNamespace) {
-    this.nodeName = nodeName || DEFAULT_NODE_NAME;
+    this.nodeName = nodeName || constants.DEFAULT_NODE_NAME;
     this.domElement = null;
-    this.attrs = (args && args.attrs) || null;
+    this.attrs = (args && args.attrs) || constants.EMPTY_ATTRS;
     this.parent = parent;
     this.namespace = optNamespace;
 
     this._children = null;
     this._textContent = null;
     this._textValue = this.attrs && this.attrs.textValue || null;
-    this._id = this.attrs && this.attrs.id;
-    this._className = this.attrs && this.attrs.className;
     this.childNodes = [];
     this.isCollapsible = false;
     this.selectors = null;
@@ -41,7 +35,7 @@ class Element {
   }
 
   addSelector(selector, rules) {
-    if (this.nodeName !== 'style') {
+    if (this.nodeName !== constants.STYLE_NODE_NAME) {
       throw new Error('Selectors can only be added to style nodes');
     }
 
@@ -92,12 +86,16 @@ class Element {
     }
   }
 
+  getAttribute(key) {
+    return this.attrs && this.attrs[key];
+  }
+
   get id() {
-    return this._id;
+    return this.attrs && this.attrs.id;;
   }
 
   get className() {
-    return this._className;
+    return this.attrs && this.attrs.className;
   }
 
   get textValue() {

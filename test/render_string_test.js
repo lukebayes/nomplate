@@ -61,7 +61,6 @@ describe('Nomplate renderer dom', () => {
     };
 
     render(tree, false, fakeStream);
-    assert.equal(parts.length, 11);
     assert.equal(parts.join(''), '<ul class="abcd"><li class="efgh">ijkl</li></ul>');
   });
 
@@ -78,5 +77,25 @@ describe('Nomplate renderer dom', () => {
   it('omits false attrs', () => {
     const result = render(dom.input({type: 'checkbox', checked: false}));
     assert.equal(result, '<input type="checkbox"></input>');
+  });
+
+  it('omits null attrs', () => {
+    const result = render(dom.div({className: 'abcd', dataFooBar: null}));
+    assert.equal(result, '<div class="abcd"></div>');
+  });
+
+  it('transforms data attr keys', () => {
+    const result = render(dom.div({dataFooBar: true}));
+    assert.equal(result, '<div data-foo-bar="true"></div>');
+  });
+
+  it('omits key attribute', () => {
+    const result = render(dom.div({className: 'abcd', key: '1234'}));
+    assert.equal(result, '<div class="abcd" data-nom-key="1234"></div>');
+  });
+
+  it('does not add unused whitespace, when attrs are ignored', () => {
+    const result = render(dom.div({key: false, className: null, dataFooBar: undefined}));
+    assert.equal(result, '<div></div>');
   });
 });
