@@ -186,6 +186,57 @@ describe('renderElement', () => {
         'Should not introduce two attributes (class & classname) when value is unchanged');
     });
 
+    it('adds truthy and removes falsy className values', () => {
+      let updater;
+      let className = 'abcd';
+
+      const nomElement = dom.div((update) => {
+        updater = update;
+        dom.div({className: className});
+      });
+
+      const domElement = renderElement(nomElement, doc);
+
+      // Use a simple string value:
+      assert.equal(domElement.outerHTML, '<div><div class="abcd"></div></div>');
+
+      // Use a falsy (null) value:
+      className = null;
+      updater();
+      builder.forceUpdate();
+      assert.equal(domElement.outerHTML, '<div><div></div></div>');
+
+      // Use a falsy (undefined) value:
+      className = undefined;
+      updater();
+      builder.forceUpdate();
+      assert.equal(domElement.outerHTML, '<div><div></div></div>');
+
+      // Use a falsy (0) value:
+      className = 0;
+      updater();
+      builder.forceUpdate();
+      assert.equal(domElement.outerHTML, '<div><div></div></div>');
+
+      // Use a hash of truthy keys:
+      className = {abcd: true, efgh: true, ijkl: true, mnop: false};
+      updater();
+      builder.forceUpdate();
+      assert.equal(domElement.outerHTML, '<div><div class="abcd efgh ijkl"></div></div>');
+
+      // All keys are falsy:
+      className = {abcd: false, efgh: false, ijkl: false};
+      updater();
+      builder.forceUpdate();
+      assert.equal(domElement.outerHTML, '<div><div></div></div>');
+
+      // Use an array of strings:
+      className = ['abcd', 'efgh', 'ijkl'];
+      updater();
+      builder.forceUpdate();
+      assert.equal(domElement.outerHTML, '<div><div class="abcd efgh ijkl"></div></div>');
+    });
+
     it('updates reordered children with keys', () => {
       let updater;
       let data = ['abcd', 'efgh', 'ijkl'];

@@ -169,7 +169,13 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
         ops.push(operations.setId(value));
       }
     } else if (key === 'classname') {
-      if (!optDomElement || value !== optDomElement.className) {
+      if (optDomElement && value !== optDomElement.className) {
+        if (!value) {
+          ops.push(operations.removeClassName());
+        } else {
+          ops.push(operations.setClassName(value));
+        }
+      } else {
         ops.push(operations.setClassName(value));
       }
     } else if (key === 'key') {
