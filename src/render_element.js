@@ -197,7 +197,11 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
       }
     } else if (optDomElement) {
       const domValue = optDomElement.getAttribute(keyWithCase);
-      if (value != domValue || domValue != 'false') {
+      if (!value && domValue !== 'false' && domValue !== false && domValue !== 0) {
+        // Remove attributes that transition to falsy values:
+        ops.push(operations.removeAttribute(keyWithCase, value));
+      } else if (value != domValue) {
+        // Update attributes with new values:
         ops.push(operations.setAttribute(keyWithCase, value));
       }
     }
