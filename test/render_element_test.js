@@ -28,6 +28,11 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<div>one</div>');
     });
 
+    it('removes false attributes', () => {
+      const domElement = renderElement(dom.input({type: 'checkbox', checked: "false"}), doc);
+      assert.equal(domElement.outerHTML, '<input type="checkbox">');
+    });
+
     it('creates children', () => {
       const domElement = renderElement(dom.div(() => {
         dom.ul(() => {
