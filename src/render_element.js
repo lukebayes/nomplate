@@ -178,7 +178,7 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
       }
     } else if (typeof value === 'function') {
       createDispatcherOperation(ops, nomElement, key, value);
-    } else if (!optDomElement && value !== false) {
+    } else if (!optDomElement && value !== false && value !== 'false') {
       // Ensure we set the attribute name with provided case.
       ops.push(operations.setAttribute(keyWithCase, value));
     } else if (optDomElement && value !== optDomElement.getAttribute(keyWithCase)) {
