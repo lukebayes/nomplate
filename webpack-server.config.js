@@ -7,10 +7,6 @@ module.exports = {
   target: 'node',
   module: {
     loaders: [
-      {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
     ],
   },
 };
