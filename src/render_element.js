@@ -181,8 +181,11 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
     } else if (!optDomElement && value !== false && value !== 'false') {
       // Ensure we set the attribute name with provided case.
       ops.push(operations.setAttribute(keyWithCase, value));
-    } else if (optDomElement && value !== optDomElement.getAttribute(keyWithCase)) {
-      ops.push(operations.setAttribute(keyWithCase, value));
+    } else if (optDomElement) {
+      const domValue = optDomElement.getAttribute(keyWithCase);
+      if (value !== domValue || domValue !== 'false') {
+        ops.push(operations.setAttribute(keyWithCase, value));
+      }
     }
   });
 }

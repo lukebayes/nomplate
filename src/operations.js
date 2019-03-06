@@ -19,7 +19,11 @@ function setId(value) {
 
 function setAttribute(name, value) {
   return function _setAttribute(domElement, stack, document) {
-    domElement.setAttribute(name, htmlEncode(value));
+    if (typeof value === 'boolean' && !value) {
+      domElement.removeAttribute(name);
+    } else {
+      domElement.setAttribute(name, htmlEncode(value));
+    }
     return domElement;
   };
 }

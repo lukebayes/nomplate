@@ -150,6 +150,24 @@ describe('renderElement', () => {
       assert.equal(kids[2].id, 'ijkl');
     });
 
+    it('skips falsy values on update', () => {
+      let isChecked = true;
+      let updater;
+
+      const nomElement = dom.div((update) => {
+        updater = update;
+        dom.input({type: 'checkbox', checked: isChecked});
+      });
+
+      const domElement = renderElement(nomElement, doc);
+      isChecked = false;
+
+      updater();
+      builder.forceUpdate();
+
+      assert.equal(domElement.outerHTML, '<div><input type="checkbox"></div>');
+    });
+
     it('updates reordered children with keys', () => {
       let updater;
       let data = ['abcd', 'efgh', 'ijkl'];
