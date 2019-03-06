@@ -20,10 +20,12 @@ function setId(value) {
 
 function setAttribute(name, value) {
   return function _setAttribute(domElement, stack, document) {
+    const updatedName = name === 'key' ? constants.NOM_ATTR_KEY : name;
+
     if (typeof value === 'boolean' && !value) {
-      domElement.removeAttribute(name);
+      domElement.removeAttribute(updatedName);
     } else {
-      domElement.setAttribute(name, htmlEncode(value));
+      domElement.setAttribute(updatedName, htmlEncode(value));
     }
     return domElement;
   };
