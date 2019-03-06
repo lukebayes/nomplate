@@ -27,6 +27,11 @@ function setAttribute(name, value) {
     } else {
       domElement.setAttribute(updatedName, htmlEncode(value));
     }
+
+    if (name === 'checked') {
+      domElement.checked = value;
+    }
+
     return domElement;
   };
 }
@@ -42,6 +47,9 @@ function setDataAttribute(name, value) {
 function removeAttribute(name) {
   return function _removeAttribute(domElement) {
     domElement.removeAttribute(name);
+    if (name === 'checked') {
+      domElement.checked = false;
+    }
     return domElement;
   };
 }
