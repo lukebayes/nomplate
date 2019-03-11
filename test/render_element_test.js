@@ -11,7 +11,6 @@ describe('renderElement', () => {
     doc = createDocument();
   });
 
-
   describe('creation', () => {
     it('creates simple element', () => {
       const domElement = renderElement(dom.div(), doc);

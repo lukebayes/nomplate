@@ -55,4 +55,7 @@ dom.selector = builder.addSelector;
 // Helper for creating CSS @keyframes statements..
 dom.keyframes = builder.addKeyframe;
 
+// Helper to skip htmlEncode and support explicitly unsafe content.
+dom.unsafe = builder.unsafeContent;
+
 module.exports = dom;
