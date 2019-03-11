@@ -16,6 +16,11 @@ function getTextArea(document) {
  */
 function htmlEncode(str, optDocument) {
   const type = typeof str;
+  // Bail and return if we receive content like: {_isUnsafe: true, content: 'abcd'};
+  if (type === 'object' && str && str._isUnsafe && str.content) {
+    return str.content;
+  }
+
   if (type === 'number' || type === 'boolean') {
     return String(str);
   } else if (str === null || type === 'undefined' || !str.replace) {

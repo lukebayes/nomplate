@@ -69,6 +69,16 @@ describe('Nomplate renderer dom', () => {
     assert.equal(render(elem), '<div class="&lt;" style="&gt;">&lt;script&gt;</div>');
   });
 
+  it('does not escape unsafe textContent', () => {
+    const elem = dom.div(dom.unsafe('<script>'));
+    assert.equal(render(elem), '<div><script></div>');
+  });
+
+  it('does not escape unsafe attribute values', () => {
+    const elem = dom.div({className: dom.unsafe('<script>'), id: dom.unsafe('<script>'), dataFoo: '<script>'});
+    assert.equal(render(elem), '<div class="<script>" id="<script>" data-foo="&lt;script&gt;"></div>');
+  });
+
   it('handls null text content', () => {
     const elem = dom.div({className: 'abcd'}, null);
     assert.equal(render(elem), '<div class="abcd"></div>');

@@ -104,12 +104,11 @@ function renderString() {
       write('>');
     }
 
-    if (element.nodeName === 'style' && element.selectors.length > 0) {
+    if (element.nodeName === 'style' && element.selectors && element.selectors.length > 0) {
       write(element.renderSelectors());
     } else if (textValue) {
       write(htmlEncode(textValue));
     }
-
 
     if (children.length > 0) {
       writeCarriageReturn();

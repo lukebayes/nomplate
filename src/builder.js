@@ -32,7 +32,11 @@ function processClassName(value) {
   if (Array.isArray(value)) {
     return value.filter(entry => !!entry && entry !== -1).join(' ');
   } else if (typeof value === 'object') {
-    return Object.keys(value).filter(key => !!value[key] && value[key] !== -1).join(' ');
+    if (value._isUnsafe) {
+      return value;
+    } else {
+      return Object.keys(value).filter(key => !!value[key] && value[key] !== -1).join(' ');
+    }
   }
   return value;
 }
@@ -132,14 +136,16 @@ function processAttrs(attrs) {
  */
 function processArgs(...args) {
   let attrs;
-  let inlineTextChild;
   let handler;
+  let inlineTextChild;
   let type;
 
   args.forEach((value) => {
     type = typeof value;
     if (type !== 'undefined') {
-      if (type === 'string') {
+      if (type === 'string' || value && type === 'object' && value._isUnsafe) {
+        // value is either a string, or looks like: {_isUnsafe: true, content: 'abcd'};
+        // htmlEncode will handle this by returning content unchanged.
         inlineTextChild = value;
       } else if (type === 'function') {
         handler = value;
@@ -215,6 +221,14 @@ builder.addSelector = function(selector, styles) {
 
 builder.addKeyframe = function(name, rules) {
   top().addSelector(`@keyframes ${name}`, rules);
+};
+
+// Return this Object wherever we would normally html_encode a string value.
+builder.unsafeContent = function(content) {
+  return {
+    _isUnsafe: true,
+    content: content,
+  };
 };
 
 module.exports = builder;

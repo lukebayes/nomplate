@@ -28,3 +28,4 @@ echo "Updated PATH with ${BASEDIR}/lib/nodejs/bin"
 # Add node_moduels/.bin to the path
 add_to_path "${BASEDIR}/node_modules/.bin"
 echo "Updated PATH with ${BASEDIR}/node_modules/.bin"
+
