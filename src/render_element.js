@@ -1,4 +1,5 @@
 const constants = require('./constants');
+const events = require('./events');
 const operations = require('./operations');
 
 /**
@@ -144,13 +145,21 @@ function getNomKeyValue(optDomElement) {
   return optDomElement && optDomElement.getAttribute(constants.NOM_ATTR_KEY);
 }
 
-function createDispatcherOperation(ops, nomElement, key, value) {
-  if (key === 'onenter') {
-    // TODO(lbayes): Subscriptions to onEnter and onKeyup are mutually exclusive!
-    // Syntactic sugar for common usecase
-    ops.push(operations.setHandler(KEY_UP, onEnterHandler(value)));
+function createOnEnterHandler(handler) {
+  return function(event) {
+    if (event && event.keyCode === 13) {
+      handler(event);
+    }
+  };
+}
+
+function createDispatcherOperation(ops, nomElement, name, handler) {
+  if (name === events.ON_ENTER) {
+    // NOTE(lbayes): Subscriptions to onEnter and onKeyup are mutually exclusive, an exception
+    // will be thrown by the builder if these are both subscribed.
+    ops.push(operations.setHandler(events.ON_KEY_UP, createOnEnterHandler(handler)));
   } else {
-    ops.push(operations.setHandler(key, value));
+    ops.push(operations.setHandler(name, handler));
   }
 }
 
@@ -162,13 +171,13 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
 
   Object.keys(attrs).forEach((keyWithCase) => {
     const value = attrs[keyWithCase];
-    const key = keyWithCase.toLowerCase();
+    const lowerCaseKey = keyWithCase.toLowerCase();
 
-    if (key === 'id') {
+    if (lowerCaseKey === 'id') {
       if (!optDomElement || value !== optDomElement.id) {
         ops.push(operations.setId(value));
       }
-    } else if (key === 'classname') {
+    } else if (lowerCaseKey === 'classname') {
       if (optDomElement && value !== optDomElement.className) {
         if (!value) {
           ops.push(operations.removeClassName());
@@ -178,18 +187,18 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
       } else {
         ops.push(operations.setClassName(value));
       }
-    } else if (key === 'key') {
+    } else if (lowerCaseKey === 'key') {
       if (!optDomElement || value !== getNomKeyValue(optDomElement)) {
-        ops.push(operations.setAttribute(key, value));
+        ops.push(operations.setAttribute(lowerCaseKey, value));
       }
-    } else if (key === 'onrender') {
+    } else if (lowerCaseKey === 'onrender') {
       if (typeof value === 'function') {
         ops.push(operations.enqueueOnRender(value));
       } else {
         throw new Error('onRender requires a function handler');
       }
     } else if (typeof value === 'function') {
-      createDispatcherOperation(ops, nomElement, key, value);
+      createDispatcherOperation(ops, nomElement, lowerCaseKey, value);
     } else if (!optDomElement) {
       if (value !== false && value !== 'false') {
         // Ensure we set the attribute name with provided case.
