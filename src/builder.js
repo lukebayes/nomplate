@@ -123,7 +123,7 @@ function processAttrs(attrs) {
       if (attrs.style === '') {
         delete attrs.style;
       }
-    } else if (attrs.onenter && attrs.onkeyup) {
+    } else if (attrs.onenter && attrs.onkeyup || attrs.onEnter && attrs.onKeyUp) {
       throw new Error('onenter and onkeyup are mutually exclusive, consider adding a switch statement to your onkeyup handler for the enter case.');
     }
   }

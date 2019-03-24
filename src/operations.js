@@ -109,6 +109,7 @@ function setHandler(key, value) {
     /* eslint-disable no-param-reassign */
     domElement[key] = value;
     /* eslint-enable no-param-reassign */
+    // TODO(lbayes): Use dataset and DOMStringMap instead!
     const handlersString = domElement.getAttribute(constants.NOM_HANDLERS_KEY);
     const handlers = handlersString ? handlersString.split(' ') : [];
     if (handlers.indexOf(key) === -1) {
@@ -128,6 +129,7 @@ function removeHandler(key) {
     /* eslint-disable no-param-reassign */
     domElement[key] = null;
     /* eslint-enable no-param-reassign */
+    // TODO(lbayes): Use dataset and DOMStringMap instead!
     const handlers = domElement.getAttribute(constants.NOM_HANDLERS_KEY).split(' ');
     const index = handlers.indexOf(key);
     if (index > -1) {

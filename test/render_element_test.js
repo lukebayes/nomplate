@@ -1,15 +1,19 @@
 const assert = require('chai').assert;
 const builder = require('../').builder;
-const createDocument = require('../test_helper').createDocument;
+const createWindow = require('../test_helper').createWindow;
 const dom = require('../').dom;
+const events = require('../').events;
 const renderElement = require('../').renderElement;
+const sinon = require('sinon');
 
 describe('renderElement', () => {
-  let doc;
+  let doc, win;
 
   beforeEach(() => {
-    doc = createDocument();
+    win = createWindow();
+    doc = win.document;
   });
+
 
   describe('creation', () => {
     it('creates simple element', () => {
@@ -95,6 +99,29 @@ describe('renderElement', () => {
       assert.equal(ul.childNodes[0].textContent, 'one');
       assert.equal(ul.childNodes[1].textContent, 'two-point-five');
       assert.equal(ul.childNodes[2].textContent, 'three');
+    });
+
+    it('assigns click handler', () => {
+      const handler = sinon.spy();
+      const element = renderElement(dom.button({onClick: handler}), doc);
+      element.click();
+      assert.equal(handler.callCount, 1);
+    });
+
+    it('assigns onkeydown handler', () => {
+      const handler = sinon.spy();
+      const element = renderElement(dom.input({onkeydown: handler}), doc);
+      const keyEvent = new win.KeyboardEvent(events.KEY_DOWN, {keyCode: 24, bubbles: true});
+      element.dispatchEvent(keyEvent);
+      assert.equal(handler.callCount, 1);
+    });
+
+    it('assigns onenter handler', () => {
+      const handler = sinon.spy();
+      const element = renderElement(dom.input({onEnter: handler}), doc);
+      const keyEvent = new win.KeyboardEvent(events.KEY_UP, {keyCode: 13});
+      element.dispatchEvent(keyEvent);
+      assert.equal(handler.callCount, 1);
     });
 
     it('removes first child', () => {

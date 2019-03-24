@@ -107,9 +107,16 @@ describe('Nomplate ElementBuilder', () => {
   });
 
   it('onenter and onkeyup are mutually exclusive', () => {
-    const keyHandler = sinon.spy();
+    const handler = sinon.spy();
     assert.throws(() => {
-      dom.div({onenter: keyHandler, onkeyup: keyHandler});
+      dom.div({onenter: handler, onkeyup: handler});
+    }, /are mutually exclusive/);
+  });
+
+  it('onEnter and onKeyUp are mutually exclusive', () => {
+    const handler = sinon.spy();
+    assert.throws(() => {
+      dom.div({onEnter: handler, onKeyUp: handler});
     }, /are mutually exclusive/);
   });
 

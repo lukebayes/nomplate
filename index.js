@@ -3,6 +3,7 @@ const builder = require('./src/builder');
 const config = require('./src/config');
 const constants = require('./src/constants');
 const dom = require('./src/dom');
+const events = require('./src/events');
 const generateId = require('./src/generate_id');
 const htmlEncode = require('./src/html_encode');
 const operations = require('./src/operations');
@@ -21,6 +22,7 @@ module.exports = {
   config,
   constants,
   dom,
+  events,
   forceUpdate,
   generateId,
   htmlEncode,
