@@ -60,7 +60,7 @@ describe('renderElement', () => {
       const domTwo = renderElement(dom.div({className: 'efgh'}), doc, domOne);
 
       assert(domOne === domTwo, 'Elements should be the same');
-      assert.equal(domTwo.className, 'efgh');
+      assert.equal(domTwo.className, 'efgh', 'dom two className');
       assert.equal(domOne.className, 'efgh', 'Should modify original reference');
     });
 
@@ -353,14 +353,23 @@ describe('renderElement', () => {
       updater = update;
       dom.div({style: style});
     });
-    var domElement = renderElement(nomElement, doc);
+    const domElement = renderElement(nomElement, doc);
 
     assert.equal(domElement.outerHTML, '<div><div style="color:#fc0;"></div></div>');
     style.color = '#f00';
     updater();
     builder.forceUpdate();
-
     assert.equal(domElement.outerHTML, '<div><div style="color:#f00;"></div></div>');
+
+    style.color = '';
+    updater();
+    builder.forceUpdate();
+    assert.equal(domElement.outerHTML, '<div><div></div></div>');
+
+    style.color = null;
+    updater();
+    builder.forceUpdate();
+    assert.equal(domElement.outerHTML, '<div><div></div></div>');
   });
 });
 

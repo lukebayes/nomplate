@@ -107,7 +107,10 @@ function processHandler(elem, handler) {
 function processStyleObject(obj) {
   const parts = [];
   Object.keys(obj).forEach((key) => {
-    parts.push(`${camelToDash(key)}:${obj[key]};`);
+    const value = obj[key];
+    if (value !== null && value !== '' && value !== false) {
+      parts.push(`${camelToDash(key)}:${obj[key]};`);
+    }
   });
   return parts.join('');
 }
