@@ -84,6 +84,14 @@ describe('Nomplate renderer dom', () => {
     assert.equal(render(elem), '<style>body > .foo { }</style>');
   });
 
+  it('accepts inline style declarations', () => {
+    const style = {
+      color: '#fc0',
+    };
+    const elem = dom.div({style: style});
+    assert.equal(render(elem), '<div style="color:#fc0;"></div>');
+  });
+
   it('handls null text content', () => {
     const elem = dom.div({className: 'abcd'}, null);
     assert.equal(render(elem), '<div class="abcd"></div>');

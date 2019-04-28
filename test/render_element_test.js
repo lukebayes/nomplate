@@ -343,5 +343,24 @@ describe('renderElement', () => {
       assert(firstKids[1] === secondKids[1], 'Middle kid remains');
     });
   });
+
+  it('accepts inline style declarations', () => {
+    var updater;
+    const style = {
+      color: '#fc0',
+    };
+    const nomElement = dom.div((update) => {
+      updater = update;
+      dom.div({style: style});
+    });
+    var domElement = renderElement(nomElement, doc);
+
+    assert.equal(domElement.outerHTML, '<div><div style="color:#fc0;"></div></div>');
+    style.color = '#f00';
+    updater();
+    builder.forceUpdate();
+
+    assert.equal(domElement.outerHTML, '<div><div style="color:#f00;"></div></div>');
+  });
 });
 
