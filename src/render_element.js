@@ -174,6 +174,10 @@ function getAllAttributeKeys(attrs, optDomElement) {
   return allKeys;
 }
 
+function isEmptyObject(value) {
+  return (typeof value === 'object' && Object.keys(value).length === 0);
+}
+
 /**
  * Build operations from the current element's attributes.
  */
@@ -211,7 +215,7 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
     } else if (typeof value === 'function') {
       createDispatcherOperation(ops, nomElement, lowerCaseKey, value);
     } else if (!optDomElement) {
-      if (value !== false && value !== 'false') {
+      if (value !== false && value !== 'false' && !isEmptyObject(value)) {
         // Ensure we set the attribute name with provided case.
         ops.push(operations.setAttribute(keyWithCase, value));
       }
