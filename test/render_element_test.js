@@ -371,5 +371,11 @@ describe('renderElement', () => {
     builder.forceUpdate();
     assert.equal(domElement.outerHTML, '<div><div></div></div>');
   });
+
+  it('ignores empty inline style declaration', () => {
+    const nomElement = dom.div({className: 'efgh', style: {}});
+    const domElement = renderElement(nomElement, doc);
+    assert.equal(domElement.outerHTML, '<div class="efgh"></div>');
+  });
 });
 
