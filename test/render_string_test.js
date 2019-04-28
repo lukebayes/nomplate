@@ -92,6 +92,24 @@ describe('Nomplate renderer dom', () => {
     assert.equal(render(elem), '<div style="color:#fc0;"></div>');
   });
 
+  it('does not render empty style', () => {
+    const style = {};
+    const elem = dom.div({style: style});
+    assert.equal(render(elem), '<div></div>');
+  });
+
+  it('does not render empty string style value', () => {
+    const style = {color: ''};
+    const elem = dom.div({style: style});
+    assert.equal(render(elem), '<div></div>');
+  });
+
+  it('does not render null style value', () => {
+    const style = {color: null};
+    const elem = dom.div({style: style});
+    assert.equal(render(elem), '<div></div>');
+  });
+
   it('handls null text content', () => {
     const elem = dom.div({className: 'abcd'}, null);
     assert.equal(render(elem), '<div class="abcd"></div>');

@@ -163,13 +163,24 @@ function createDispatcherOperation(ops, nomElement, name, handler) {
   }
 }
 
+function getAllAttributeKeys(attrs, optDomElement) {
+  const allKeys = Object.keys((attrs || constants.EMPTY_ATTRS));
+  if (optDomElement) {
+    const domKeys = Array.prototype.slice.call(optDomElement.attributes).map((attr) => {
+      return attr.name === 'class' ? 'className' : attr.name;
+    });
+    return allKeys.concat(domKeys);
+  }
+  return allKeys;
+}
+
 /**
  * Build operations from the current element's attributes.
  */
 function elementAttributesToOperations(ops, nomElement, optDomElement) {
   const attrs = nomElement.attrs || constants.EMPTY_ATTRS;
 
-  Object.keys(attrs).forEach((keyWithCase) => {
+  getAllAttributeKeys(attrs, optDomElement).forEach((keyWithCase) => {
     const value = attrs[keyWithCase];
     const lowerCaseKey = keyWithCase.toLowerCase();
 
