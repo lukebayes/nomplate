@@ -146,7 +146,7 @@ function processArgs(...args) {
   args.forEach((value) => {
     type = typeof value;
     if (type !== 'undefined') {
-      if (type === 'string' || value && type === 'object' && value._isUnsafe) {
+      if (type == 'number' || type === 'string' || value && type === 'object' && value._isUnsafe) {
         // value is either a string, or looks like: {_isUnsafe: true, content: 'abcd'};
         // htmlEncode will handle this by returning content unchanged.
         inlineTextChild = value;
