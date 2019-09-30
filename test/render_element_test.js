@@ -21,6 +21,11 @@ describe('renderElement', () => {
       assert.equal(domElement.nodeName, 'DIV');
     });
 
+    it('creates an element with numeric value', () => {
+      const domElement = renderElement(dom.div(23), doc);
+      assert.equal(domElement.outerHTML, '<div>23</div>');
+    });
+
     it('creates element with id', () => {
       const domElement = renderElement(dom.div({id: 'abcd'}), doc);
       assert.equal(domElement.outerHTML, '<div id="abcd"></div>');
