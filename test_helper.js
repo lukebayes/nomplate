@@ -18,7 +18,41 @@ function createWindow(optOptions) {
     console.error('nomplate/test_helper.js createWindow() encountered an uncaught exception. This is likely caused by a thrown exception in an application event handler.');
     console.error(error);
   };
-  return doc.defaultView;
+  const win = doc.defaultView;
+  /**
+   * Set the current URL on the provided window.location object.
+   *
+   * NOTE(lbayes): Partial implementation by okovpashko, found on Github issue here:
+   * https://github.com/facebook/jest/issues/890#issuecomment-298594389
+   * Original implementation did not handle search or hash values properly.
+   */
+  win.setUrl = (urlOrPart) => {
+    const url = urlOrPart.indexOf('http') === 0 ? urlOrPart : ['http://example.com', urlOrPart.replace(/^\//, '')].join('/');
+    const parser = win.document.createElement('a');
+    parser.href = url;
+    ['href', 'protocol', 'host', 'hostname', 'origin', 'port', 'pathname'].forEach(prop => {
+      Object.defineProperty(win.location, prop, {
+        value: parser[prop],
+        writable: true,
+      });
+    });
+
+    const parts = url.split('?');
+    const search = parts.length > 1 ? `?${parts[1]}` : '';
+
+    Object.defineProperty(win.location, 'search', {
+      value: search,
+      writable: true,
+    });
+
+    const hash = url.split('#');
+    Object.defineProperty(win.location, 'hash', {
+      value: hash.length > 1 ? `#${hash[1]}` : '',
+      writable: true,
+    });
+  };
+
+  return win;
 }
 
 /**

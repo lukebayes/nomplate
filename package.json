@@ -1,6 +1,6 @@
 {
   "name": "nomplate",
-  "version": "1.2.22",
+  "version": "1.2.24",
   "description": "Nomplate: Node template engine",
   "main": "index.js",
   "engines": {
