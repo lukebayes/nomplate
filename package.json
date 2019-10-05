@@ -1,6 +1,6 @@
 {
   "name": "nomplate",
-  "version": "1.2.21",
+  "version": "1.2.22",
   "description": "Nomplate: Node template engine",
   "main": "index.js",
   "engines": {
@@ -57,8 +57,8 @@
     "eslint-plugin-mocha": "^6.1.1",
     "express": "^4.17.1",
     "js-beautify": "^1.10.2",
-    "jsdom": "^9.8.3",
-    "jsdom-simulant": "^1.1.2",
+    "jsdom": ">=9.8.3",
+    "jsdom-simulant": ">=1.1.2",
     "json-loader": "^0.5.4",
     "mocha": "^5.2.0",
     "sinon": "^1.17.6",
