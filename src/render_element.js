@@ -175,7 +175,7 @@ function getAllAttributeKeys(attrs, optDomElement) {
 }
 
 function isEmptyObject(value) {
-  return (typeof value === 'object' && Object.keys(value).length === 0);
+  return (value && typeof value === 'object' && Object.keys(value).length === 0);
 }
 
 /**
