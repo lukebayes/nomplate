@@ -16,7 +16,7 @@ describe('Test Helper', () => {
     });
 
     it('append setUrl to window', () => {
-      win.setUrl('/some_path?abcd=1234#efgh');
+      win.setUrl('some_path?abcd=1234#efgh');
       const loc = win.location;
       assert.equal(loc.href, 'http://example.com/some_path?abcd=1234#efgh');
       assert.equal(loc.protocol, 'http:');
@@ -25,7 +25,7 @@ describe('Test Helper', () => {
       assert.equal(loc.origin, 'http://example.com');
       assert.equal(loc.port, '');
       assert.equal(loc.pathname, '/some_path');
-      assert.equal(loc.search, '?abcd=1234#efgh');
+      assert.equal(loc.search, '?abcd=1234');
       assert.equal(loc.hash, '#efgh');
     });
 
@@ -37,7 +37,7 @@ describe('Test Helper', () => {
     });
 
     it('does not double leading slashes', () => {
-      win.setUrl('/some_path');
+      win.setUrl('some_path');
       const loc = win.location;
       assert.equal(loc.href, 'http://example.com/some_path');
     });

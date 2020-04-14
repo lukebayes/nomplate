@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const FakeStorage = require('./test/fake_storage');
-const jsdom = require('jsdom').jsdom;
+const JSDOM = require('jsdom').JSDOM;
 const simulant = require('jsdom-simulant');
 const _renderElement = require('./src/render_element');
 const _renderString = require('./src/render_string');
@@ -9,7 +9,8 @@ const _renderString = require('./src/render_string');
  * Create a JSDOM window object for test cases.
  */
 function createWindow(optOptions) {
-  let doc = jsdom('<html><body></body></html>', optOptions);
+  let jsdom = new JSDOM('<html><body></body></html>', optOptions);
+  let doc = jsdom.window.document;
   /* eslint-disable no-param-reassign */
   doc.defaultView.localStorage = new FakeStorage();
   /* eslint-enable no-param-reassign */
@@ -19,37 +20,14 @@ function createWindow(optOptions) {
     console.error(error);
   };
   const win = doc.defaultView;
+
   /**
    * Set the current URL on the provided window.location object.
-   *
-   * NOTE(lbayes): Partial implementation by okovpashko, found on Github issue here:
-   * https://github.com/facebook/jest/issues/890#issuecomment-298594389
-   * Original implementation did not handle search or hash values properly.
    */
   win.setUrl = (urlOrPart) => {
-    const url = urlOrPart.indexOf('http') === 0 ? urlOrPart : ['http://example.com', urlOrPart.replace(/^\//, '')].join('/');
-    const parser = win.document.createElement('a');
-    parser.href = url;
-    ['href', 'protocol', 'host', 'hostname', 'origin', 'port', 'pathname'].forEach(prop => {
-      Object.defineProperty(win.location, prop, {
-        value: parser[prop],
-        writable: true,
-      });
-    });
-
-    const parts = url.split('?');
-    const search = parts.length > 1 ? `?${parts[1]}` : '';
-
-    Object.defineProperty(win.location, 'search', {
-      value: search,
-      writable: true,
-    });
-
-    const hash = url.split('#');
-    Object.defineProperty(win.location, 'hash', {
-      value: hash.length > 1 ? `#${hash[1]}` : '',
-      writable: true,
-    });
+    const url = urlOrPart.indexOf("http") === 0 ?
+      urlOrPart : `http://example.com/${urlOrPart}`;
+    jsdom.reconfigure({ url });
   };
 
   return win;
