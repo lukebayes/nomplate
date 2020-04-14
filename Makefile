@@ -9,7 +9,7 @@ PROJECT_ROOT=$(shell git rev-parse --show-toplevel)
 
 # Nodejs
 # https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-x64.tar.xz
-NODE_VERSION=12.4.0
+NODE_VERSION=12.16.2
 NODE=lib/nodejs/bin/node
 NPM=lib/nodejs/bin/npm
 
@@ -56,16 +56,16 @@ dist/nomplate.min.gz: dist/nomplate.min.js
 
 dist/express.js:
 	$(WEBPACK) --mode development --config $(WEBPACK_SERVER_CONFIG) express.js --output dist/express.js
-	
+
 lint:
 	$(ESLINT) --config $(PROJECT_ROOT)/.eslintrc.json .
 
-module-install: 
+module-install:
 	$(NPM) install
 
 integrate: clean lint test build
 
-clean: 
+clean:
 	rm -rf dist
 	rm -rf tmp
 	rm -f .tmp-view.html
