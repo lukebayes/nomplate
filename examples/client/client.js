@@ -6,7 +6,7 @@ const DOM_CONTENT_LOADED = 'DOMContentLoaded';
 
 function client(doc) {
   // Render the application immediately. This can begin before the DOM is fully ready.
-  const app = renderElement(dom.h1('HELLO WORLD 34343'), doc);
+  const app = renderElement(dom.h1('HELLO WORLD'), doc);
 
   ready(doc, () => {
     // Get the element where we will attach the application.
