@@ -221,8 +221,8 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
       }
     } else if (optDomElement) {
       const domValue = optDomElement.getAttribute(keyWithCase);
-      if (!value && domValue !== 'false' && domValue !== false && domValue !== 0) {
-        // Remove attributes that transition to falsy values:
+      if (value === '' || value === undefined || value === null || value === NaN) {
+        // Remove invalid/empty-ish attribute values
         ops.push(operations.removeAttribute(keyWithCase, value));
       } else if (value != domValue) {
         // Update attributes with new values:
@@ -284,7 +284,7 @@ function nomElementToOperations(ops, nomElement, doc, optDomElement) {
  */
 function renderElement(nomElement, doc, optDomElement) {
   if (!doc) {
-    throw new IllegalOperationError('renderElement requires a reference to an HTML document.');
+    throw new Error('renderElement requires a reference to an HTML document.');
   }
 
   const ops = [];

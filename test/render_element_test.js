@@ -14,7 +14,6 @@ describe('renderElement', () => {
     doc = win.document;
   });
 
-
   describe('creation', () => {
     it('creates simple element', () => {
       const domElement = renderElement(dom.div(), doc);
@@ -39,6 +38,11 @@ describe('renderElement', () => {
     it('removes false attributes', () => {
       const domElement = renderElement(dom.input({type: 'checkbox', checked: "false"}), doc);
       assert.equal(domElement.outerHTML, '<input type="checkbox">');
+    });
+
+    it('leaves attributes with a falsy zero', () => {
+      const domElement = renderElement(dom.option({value: 0}), doc);
+      assert.equal(domElement.outerHTML, '<option value="0"></option>');
     });
 
     it('creates children', () => {
@@ -104,6 +108,38 @@ describe('renderElement', () => {
       assert.equal(ul.childNodes[0].textContent, 'one');
       assert.equal(ul.childNodes[1].textContent, 'two-point-five');
       assert.equal(ul.childNodes[2].textContent, 'three');
+    });
+
+    it('leaves zero value attributes after update', () => {
+      let updater = null;
+      let selectedIndex = 0;
+
+      const domElement = renderElement(dom.div(() => {
+        dom.div((update) => {
+          updater = update;
+          dom.select(() => {
+            dom.option({value: 0, selected: 0 === selectedIndex}, "aye");
+            dom.option({value: 1, selected: 1 === selectedIndex}, "bee");
+            dom.option({value: 2, selected: 2 === selectedIndex}, "cee");
+          });
+        });
+      }), doc);
+
+      assert.equal(domElement.outerHTML, '<div><div><select>' +
+                  '<option value="0" selected="true">aye</option>' +
+                  '<option value="1">bee</option>' +
+                  '<option value="2">cee</option>' +
+                  '</select></div></div>');
+      selectedIndex = 2;
+
+      updater();
+      builder.forceUpdate();
+
+      assert.equal(domElement.outerHTML, '<div><div><select>' +
+                  '<option value="0">aye</option>' +
+                  '<option value="1">bee</option>' +
+                  '<option value="2" selected="true">cee</option>' +
+                  '</select></div></div>');
     });
 
     it('assigns click handler', () => {
