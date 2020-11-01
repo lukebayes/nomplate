@@ -418,5 +418,32 @@ describe('renderElement', () => {
     const domElement = renderElement(nomElement, doc);
     assert.equal(domElement.outerHTML, '<div class="efgh"></div>');
   });
+
+  describe('unsafe', () => {
+    it('does NOT YET render unsafe text child', () => {
+      // NOTE(lbayes): This syntax should be supported, just don't have time to
+      // implement properly right now.
+      const nomElement = dom.div(() => {
+        dom.h1('Title');
+        dom.p(() => {
+          dom.unsafe('<h2>Subtitle</h2>');
+        });
+      });
+      const domElement = renderElement(nomElement, doc);
+      assert.equal(domElement.outerHTML,
+        '<div><h1>Title</h1><p></p></div>');
+        // '<div><h1>Title</h1><p><h2>Subtitle</h2></p></div>');
+    });
+
+    it('renders unsafe textContent as innerHTML', () => {
+      const nomElement = dom.div(() => {
+        dom.h1('Title');
+        dom.p(dom.unsafe('<h2>Subtitle</h2>'));
+      });
+      const domElement = renderElement(nomElement, doc);
+      assert.equal(domElement.outerHTML,
+        '<div><h1>Title</h1><p><h2>Subtitle</h2></p></div>');
+    });
+  });
 });
 

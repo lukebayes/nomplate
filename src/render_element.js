@@ -257,9 +257,14 @@ function nomElementToOperations(ops, nomElement, doc, optDomElement) {
     // Synchronize element attributes, including className and event handlers.
     elementAttributesToOperations(ops, nomElement, optDomElement);
 
-    // Handle custom CSS styles.
-    // Traverse into the each child.
-    nomElementChildNodesToOperations(ops, nomElement, doc, optDomElement);
+    if (nomElement.unsafeContent) {
+      ops.push(operations.removeAllChildren());
+      ops.push(operations.updateInnerHTML(nomElement.unsafeContent));
+    } else {
+      // Handle custom CSS styles.
+      // Traverse into the each child.
+      nomElementChildNodesToOperations(ops, nomElement, doc, optDomElement);
+    }
 
     // Pop the new element off the stack.
     ops.push(operations.popElement());

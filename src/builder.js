@@ -31,11 +31,12 @@ function top() {
 function processClassName(value) {
   if (Array.isArray(value)) {
     return value.filter(entry => !!entry && entry !== -1).join(' ');
-  } else if (typeof value === 'object') {
+  } else if (value && typeof value === 'object') {
     if (value._isUnsafe) {
       return value;
     } else {
-      return Object.keys(value).filter(key => !!value[key] && value[key] !== -1).join(' ');
+      return Object.keys(value).filter(key =>
+        !!value[key] && value[key] !== -1).join(' ');
     }
   }
   return value;
@@ -141,15 +142,17 @@ function processArgs(...args) {
   let attrs;
   let handler;
   let inlineTextChild;
+  let unsafeContent;
   let type;
 
   args.forEach((value) => {
     type = typeof value;
     if (type !== 'undefined') {
-      if (type == 'number' || type === 'string' || value && type === 'object' && value._isUnsafe) {
-        // value is either a string, or looks like: {_isUnsafe: true, content: 'abcd'};
-        // htmlEncode will handle this by returning content unchanged.
+      if (type === 'number' || type === 'string') {
         inlineTextChild = value;
+      } else if (value && type === 'object' && value._isUnsafe) {
+        // value is either a string, or looks like: {_isUnsafe: true, content: 'abcd'};
+        unsafeContent = value.content;
       } else if (type === 'function') {
         handler = value;
       } else if (value) {
@@ -161,6 +164,7 @@ function processArgs(...args) {
   return {
     attrs,
     inlineTextChild,
+    unsafeContent,
     handler,
   };
 }

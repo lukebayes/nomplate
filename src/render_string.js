@@ -94,6 +94,7 @@ function renderString() {
     // NOTE(lbayes): textContent will derive from children, textValue is explicitly set by
     // the builder.
     const textValue = element.textValue;
+    const unsafeContent = element.unsafeContent;
 
     writeIndentation();
     writeOpener(nodeName, attributes);
@@ -104,10 +105,12 @@ function renderString() {
       write('>');
     }
 
-    if (element.nodeName === 'style' && element.selectors && element.selectors.length > 0) {
+    if (nodeName === 'style' && element.selectors && element.selectors.length > 0) {
       write(element.renderSelectors());
     } else if (textValue) {
       write(htmlEncode(textValue));
+    } else if (unsafeContent) {
+      write(unsafeContent);
     }
 
     if (children.length > 0) {
