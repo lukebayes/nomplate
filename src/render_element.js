@@ -236,9 +236,14 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
  * Create new DOM elements from the provided NOM element.
  */
 function nomElementToOperations(ops, nomElement, doc, optDomElement) {
+  console.log('inside', nomElement.textContent);
   if (nomElement.nodeName === 'text') {
     ops.push(operations.removeAllChildren());
     ops.push(operations.createTextNode(nomElement.textValue));
+  } else if (nomElement.nodeName === 'node' && nomElement.innerHTML) {
+    console.log("YIIIIIIIIIIII:", nomElement.innerHTML);
+    ops.push(operations.removeAllChildren());
+    ops.push(operations.createInnerHtml(nomElement.innerHTML));
   } else {
     if (!optDomElement) {
       // Create the new element.

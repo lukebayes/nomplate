@@ -14,6 +14,7 @@ class Element {
 
     this._children = null;
     this._textContent = null;
+    this._innerHTML = null;
     this._textValue = this.attrs && this.attrs.textValue || null;
     this.childNodes = [];
     this.isCollapsible = false;
@@ -26,11 +27,16 @@ class Element {
     this.hasUpdateableHandler = false;
 
     // Append #text child if provided
-    if (args && args.inlineTextChild) {
-      // Used by render_element:
-      this.childNodes.push(new Element('text', {attrs: {textValue: args.inlineTextChild}}, this));
-      // Used by render_string:
-      this._textValue = args.inlineTextChild;
+    if (args) {
+      if (args.unsafeContent) {
+        console.log('assigningn now');
+        this._innerHTML = args.unsafeContent;
+      } else if (args.inlineTextChild) {
+        // Used by render_element:
+        this.childNodes.push(new Element('text', {attrs: {textValue: args.inlineTextChild}}, this));
+        // Used by render_string:
+        this._textValue = args.inlineTextChild;
+      }
     }
   }
 
@@ -100,6 +106,10 @@ class Element {
 
   get textValue() {
     return this._textValue;
+  }
+
+  get innerHTML() {
+    return this._innerHTML;
   }
 
   get textContent() {

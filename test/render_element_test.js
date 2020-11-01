@@ -418,5 +418,19 @@ describe('renderElement', () => {
     const domElement = renderElement(nomElement, doc);
     assert.equal(domElement.outerHTML, '<div class="efgh"></div>');
   });
+
+  describe.only('unsafe', () => {
+    it('appends elements properly', () => {
+      const nomElement = dom.div(() => {
+        dom.h1('Title');
+        dom.p(() => {
+          dom.unsafe('<h2>Subtitle</h2>')
+        });
+      });
+      const domElement = renderElement(nomElement, doc);
+      assert.equal(domElement.outerHTML,
+        '<div><h1>Title</h1><p><h2>Subtitle</h2></p></div>');
+    });
+  });
 });
 
