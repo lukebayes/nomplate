@@ -21,13 +21,28 @@ function createWindow(optOptions) {
   };
   const win = doc.defaultView;
 
+  var windowTop = win;
+  win.top = windowTop;
+
   /**
    * Set the current URL on the provided window.location object.
    */
-  win.setUrl = (urlOrPart) => {
-    const url = urlOrPart.indexOf("http") === 0 ?
-      urlOrPart : `http://example.com/${urlOrPart}`;
-    jsdom.reconfigure({ url });
+  win.setUrl = (urlOrPath) => {
+    let url;
+
+    // If the host is not included, we have a path.
+    if (urlOrPath.indexOf('http') !== 0) {
+      // Ensure our leading slash is present and singular.
+      const part = urlOrPath.indexOf('/') !== 0 ? `/${urlOrPath}` : urlOrPath;
+      url = `http://example.com${part}`;
+    } else {
+      url = urlOrPath;
+    }
+
+    jsdom.reconfigure({
+      windowTop,
+      url,
+    });
   };
 
   return win;
