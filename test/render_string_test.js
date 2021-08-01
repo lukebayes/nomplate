@@ -120,6 +120,16 @@ describe('Nomplate renderer dom', () => {
     assert.equal(result, '<input type="checkbox"></input>');
   });
 
+  it('omits undefined className', () => {
+    const result = render(dom.div({className: undefined}));
+    assert.equal(result, '<div></div>');
+  });
+
+  it('omits null className', () => {
+    const result = render(dom.div({className: null}));
+    assert.equal(result, '<div></div>');
+  });
+
   it('omits null attrs', () => {
     const result = render(dom.div({className: 'abcd', dataFooBar: null}));
     assert.equal(result, '<div class="abcd"></div>');
