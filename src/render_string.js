@@ -50,6 +50,9 @@ function renderString() {
   }
 
   function writeOpener(nodeName, attributes) {
+    if (nodeName === 'html') {
+      write('<!DOCTYPE html>');
+    }
     write(`<${nodeName}`);
     writeAttributes(attributes);
   }

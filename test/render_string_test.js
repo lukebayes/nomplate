@@ -13,6 +13,11 @@ describe('Nomplate renderer dom', () => {
     });
   });
 
+  it('creates a strict mode doc type', () => {
+    const str = render(dom.html());
+    assert.equal('<!DOCTYPE html><html></html>', str);
+  });
+
   it('creates an ugly html string', () => {
     const str = render(tree);
     assert.equal(str, '<ul class="abcd"><li class="efgh">ijkl</li></ul>');
