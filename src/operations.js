@@ -55,14 +55,12 @@ function removeAttribute(name) {
   };
 }
 
-function setRenderFunction(getUpdateElement, nomElement, document) {
-  return function _setRenderFunction(domElement) {
-    if (nomElement.hasUpdateableHandler) {
-      /* eslint-disable no-param-reassign */
-      nomElement.render = getUpdateElement(nomElement, document, domElement);
-      /* eslint-enable no-param-reassign */
-    }
-  };
+function _setRenderFunction(getUpdateElement, nomElement, document, domElement) {
+  if (nomElement.hasUpdateableHandler) {
+    /* eslint-disable no-param-reassign */
+    nomElement.render = getUpdateElement(nomElement, document, domElement);
+    /* eslint-enable no-param-reassign */
+  }
 }
 
 function enqueueOnRender(handler) {
@@ -152,8 +150,11 @@ function pushElement(nomElement) {
   };
 }
 
-function pushDomElement(domElement) {
-  return function _pushDomElement(_domElement, stack) {
+function pushDomElement(nomElement, getUpdateElement, domElement) {
+  return function _pushDomElement(_domElement, stack, document) {
+    // Apply the .render function to the expected nomElement
+    _setRenderFunction(getUpdateElement, nomElement, document, domElement);
+
     return domElement;
   };
 }
@@ -174,7 +175,7 @@ function createElement(nomElement, getUpdateElement) {
       newDomElement = document.createElement(nomElement.nodeName);
     }
 
-    setRenderFunction(getUpdateElement, nomElement, document)(newDomElement);
+    _setRenderFunction(getUpdateElement, nomElement, document, newDomElement);
 
     return newDomElement;
   };
@@ -311,7 +312,6 @@ module.exports = {
   setDataAttribute,
   setHandler,
   setId,
-  setRenderFunction,
   updateInnerHTML,
   updateTextContent,
 };

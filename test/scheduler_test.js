@@ -37,7 +37,11 @@ describe('Nomplate scheduler', () => {
     assert.equal(render.callCount, 1);
   });
 
-  it('filters duplicates', () => {
+  // NOTE(lbayes): This optimization is impacting the correctness of the
+  // rendering pipeline. Disabling this test while I focus on correctness and
+  // will re-enable if/when performance makes it's way to the top of the list
+  // again.
+  it.skip('filters duplicates', () => {
     const root = new Element('div');
     const render = sinon.spy();
     schedule(root, render);

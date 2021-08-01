@@ -244,7 +244,7 @@ function nomElementToOperations(ops, nomElement, doc, optDomElement) {
       // Create the new element.
       ops.push(operations.createElement(nomElement, getUpdateElement));
     } else {
-      ops.push(operations.pushDomElement(optDomElement));
+      ops.push(operations.pushDomElement(nomElement, getUpdateElement, optDomElement));
     }
 
     // Push the new element onto the stack so that subsequent operations apply to it.
