@@ -110,6 +110,96 @@ describe('renderElement', () => {
       assert.equal(ul.childNodes[2].textContent, 'three');
     });
 
+    it('handles multiple synchronous update calls', (done) => {
+      let updateCount = 0;
+      const root = dom.div({id: 'root'}, (update) => {
+        dom.h1(`update-${updateCount++}`);
+        if (updateCount < 5) {
+          update();
+          return;
+        }
+        dom.div({id: 'child'}, (update) => {
+          dom.h2(`update-${updateCount++}`);
+          if (updateCount < 10) {
+            update();
+            return;
+          }
+        });
+      });
+
+      const elem = renderElement(root, doc);
+
+      setTimeout(() => {
+        try {
+          const one = elem.querySelector('h1').innerHTML;
+          assert.equal(one, 'update-4');
+
+          const two = elem.querySelector('h2').innerHTML;
+          assert.equal(two, 'update-9');
+          done();
+        } catch (err) {
+          done(err);
+        }
+      }, 50);
+    });
+
+    it.skip('handles synchronous update calls within render', (done) => {
+      let updateCount = 0;
+
+      const root = dom.div({id: 'root'}, (update) => {
+        dom.div({id: 'outer'}, () => {
+          if (updateCount === 0) {
+            updateCount++;
+            console.log('first');
+            dom.div({id: 'first'});
+            update();
+            return;
+          }
+          console.log('second');
+          dom.div({id: 'second'}, (update) => {
+            if (updateCount === 1) {
+              updateCount++
+              update();
+              return;
+            }
+
+            console.log('third');
+            dom.div({id: 'third'});
+          });
+        });
+      });
+
+      try {
+        const elem = renderElement(root, doc);
+        const first = elem.querySelector('#first');
+        assert(first, 'Expected first node to be rendered');
+        builder.forceUpdate();
+        setTimeout(() => {
+          try {
+            builder.forceUpdate();
+            const second = elem.querySelector('#second');
+            assert(second, 'Expected second node to be rendered');
+
+            console.log(elem.outerHTML);
+            builder.forceUpdate();
+
+            setTimeout(() => {
+              try {
+                builder.forceUpdate();
+                done();
+              } catch (err) {
+                done(err);
+              }
+            });
+          } catch(err) {
+            done(err);
+          }
+        });
+      } catch (err) {
+        done(err);
+      }
+    });
+
     it('leaves zero value attributes after update', () => {
       let updater = null;
       let selectedIndex = 0;

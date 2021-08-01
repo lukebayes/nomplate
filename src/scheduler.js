@@ -18,13 +18,26 @@
  * config().schedule(nomElement);
  * ```
  */
-function scheduler(onNextFrame) {
+function scheduler(externalNextFrame) {
   const pending = [];
 
   let responseIsPending = false;
+  function onNextFrame(executeHandler) {
+    if (!responseIsPending) {
+      responseIsPending = true;
+      externalNextFrame(() => {
+        responseIsPending = false;
+        executeHandler();
+      });
+    }
+  }
 
   function execute() {
     const filtered = [];
+    // clone the currently pending update calls list so that we can learn about
+    // any additional calls to update from this render pass.
+    const pendingCopy = pending.slice();
+    pending.length = 0;
 
     function filterChildren(entries) {
       return entries.filter((entry, index) => {
@@ -41,7 +54,7 @@ function scheduler(onNextFrame) {
       });
     }
 
-    filterChildren(pending).forEach((entry) => {
+    filterChildren(pendingCopy).forEach((entry) => {
       entry.handler();
     });
 
@@ -52,20 +65,18 @@ function scheduler(onNextFrame) {
       }
     });
 
-    pending.length = 0;
-    responseIsPending = false;
+    if (pending.length > 0) {
+      onNextFrame(execute);
+    }
   }
 
   // Schedule a handler to be called on the next animation frame
-  function schedule(nomElement, handler) {
-    if (!elementIsPending(pending, nomElement)) {
-      pending.push({element: nomElement, handler: handler});
-
-      if (!responseIsPending) {
-        onNextFrame(execute);
-        responseIsPending = true;
-      }
-    }
+  function schedule(element, handler) {
+    // NOTE(lbayes): These are nomElement instances and the handler body is
+    // created from within builder.getUpdateScheduler, but ultimately calls
+    // element.render().
+    pending.push({element, handler});
+    onNextFrame(execute);
   }
 
   schedule.forceUpdate = execute;

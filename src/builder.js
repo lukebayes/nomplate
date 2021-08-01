@@ -55,7 +55,7 @@ function processClassName(value) {
  */
 function getUpdateScheduler(elem, handler) {
   return function _getUpdateScheduler(optCompleteHandler) {
-    if (elem.render) {
+    if (elem.hasUpdateableHandler) {
       function renderNow() {
         /* eslint-disable no-use-before-define */
         elem.render(builder, handler, optCompleteHandler);
