@@ -43,27 +43,20 @@
       "name": "Luke Bayes",
       "email": "lukebayes@gmail.com",
       "url": "https://lukebayes.com"
-    },
-    {
-      "name": "Trevor O'Brien",
-      "email": "tmobrien55@gmail.com",
-      "url": "http://trevorobrien.com"
     }
   ],
   "license": "MIT",
   "devDependencies": {
-    "chai": "^4.3.3",
-    "eslint": "^6.8.0",
-    "eslint-plugin-mocha": "^6.3.0",
+    "chai": "^4.3.4",
+    "esbuild": "^0.13.14",
+    "eslint": "^8.2.0",
+    "eslint-plugin-mocha": "^9.0.0",
     "express": "^4.17.1",
-    "js-beautify": "^1.13.5",
+    "js-beautify": "^1.14.0",
     "jsdom": "^16.5.0",
     "jsdom-simulant": "^1.1.2",
     "json-loader": "^0.5.7",
-    "mocha": "^7.2.0",
-    "sinon": "^9.2.4",
-    "terser-webpack-plugin": "^5.1.1",
-    "webpack": "^5.24.4",
-    "webpack-cli": "^3.3.12"
+    "mocha": "^9.1.3",
+    "sinon": "^12.0.1"
   }
 }

@@ -9,7 +9,7 @@ PROJECT_ROOT=$(shell git rev-parse --show-toplevel)
 
 # Nodejs
 # https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-x64.tar.xz
-NODE_VERSION=12.16.2
+NODE_VERSION=16.13.0
 NODE=lib/nodejs/bin/node
 NPM=lib/nodejs/bin/npm
 
@@ -21,12 +21,12 @@ NODE_MODULES_BIN=node_modules/.bin
 # Node utilities
 ESLINT=$(NODE_MODULES_BIN)/eslint
 MOCHA=$(NODE_MODULES_BIN)/_mocha
-WEBPACK=$(NODE_MODULES_BIN)/webpack
-WEBPACK_CLIENT_CONFIG=webpack-client.config.js
+ESBUILD=$(NODE_MODULES_BIN)/esbuild
 
 .PHONY: test test-w dev-install build build-module lint clean
 
 build: dist/nomplate.js dist/nomplate.min.js dist/nomplate.min.gz
+	ls -hl --color dist
 
 # Run all JavaScript tests
 test: ${NODE}
@@ -46,16 +46,17 @@ publish: clean build
 	npm publish
 
 dist/nomplate.js: index.js src/*
-	$(WEBPACK) --mode development --config $(WEBPACK_CLIENT_CONFIG) index.js --output dist/nomplate.js
+	$(ESBUILD) index.js --bundle --outfile=dist/nomplate.js
 
 dist/nomplate.min.js: index.js src/*
-	$(WEBPACK) --mode production --optimize-minimize --config $(WEBPACK_CLIENT_CONFIG) index.js --output dist/nomplate.min.js
+	$(ESBUILD) index.js --bundle --minify --outfile=dist/nomplate.min.js
+	# $(ESBUILD) index.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --outfile=dist/nomplate.min.js
 
 dist/nomplate.min.gz: dist/nomplate.min.js
 	gzip --best -c dist/nomplate.min.js > dist/nomplate.min.gz
 
 dist/express.js:
-	$(WEBPACK) --mode development --config $(WEBPACK_SERVER_CONFIG) express.js --output dist/express.js
+	$(ESBUILD) index.js --bundle --target=node16.13.0 --outfile=dist/express.js
 
 lint:
 	$(ESLINT) --config $(PROJECT_ROOT)/.eslintrc.json .
