@@ -138,6 +138,26 @@ ready(document, () => {
 # TODO MVC?
 [Here's an early prototype](https://github.com/lukebayes/todomvc-app-template/tree/nomplate) of the famous TODOMVC application implemented as a fully client side Nomplate application.
 
+## Get a reference to a real DOM element
+```javascript
+const dom = require('nomplate').dom;
+
+function myView(options) {
+  function onHeaderRendered(elem) {
+    console.log('header elem:', elem);
+    elem.textContent = 'Hello World';
+  }
+
+  return dom.div({id: 'my-view'}, () => {
+    // The provided function will be given a reference to the element
+    // after the element is updated.
+    dom.h1({onRender: onHeaderRendered});
+  });
+}
+
+module.exports = myView;
+```
+
 Here are some highlights:
 * 6kb minified and gzipped for the entire library AND application
 * < 80ms time to fully rendered and interactive application
