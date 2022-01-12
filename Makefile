@@ -56,7 +56,7 @@ dist/nomplate.min.gz: dist/nomplate.min.js
 	gzip --best -c dist/nomplate.min.js > dist/nomplate.min.gz
 
 dist/express.js:
-	$(ESBUILD) index.js --bundle --target=node16.13.0 --outfile=dist/express.js
+	$(ESBUILD) index.js --bundle --target=node$(NODE_VERSION) --outfile=dist/express.js
 
 lint:
 	$(ESLINT) --config $(PROJECT_ROOT)/.eslintrc.json .
