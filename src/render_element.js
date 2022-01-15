@@ -221,7 +221,7 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
       }
     } else if (optDomElement) {
       const domValue = optDomElement.getAttribute(keyWithCase);
-      if (value === '' || value === undefined || value === null || value === NaN) {
+      if (value === '' || value === undefined || value === null) {
         // Remove invalid/empty-ish attribute values
         ops.push(operations.removeAttribute(keyWithCase, value));
       } else if (value != domValue) {
@@ -239,6 +239,8 @@ function nomElementToOperations(ops, nomElement, doc, optDomElement) {
   if (nomElement.nodeName === 'text') {
     ops.push(operations.removeAllChildren());
     ops.push(operations.createTextNode(nomElement.textValue));
+  } else if (nomElement.nodeName === 'external') {
+    ops.push(operations.createExternalElement(nomElement));
   } else {
     if (!optDomElement) {
       // Create the new element.

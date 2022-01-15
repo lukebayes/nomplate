@@ -180,7 +180,6 @@ describe('renderElement', () => {
             const second = elem.querySelector('#second');
             assert(second, 'Expected second node to be rendered');
 
-            console.log(elem.outerHTML);
             builder.forceUpdate();
 
             setTimeout(() => {
@@ -507,6 +506,22 @@ describe('renderElement', () => {
     const nomElement = dom.div({className: 'efgh', style: {}});
     const domElement = renderElement(nomElement, doc);
     assert.equal(domElement.outerHTML, '<div class="efgh"></div>');
+  });
+
+  describe('external element', () => {
+    it('inserts an external element', () => {
+      const two = doc.createElement('li');
+      two.textContent = 'two';
+      const nomElement = dom.ul(() => {
+        dom.li('one');
+        dom.external(two);
+        dom.li('three');
+      });
+
+      const root = renderElement(nomElement, doc);
+      assert.strictEqual(two, root.childNodes[1]);
+      assert.equal(root.textContent, 'onetwothree');
+    });
   });
 
   describe('unsafe', () => {

@@ -206,11 +206,22 @@ function updateTextContent(content) {
   };
 }
 
+function createExternalElement(nomElement) {
+  return function _createExternalElement(domElement, stack) {
+    const parent = top(stack);
+    const dElem = nomElement.domElement;
+    if (parent) {
+      parent.appendChild(dElem);
+    }
+    return dElem;
+  };
+}
+
 function appendChild() {
   return function _appendChild(domElement, stack) {
     const parent = top(stack);
     if (parent) {
-      parent.appendChild(domElement);
+      parent.appendChild(domElement || optDomElement);
     }
 
     return domElement;
@@ -294,6 +305,7 @@ function execute(ops, doc, domElement) {
 module.exports = {
   appendChild,
   createElement,
+  createExternalElement,
   createTextNode,
   enqueueOnRender,
   execute,

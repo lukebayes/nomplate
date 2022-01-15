@@ -91,6 +91,14 @@ function renderString() {
     if (!element) {
       throw new Error('Cannot render falsy element.');
     }
+    // Do not render external (non-nomplate) elements into strings.
+    if (element.nodeName === 'external') {
+      // In general, the external tag is not useful on a server (or as a string), so we can
+      // just ignore it here. There could be a use for some work happening if a server is
+      // rendering a shared template, and the client needs a place to hang it's external
+      // elements.
+      return;
+    }
     const attributes = element.attrs;
     const children = element.children;
     const nodeName = element.nodeName;

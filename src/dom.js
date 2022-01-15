@@ -49,6 +49,10 @@ dom.stylesheet = (href) => {
   return dom.link({type: 'text/css', rel: 'stylesheet', href: href});
 };
 
+// Helper for inserting long-lived existing DOM elements that may have
+// been created from another environment (e.g., three.js).
+dom.external = builder.externalElement;
+
 // Helper for creating CSS selectors declaratively.
 dom.selector = builder.addSelector;
 

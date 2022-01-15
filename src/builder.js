@@ -214,6 +214,12 @@ builder.forceUpdate = function _forceUpdate() {
   config().schedule.forceUpdate();
 };
 
+builder.externalElement = function(external) {
+  const elem = builder('external');
+  elem.domElement = external;
+  return elem;
+}
+
 // Expose the element wrapper for the dom and svg clients.
 builder.elementWrapper = function(nodeName, optNamespace) {
   return function _elementWrapper(optAttrs, optHandler, optContent) {

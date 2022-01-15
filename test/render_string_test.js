@@ -154,4 +154,15 @@ describe('Nomplate renderer dom', () => {
     const result = render(dom.div({key: false, className: null, dataFooBar: undefined}));
     assert.equal(result, '<div></div>');
   });
+
+  it('ignores external elements', () => {
+    const domElement = {nodeName: 'efgh'};
+
+    const nomElement = dom.div({id: 'abcd'}, () => {
+      dom.external(domElement);
+    });
+    const result = render(nomElement);
+
+    assert.equal(result, '<div id="abcd"></div>');
+  });
 });
