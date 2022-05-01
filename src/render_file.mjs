@@ -40,7 +40,6 @@ export default function renderFile(source, options, callback) {
               const layout = layoutModule.default;
               /* eslint-enable global-require */
               /* eslint-enable import/no-dynamic-require */
-              console.log("YOOOOOOOOO:", layout);
               callback(null, renderLayout(layout, view, options, callback));
             });
         }
