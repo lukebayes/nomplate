@@ -27,8 +27,6 @@ export default function renderFile(source, options, callback) {
   try {
     /* eslint-disable global-require */
     /* eslint-disable import/no-dynamic-require */
-    console.log('source:', source);
-    console.log('layout path:', getLayoutPath(options));
     return import(source)
       .then((viewModule) => {
         const view = viewModule.default;
