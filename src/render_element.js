@@ -255,7 +255,7 @@ function nomElementToOperations(ops, nomElement, doc, optDomElement) {
     // Push the new element onto the stack so that subsequent operations apply to it.
     ops.push(operations.pushElement(nomElement));
 
-    if (nomElement.nodeName === constants.STYLE_NODE_NAME && nomElement.selectors) {
+    if (nomElement.nodeName === constants.STYLE_NODE_NAME && (nomElement.selectors || nomElement.atRules)) {
       ops.push(operations.updateInnerHTML(nomElement.renderSelectors()));
     }
 

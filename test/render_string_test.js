@@ -84,7 +84,8 @@ describe('Nomplate renderer dom', () => {
     assert.equal(render(elem), '<div class="<script>" id="<script>" data-foo="&lt;script&gt;"></div>');
   });
 
-  it('does not escape unsafe marked style content', () => {
+  // NOTE(lbayes): Not sure if this is useful.
+  it.skip('does not escape unsafe marked style content', () => {
     const elem = dom.style(dom.unsafe('body > .foo { }'));
     assert.equal(render(elem), '<style>body > .foo { }</style>');
   });

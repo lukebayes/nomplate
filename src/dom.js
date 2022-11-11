@@ -56,6 +56,10 @@ dom.external = builder.externalElement;
 // Helper for creating CSS selectors declaratively.
 dom.selector = builder.addSelector;
 
+// Helper for creating CSS At-Rules.
+// https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
+dom.rule = builder.addAtRule;
+
 // Helper for creating CSS @keyframes statements..
 dom.keyframes = builder.addKeyframe;
 

@@ -227,6 +227,10 @@ builder.elementWrapper = function(nodeName, optNamespace) {
   };
 };
 
+builder.addAtRule = function(rule, optHandler) {
+  top().addAtRule(rule, optHandler);
+};
+
 // Add CSS selector to the current node.
 builder.addSelector = function(selector, styles) {
   top().addSelector(selector, styles);

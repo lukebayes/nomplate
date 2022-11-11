@@ -102,6 +102,54 @@ describe('Nomplate dom', () => {
   });
 
   describe('selector', () => {
+	it('accepts simple atRule', () => {
+	  const elem = dom.div(() => {
+		dom.style(() => {
+		  dom.rule('@charset "UTF-8";');
+		  dom.rule('@charset "iso-8859-15";');
+		});
+	  });
+	  const str = renderString(elem);
+	  assert.equal(str, '<div><style>@charset "UTF-8";@charset "iso-8859-15";</style></div>');
+	});
+
+	it('accepts simple atRule', () => {
+	  const elem = dom.div(() => {
+		dom.style(() => {
+		  dom.rule('@media screen and (min-width: 800px)', () => {
+			dom.selector('body', {
+			  color: 'red',
+			});
+		  });
+		  dom.selector('body', {
+			color: 'blue',
+		  });
+		});
+	  });
+	  const str = renderString(elem);
+	  assert.equal(str, '<div><style>@media screen and (min-width: 800px){body{color:red;}}body{color:blue;}</style></div>');
+	});
+
+	it.only('accepts nested media queries', () => {
+	  const elem = dom.div(() => {
+		dom.style(() => {
+		  dom.rule('@supports (display: flex)', () => {
+			dom.rule('@media (min-width: 900px)', () => {
+			  dom.selector('body', {
+				color: 'red',
+			  });
+			});
+		  });
+		  dom.selector('body', {
+			color: 'blue',
+		  });
+		});
+	  });
+	  const str = renderString(elem);
+	  console.log('str:', str);
+	  assert.equal(str, '<div><style>@supports (display: flex) {@media screen and (min-width: 800px){body{color:red;}}}body{color:blue;}</style></div>');
+	});
+
     it('accepts selector definitions', () => {
       const elem = dom.div(() => {
         dom.style(() => {

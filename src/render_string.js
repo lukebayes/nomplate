@@ -116,7 +116,7 @@ function renderString() {
       write('>');
     }
 
-    if (nodeName === 'style' && element.selectors && element.selectors.length > 0) {
+    if (nodeName === 'style') {
       write(element.renderSelectors());
     } else if (textValue) {
       write(htmlEncode(textValue));
