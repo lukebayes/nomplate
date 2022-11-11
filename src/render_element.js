@@ -215,10 +215,13 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
     } else if (typeof value === 'function') {
       createDispatcherOperation(ops, nomElement, lowerCaseKey, value);
     } else if (!optDomElement) {
-      if (value !== false && value !== 'false' && !isEmptyObject(value)) {
+	  // NOTE(lbayes): We can't truncate falsey attributes because of junk APIs like:
+	  // <input type="text" spellcheck="false" />
+      // if (value !== false && value !== 'false' && !isEmptyObject(value)) {
         // Ensure we set the attribute name with provided case.
-        ops.push(operations.setAttribute(keyWithCase, value));
-      }
+		if (!isEmptyObject(value)) {
+		  ops.push(operations.setAttribute(keyWithCase, value));
+		}
     } else if (optDomElement) {
       const domValue = optDomElement.getAttribute(keyWithCase);
       if (value === '' || value === undefined || value === null) {

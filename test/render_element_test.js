@@ -35,9 +35,9 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<div>one</div>');
     });
 
-    it('removes false attributes', () => {
+    it('does not remove falsey attributes', () => {
       const domElement = renderElement(dom.input({type: 'checkbox', checked: "false"}), doc);
-      assert.equal(domElement.outerHTML, '<input type="checkbox">');
+      assert.equal(domElement.outerHTML, '<input type="checkbox" checked="false">');
     });
 
     it('leaves attributes with a falsy zero', () => {
