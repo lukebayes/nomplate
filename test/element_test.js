@@ -98,6 +98,11 @@ describe('Nomplate Element', () => {
       button.click();
       button.click();
     });
+
+	it('skips encode of href attributes', () => {
+	  const element = renderElement(dom.a({href: 'abcd&efgh'}), doc);
+	  assert.equal(element.href, 'abcd&efgh');
+	});
   });
 
   describe('selectors', () => {
@@ -138,6 +143,17 @@ describe('Nomplate Element', () => {
       const str = renderString(dom.div({style: {}, id: 'abcd'}));
       assert.equal(str, '<div id="abcd"></div>');
     });
+
+	it('encodes regular attributes', () => {
+	  const str = renderString(dom.div({className: 'abcd&efgh'}));
+	  assert.equal(str, '<div class="abcd&amp;efgh"></div>');
+	});
+
+	it('encodes even href attributes', () => {
+	  // NOTE(lbayes): I'm convinced this is a BUG, but not sure if it should be fixed.
+	  const str = renderString(dom.a({href: 'abcd&efgh'}));
+	  assert.equal(str, '<a href="abcd&amp;efgh"></a>');
+	});
 
     it('accepts a style object', () => {
       const myStyle = {

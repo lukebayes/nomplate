@@ -25,7 +25,7 @@ function setAttribute(name, value) {
     if (typeof value === 'boolean' && !value) {
       domElement.removeAttribute(updatedName);
     } else {
-      domElement.setAttribute(updatedName, htmlEncode(value));
+      domElement.setAttribute(updatedName, name === 'href' ? value : htmlEncode(value));
     }
 
     if (constants.PROP_ATTRS.indexOf(name) > -1) {

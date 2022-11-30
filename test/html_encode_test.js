@@ -2,7 +2,6 @@ const assert = require('chai').assert;
 const htmlEncode = require('../').htmlEncode;
 
 describe('HTMLEncode', () => {
-
   it('encodes ampersand', () => {
     assert.equal(htmlEncode('foo&bar'), 'foo&amp;bar');
   });
