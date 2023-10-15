@@ -40,6 +40,18 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<input type="checkbox" checked="false">');
     });
 
+    it('does not render "undefined" for text inputs', () => {
+      const valueObj = {};
+      const domElement = renderElement(dom.input({type: 'text', value: valueObj.name}), doc);
+      assert.equal(domElement.value, '');
+    });
+
+    it('does not render "undefined" for textarea', () => {
+      const valueObj = {};
+      const domElement = renderElement(dom.textarea({value: valueObj.name}), doc);
+      assert.equal(domElement.value, '');
+    });
+
     it('leaves attributes with a falsy zero', () => {
       const domElement = renderElement(dom.option({value: 0}), doc);
       assert.equal(domElement.outerHTML, '<option value="0"></option>');

@@ -186,6 +186,11 @@ function elementAttributesToOperations(ops, nomElement, optDomElement) {
 
   getAllAttributeKeys(attrs, optDomElement).forEach((keyWithCase) => {
     const value = attrs[keyWithCase];
+    // Do not submit undefined value attribute into form elements
+    if (keyWithCase == 'value' && value === undefined) {
+      return;
+    }
+
     const lowerCaseKey = keyWithCase.toLowerCase();
 
     if (lowerCaseKey === 'id') {
