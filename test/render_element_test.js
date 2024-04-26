@@ -493,7 +493,7 @@ describe('renderElement', () => {
     };
     const nomElement = dom.div((update) => {
       updater = update;
-      dom.div({style: style});
+      dom.div({style});
     });
     const domElement = renderElement(nomElement, doc);
 
@@ -512,6 +512,18 @@ describe('renderElement', () => {
     updater();
     builder.forceUpdate();
     assert.equal(domElement.outerHTML, '<div><div></div></div>');
+  });
+
+  it('accepts a style string on form', () => {
+    const nomElement = dom.form({style: 'white-space:nowrap;'});
+    const domElement = renderElement(nomElement, doc);
+    assert.equal(domElement.outerHTML, '<form style="white-space:nowrap;"></form>');
+  });
+
+  it('accepts a style obj', () => {
+    const nomElement = dom.form({style: {whiteSpace: 'nowrap'}});
+    const domElement = renderElement(nomElement, doc);
+    assert.equal(domElement.outerHTML, '<form style="white-space:nowrap;"></form>');
   });
 
   it('ignores empty inline style declaration', () => {
