@@ -30,6 +30,11 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<div id="abcd"></div>');
     });
 
+    it('creates element with null id', () => {
+      const domElement = renderElement(dom.div({id: null}), doc);
+      assert.equal(domElement.outerHTML, '<div></div>');
+    });
+
     it('assigns textContent', () => {
       const domElement = renderElement(dom.div('one'), doc);
       assert.equal(domElement.outerHTML, '<div>one</div>');

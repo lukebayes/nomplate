@@ -13,7 +13,9 @@ function top(stack) {
 
 function setId(value) {
   return function _setId(domElement, stack, document) {
-    domElement.id = value;
+    if (value !== null && value !== undefined) {
+      domElement.id = value;
+    }
     return domElement;
   };
 }
