@@ -122,9 +122,11 @@ function processAttrs(attrs) {
       /* eslint-disable no-param-reassign */
       attrs.className = processClassName(attrs.className);
       /* eslint-enable no-param-reassign */
-    } else if (attrs.style && typeof attrs.style === 'object') {
+    }
+    if (attrs.style && typeof attrs.style === 'object') {
       attrs.style = processStyleObject(attrs.style);
-    } else if (attrs.onenter && attrs.onkeyup || attrs.onEnter && attrs.onKeyUp) {
+    }
+    if (attrs.onenter && attrs.onkeyup || attrs.onEnter && attrs.onKeyUp) {
       throw new Error('onenter and onkeyup are mutually exclusive, consider adding a switch statement to your onkeyup handler for the enter case.');
     }
 

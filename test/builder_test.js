@@ -59,6 +59,18 @@ describe('Nomplate ElementBuilder', () => {
     assert.equal(root.firstChild.textContent, '');
   });
 
+  it('handles className and style attrs', () => {
+    const root = builder('div', () => {
+      builder('div', {className: 'abcd', style: {color: 'blue'}}, 'hello');
+    });
+
+    assert.equal(root.nodeName, 'div');
+    const child = root.firstChild;
+    assert.equal(child.nodeName, 'div');
+    assert.equal(child.className, 'abcd');
+    assert.equal(child.attrs.style, 'color:blue;');
+  });
+
   it('resets the stack, even on error', () => {
     try {
       builder('div', () => {
