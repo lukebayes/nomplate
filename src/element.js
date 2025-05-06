@@ -19,7 +19,6 @@ class Element {
     this.childNodes = [];
     this.isCollapsible = false;
     this.selectors = null;
-    this.keyframes = null;
 
     // Handler that should be overridden by renderElement if there is an
     // updateable handler present.
@@ -47,15 +46,39 @@ class Element {
     if (this.selectors === null) {
       this.selectors = [];
     }
+
     this.selectors.push({
       selector,
-      rules
+      rules,
     });
+
+    if (typeof rules === 'function') {
+      // Gross, gross hackery!
+      // We're now inside a media selector, any new selectors should
+      // be appended so they can be nested beneath it. I hate this
+      // implementation almost as much as I hate CSS media query
+      // syntax.
+      var realSelectors = this.selectors;
+      this.selectors = [];
+      rules();
+      rules.selectors = this.selectors;
+      this.selectors = realSelectors;
+    }
   }
 
   renderSelectorRules(entries, rules) {
     Object.keys(rules).forEach((key) => {
       entries.push(`${camelToDash(key)}:${rules[key]};`);
+    });
+  }
+
+  renderMediaSelector(entries, name, selectors) {
+    selectors.forEach((selector) => {
+      const name = selector.selector;
+      entries.push(`${name}{`);
+      const rules = selector.rules;
+      this.renderSelectorRules(entries, rules);
+      entries.push('}');
     });
   }
 
@@ -65,14 +88,16 @@ class Element {
       const name = selector.selector;
       entries.push(`${name}{`);
       const rules = selector.rules;
-      if (name.indexOf('@') === 0) {
+      if (name.indexOf('@media') === 0) {
+        this.renderMediaSelector(entries, name, rules.selectors);
+      } else if (name.indexOf('@') === 0) {
         Object.keys(rules).forEach((key) => {
           entries.push(`${key} {`);
           this.renderSelectorRules(entries, rules[key]);
-          entries.push(`} `);
+          entries.push('} ');
         });
       } else {
-        this.renderSelectorRules(entries, selector.rules);
+        this.renderSelectorRules(entries, rules);
       }
       entries.push('}');
     });

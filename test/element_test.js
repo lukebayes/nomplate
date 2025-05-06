@@ -131,6 +131,17 @@ describe('Nomplate Element', () => {
       });
       assert.equal(style.renderSelectors(), '@keyframes foo{from {opacity:0;background-color:red;} to {opacity:1;background-color:yellow;} }');
     });
+
+    it('accepts media selector', () => {
+      const style = dom.style(() => {
+        dom.media('screen and (min-width: 1024px)', () => {
+          dom.selector('body', {
+            backgroundColor: 'pink',
+          });
+        });
+      });
+      assert.equal(style.renderSelectors(), '@media screen and (min-width: 1024px){body{background-color:pink;}}');
+    });
   });
 
   describe('inline style object as value', () => {

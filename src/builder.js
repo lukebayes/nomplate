@@ -239,6 +239,10 @@ builder.addKeyframe = function(name, rules) {
   top().addSelector(`@keyframes ${name}`, rules);
 };
 
+builder.addMedia = function(conditions, handler) {
+  top().addSelector(`@media ${conditions}`, handler);
+};
+
 // Return this Object wherever we would normally html_encode a string value.
 builder.unsafeContent = function(content) {
   return {
