@@ -99,10 +99,10 @@ describe('Nomplate Element', () => {
       button.click();
     });
 
-	it('skips encode of href attributes', () => {
-	  const element = renderElement(dom.a({href: 'abcd&efgh'}), doc);
-	  assert.equal(element.href, 'abcd&efgh');
-	});
+    it('skips encode of href attributes', () => {
+      const element = renderElement(dom.a({href: 'abcd&efgh'}), doc);
+      assert.equal(element.href, 'abcd&efgh');
+    });
   });
 
   describe('selectors', () => {
