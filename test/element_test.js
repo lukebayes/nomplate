@@ -116,6 +116,16 @@ describe('Nomplate Element', () => {
       assert.equal(style.renderSelectors(), 'foo{background-color:#fc0;}');
     });
 
+    it('accepts after selector', () => {
+      const style = dom.style(() => {
+        dom.selector('.sub-elem::after', {
+          content: '-->',
+        });
+      });
+
+      assert.equal(style.renderSelectors(), '.sub-elem::after{content:"-->";}');
+    });
+
     it('accepts keyframes selector', () => {
       const style = dom.style(() => {
         dom.keyframes('foo', {

@@ -82,12 +82,21 @@ class Element {
     });
   }
 
+  _wrapContentRules(rules) {
+    Object.keys(rules).forEach((key) => {
+      if (key === 'content') {
+        rules[key] = `"${rules[key]}"`;
+      }
+    });
+    return rules;
+  }
+
   renderSelectors() {
     const entries = [];
     this.selectors.forEach((selector) => {
       const name = selector.selector;
       entries.push(`${name}{`);
-      const rules = selector.rules;
+      const rules = this._wrapContentRules(selector.rules);
       if (name.indexOf('@media') === 0) {
         this.renderMediaSelector(entries, name, rules.selectors);
       } else if (name.indexOf('@') === 0) {
