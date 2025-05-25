@@ -45,6 +45,9 @@ function createWindow(optOptions) {
     });
   };
 
+  // Create a fake replaceState handler
+  // win.history.replaceState = win.history.pushState;
+
   return win;
 }
 
