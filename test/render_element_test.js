@@ -62,6 +62,11 @@ describe('renderElement', () => {
       assert.equal(domElement.outerHTML, '<option value="0"></option>');
     });
 
+    it('does not apply attribute values if the key is "0"', () => {
+      const domElement = renderElement(dom.div({0: 'abcd', className: 'foo'}), doc);
+      assert.equal(domElement.outerHTML, '<div class="foo"></div>');
+    });
+
     it('creates children', () => {
       const domElement = renderElement(dom.div(() => {
         dom.ul(() => {

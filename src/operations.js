@@ -23,6 +23,9 @@ function setId(value) {
 function setAttribute(name, value) {
   return function _setAttribute(domElement, stack, document) {
     const updatedName = name === 'key' ? constants.NOM_ATTR_KEY : name;
+    if (updatedName === '0') {
+      return domElement;
+    }
 
     if (typeof value === 'boolean' && !value) {
       domElement.removeAttribute(updatedName);
