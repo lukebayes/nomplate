@@ -1,6 +1,5 @@
 const config = require('./config');
 const constants = require('./constants');
-const htmlEncode = require('./html_encode');
 
 /**
  * Collection of isolated DOM mutations that can be built into a single list
@@ -11,10 +10,35 @@ function top(stack) {
   return stack[stack.length - 1];
 }
 
+/**
+ * Coerce a Nomplate value into something a DOM API will accept.
+ *
+ * NOTE(lbayes): Values on this path are NEVER html encoded. Every sink used
+ * below (createTextNode, textContent, setAttribute, className, dataset) takes
+ * literal text and does its own escaping on serialization. Encoding here would
+ * double-encode, so 'R&D' would show up in the page as 'R&amp;D'.
+ *
+ * The only HTML-parsing sink in this file is updateInnerHTML, which is only
+ * reachable through the explicit dom.unsafe() opt-in and the style selectors we
+ * generate ourselves.
+ */
+function toDomValue(value) {
+  // Unwrap content like: {_isUnsafe: true, content: 'abcd'};
+  if (value && typeof value === 'object' && value._isUnsafe) {
+    return value.content;
+  }
+
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return value;
+}
+
 function setId(value) {
   return function _setId(domElement, stack, document) {
     if (value !== null && value !== undefined) {
-      domElement.id = value;
+      domElement.id = toDomValue(value);
     }
     return domElement;
   };
@@ -30,11 +54,11 @@ function setAttribute(name, value) {
     if (typeof value === 'boolean' && !value) {
       domElement.removeAttribute(updatedName);
     } else {
-      domElement.setAttribute(updatedName, name === 'href' ? value : htmlEncode(value));
+      domElement.setAttribute(updatedName, toDomValue(value));
     }
 
     if (constants.PROP_ATTRS.indexOf(name) > -1) {
-      domElement[name] = value;
+      domElement[name] = toDomValue(value);
     }
 
     return domElement;
@@ -43,8 +67,7 @@ function setAttribute(name, value) {
 
 function setDataAttribute(name, value) {
   return function _setDataAttribute(domElement, stack, document) {
-    const updated = typeof value === 'string' ? htmlEncode(value, document) : value;
-    domElement.dataset[name] = updated;
+    domElement.dataset[name] = toDomValue(value);
     return domElement;
   };
 }
@@ -87,7 +110,7 @@ function enqueueOnRender(handler) {
 function setClassName(value) {
   return function _setClassName(domElement, stack, document) {
     /* eslint-disable no-param-reassign */
-    domElement.className = htmlEncode(value, document);
+    domElement.className = toDomValue(value);
     /* eslint-enable no-param-reassign */
     return domElement;
   };
@@ -188,7 +211,7 @@ function createElement(nomElement, getUpdateElement) {
 
 function createTextNode(content) {
   return function _createTextNode(domElement, stack, document) {
-    const text = document.createTextNode(htmlEncode(content, document));
+    const text = document.createTextNode(toDomValue(content));
     const parent = top(stack);
     parent.appendChild(text);
     return parent;
@@ -205,7 +228,7 @@ function updateInnerHTML(content) {
 function updateTextContent(content) {
   return function _updateTextContent(domElement, stack, document) {
     /* eslint-disable no-param-reassign */
-    domElement.textContent = htmlEncode(content, document);
+    domElement.textContent = toDomValue(content);
     /* eslint-enable no-param-reassign */
     return domElement;
   };

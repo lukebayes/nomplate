@@ -558,6 +558,50 @@ describe('renderElement', () => {
     });
   });
 
+  describe('encoding', () => {
+    // NOTE(lbayes): The DOM path must NOT html encode. Every sink it uses takes
+    // literal text and escapes on serialization, so encoding first would show
+    // 'R&amp;D' in the page instead of 'R&D'.
+    it('does not double encode text content', () => {
+      const domElement = renderElement(dom.span('R&D'), doc);
+      assert.equal(domElement.textContent, 'R&D');
+      assert.equal(domElement.outerHTML, '<span>R&amp;D</span>');
+    });
+
+    it('does not double encode updated text content', () => {
+      const domElement = renderElement(dom.span('R&D'), doc);
+      const updated = renderElement(dom.span('P&L'), doc, domElement);
+      assert.equal(updated.textContent, 'P&L');
+    });
+
+    it('does not double encode attribute values', () => {
+      const domElement = renderElement(dom.div({title: 'R&D', className: 'a&b'}), doc);
+      assert.equal(domElement.getAttribute('title'), 'R&D');
+      assert.equal(domElement.className, 'a&b');
+    });
+
+    it('renders markup in text content as inert text', () => {
+      const domElement = renderElement(dom.div('<script>alert(1)</script>'), doc);
+      assert.equal(domElement.children.length, 0);
+      assert.equal(domElement.textContent, '<script>alert(1)</script>');
+      assert.equal(domElement.outerHTML,
+        '<div>&lt;script&gt;alert(1)&lt;/script&gt;</div>');
+    });
+
+    it('renders markup in attribute values as inert text', () => {
+      const nomElement = dom.img({src: 'x', alt: '"><script>alert(1)</script>'});
+      const domElement = renderElement(nomElement, doc);
+      assert.equal(domElement.getAttribute('alt'), '"><script>alert(1)</script>');
+    });
+
+    it('unwraps unsafe attribute values', () => {
+      const nomElement = dom.div({className: dom.unsafe('a&b'), id: dom.unsafe('x&y')});
+      const domElement = renderElement(nomElement, doc);
+      assert.equal(domElement.className, 'a&b');
+      assert.equal(domElement.id, 'x&y');
+    });
+  });
+
   describe('unsafe', () => {
     it('does NOT YET render unsafe text child', () => {
       // NOTE(lbayes): This syntax should be supported, just don't have time to
